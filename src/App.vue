@@ -1,19 +1,20 @@
 <template>
-  <nav>
+  <router-view />
+  <nav class="nav">
     <router-link to="/">Home</router-link> |
     <router-link to="/about">About</router-link>
   </nav>
-  <router-view />
 </template>
 
 <style lang="stylus">
 @import './assets/style/index.styl'
 
-#app
-  font-family Avenir, Helvetica, Arial, sans-serif
-  -webkit-font-smoothing antialiased
-  -moz-osx-font-smoothing grayscale
-  text-align center
-  color #2c3e50
-  margin-top 60px
+.nav
+  position fixed
+  left 0
+  bottom 0
+  display flex
+  padding .12rem 0
+  width 100%
+  background #fff
 </style>
