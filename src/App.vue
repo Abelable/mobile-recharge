@@ -7,6 +7,8 @@
 </template>
 
 <style lang="stylus">
+@import './assets/style/index.styl'
+
 #app
   font-family Avenir, Helvetica, Arial, sans-serif
   -webkit-font-smoothing antialiased
