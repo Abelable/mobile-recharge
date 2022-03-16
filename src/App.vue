@@ -1,16 +1,10 @@
 <template>
   <router-view />
-  <Tabbar v-model="active">
-    <TabbarItem icon="home-o" to="/">标签</TabbarItem>
-    <TabbarItem icon="search" to="/about">标签</TabbarItem>
-  </Tabbar>
+  <TabBar />
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
-import { Tabbar, TabbarItem } from "vant";
-
-const active = ref(0);
+import TabBar from "@/components/TabBar.vue";
 </script>
 
 <style lang="stylus">
