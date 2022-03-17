@@ -38,34 +38,34 @@
 </template>
 
 <script setup lang="ts">
+import { defineProps, computed } from "vue";
 import { useRouter } from "vue-router";
+import { VideoInfo } from "../views/HomeView/utils/api";
 
-defineProps({
-  item: Object,
-});
+const props = defineProps<{ item: VideoInfo }>();
 
 const router = useRouter();
 
 const audienceNum = computed(() =>
-  item.view_num > 100000
-    ? `${(item.view_num / 10000).toFixed(1)}w`
-    : item.view_num
+  props.item.view_num > 100000
+    ? `${(props.item.view_num / 10000).toFixed(1)}w`
+    : props.item.view_num
 );
 const praiseNum = computed(() =>
-  item.like_num > 100000
-    ? `${(item.like_num / 10000).toFixed(1)}w`
-    : item.like_num
+  props.item.like_num > 100000
+    ? `${(props.item.like_num / 10000).toFixed(1)}w`
+    : props.item.like_num
 );
 const formattedDistance = computed(() =>
-  item.distance < 0.1
+  props.item.distance < 0.1
     ? "<100m"
-    : item.distance < 1
-    ? `${(item.distance * 1000).toFixed(0)}m`
-    : `${(+item.distance).toFixed(1)}km`
+    : props.item.distance < 1
+    ? `${(props.item.distance * 1000).toFixed(0)}m`
+    : `${props.item.distance.toFixed(1)}km`
 );
 
 const navToShortVideoDetail = () =>
-  router.push({ path: "/video", query: { id: item.id } });
+  router.push({ path: "/video", query: { id: props.item.id } });
 </script>
 
 <style lang="stylus" scoped>

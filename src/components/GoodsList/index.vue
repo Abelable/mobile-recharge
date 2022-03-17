@@ -1,45 +1,50 @@
 <template>
   <div class="goods-list" @click="navToGoodsDetail">
-    <img style="width: 3.42rem; height: 3.42rem;" :src="item.goods_thumb || item.original_img">
-    <img class="spike-icon" v-if="item.is_seckill" src="./images/spike-icon.png">
-    <div class="title">{{item.goods_name}}</div>
+    <img
+      style="width: 3.42rem; height: 3.42rem"
+      :src="item?.goods_thumb || item?.original_img"
+    />
+    <img
+      class="spike-icon"
+      v-if="item?.is_seckill"
+      src="./images/spike-icon.png"
+    />
+    <div class="title">{{ item?.goods_name }}</div>
     <div class="price-wrap">
       <div class="price">
-        <span v-if="item.is_seckill">秒杀价 </span>
+        <span v-if="item?.is_seckill">秒杀价 </span>
         <span>¥ </span>
-        <span style="font-size: .36rem">{{item.shop_price}}</span>
+        <span style="font-size: 0.36rem">{{ item?.shop_price }}</span>
       </div>
-      <div class="sales" v-if="item.sales_volume || item.ghost_count">销量{{(item.sales_volume || item.ghost_count) | formatCount}}</div>
+      <div class="sales" v-if="item?.sales_volume || item?.ghost_count">
+        销量{{ salesCount }}
+      </div>
     </div>
   </div>
 </template>
 
-<script>
-export default {
-  inject: ['routerRefresh'],
+<script setup lang="ts">
+import { defineProps, computed } from "vue";
+import { useRouter } from "vue-router";
 
-  props: {
-    item: Object
-  },
+defineProps({
+  item: Object,
+});
 
-  filters: {
-    formatCount(count) {
-      return count > 100000 ? `${(count / 10000).toFixed(1)}w` : count
-    }
-  },
+const router = useRouter();
 
-  methods: {
-    navToGoodsDetail() {
-      this.$router.push({ 
-        path: '/mall/goods',
-        query: {
-          id: this.item.id || this.item.goods_id
-        }
-      })
-      if (this.$route.path === '/mall/goods') this.routerRefresh()
-    }
-  }
-}
+const salesCount = computed(() => {
+  const count = item.sales_volume || item.ghost_count;
+  return count > 100000 ? `${(count / 10000).toFixed(1)}w` : count;
+});
+
+const navToGoodsDetail = () =>
+  router.push({
+    path: "/mall/goods",
+    query: {
+      id: item.id || item.goods_id,
+    },
+  });
 </script>
 
 <style lang="stylus" scoped>

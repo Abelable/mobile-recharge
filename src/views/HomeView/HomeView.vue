@@ -101,29 +101,33 @@
 </template>
 
 <script setup lang="ts">
+import { onMounted, ref } from "vue";
+import { useRouter } from "vue-router";
+import { useLocationInfo, useAdInfo } from "./utils/api";
+
 import { PullRefresh, List, Swipe, SwipeItem } from "vant";
 import EmptyIllus from "@/components/EmptyIllus.vue";
 import SplitLine from "@/components/SplitLine.vue";
 import FallFlow from "./components/FallFlow.vue";
 import LocationIllus from "./components/LocationIllus.vue";
 import AnchorList from "./components/AnchorList.vue";
-import { onMounted, ref } from "vue";
-import { useRouter } from "vue-router";
-import { useLocationInfo } from "./utils/api";
 
 const router = useRouter();
 const { locationInfo, setLocationInfo } = useLocationInfo();
+const { adIllus, banner, tilesLists, setAdInfo } = useAdInfo();
 
 const isInLogin = !!localStorage.getItem("token");
 
-const activeMenuIdx = ref(0);
+const activeMenuIdx = ref(1);
 
 const loading = ref(false);
 const finished = ref(false);
 const refreshing = ref(false);
+const focusLists = ref([]);
 
 onMounted(() => {
   setLocationInfo();
+  setAdInfo();
 });
 
 const signIn = () => router.push("/search");

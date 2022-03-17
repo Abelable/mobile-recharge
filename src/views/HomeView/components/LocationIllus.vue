@@ -1,6 +1,9 @@
 <template>
   <div class="location-illus">
-    <img style="width: 1.04rem; height: 1.04rem;" src="https://img.ubo.vip/mp/index/nearby-address-location.png" >
+    <img
+      style="width: 1.04rem; height: 1.04rem"
+      src="https://img.ubo.vip/mp/index/nearby-address-location.png"
+    />
     <div class="content">
       <div>开启定位服务</div>
       <div>获得更精准的定位服务内容～</div>
@@ -9,15 +12,10 @@
   </div>
 </template>
 
-<script>
-
-export default {
-  methods: {
-    setLocationInfo() {
-      this.$emit('setLocationInfo')
-    }
-  }
-}
+<script setup lang="ts">
+import { defineEmits } from "vue";
+const emit = defineEmits(["setLocationInfo"]);
+const setLocationInfo = () => emit("setLocationInfo");
 </script>
 
 <style lang="stylus" scoped>

@@ -20,6 +20,7 @@
 </template>
 
 <script setup lang="ts">
+import { defineProps } from "vue";
 import MediaList from "./MediaList.vue";
 
 defineProps({

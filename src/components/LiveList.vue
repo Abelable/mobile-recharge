@@ -14,21 +14,21 @@
         <span v-else>{{ liveStatus === "video" ? "回放" : "预告" }}</span>
       </div>
       <div class="start-time" v-if="liveStatus === 'notice'">
-        {{ dayjs(item.start_time).format("MM月DD日HH:mm开始") }}
+        {{ dayjs(item?.start_time).format("MM月DD日HH:mm开始") }}
       </div>
       <div class="audience-num" v-else>{{ audienceNum }}观看</div>
     </div>
 
     <div class="info-wrap">
-      <div class="title">{{ item.title }}</div>
+      <div class="title">{{ item?.title }}</div>
       <div class="info">
         <img
           class="anchor-avatar"
-          :src="item.userPortrait || item.userHeadimg"
+          :src="item?.userPortrait || item?.userHeadimg"
         />
         <div class="anchor-name-wrap">
-          <div class="anchor-name">{{ item.userName }}</div>
-          <div class="location-wrap" v-if="item.distance">
+          <div class="anchor-name">{{ item?.userName }}</div>
+          <div class="location-wrap" v-if="item?.distance">
             <img
               class="location-icon"
               src="https://img.ubo.vip/mp/i-media-list/location-icon.png"
@@ -45,11 +45,11 @@
         </div>
         <div
           class="notice-btn"
-          :class="{ active: item.previewDestine == 0 }"
+          :class="{ active: item?.previewDestine == 0 }"
           v-if="liveStatus === 'notice'"
           @click.stop="toggleSubscribe"
         >
-          {{ item.previewDestine == 0 ? "点击预约" : "取消预约" }}
+          {{ item?.previewDestine == 0 ? "点击预约" : "取消预约" }}
         </div>
       </div>
     </div>
@@ -57,18 +57,20 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
+import { defineProps, computed } from "vue";
 import dayjs from "dayjs";
 import { useRouter } from "vue-router";
 
-defineProps({
-  item: Object,
-});
+const props = defineProps<{ item: object }>();
 
 const router = useRouter();
 
 const liveStatus = computed(() =>
-  item.is_stopped == 1 ? "video" : item.start_time == 0 ? "live" : "notice"
+  props.item.is_stopped == 1
+    ? "video"
+    : item.start_time == 0
+    ? "live"
+    : "notice"
 );
 const audienceNum = computed(() =>
   item.memberNum > 100000

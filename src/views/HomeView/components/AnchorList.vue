@@ -1,19 +1,21 @@
 <template>
   <div class="anchor-list">
     <div class="avatar-wrap">
-      <img class="avatar" :src="item.avatar" />
-      <div class="live-icon" v-if="item.is_live == 1">
+      <img class="avatar" :src="item?.avatar" />
+      <div class="live-icon" v-if="item?.is_live == 1">
         <img
           style="width: 0.18rem; height: 0.24rem"
           src="https://img.ubo.vip/mp/i-media-list/live_status.gif"
         />
       </div>
     </div>
-    <div class="name">{{ item.username }}</div>
+    <div class="name">{{ item?.username }}</div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { defineProps } from "vue";
+
 defineProps({
   item: Object,
 });
