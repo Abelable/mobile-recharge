@@ -1,5 +1,10 @@
 <template>
-  <Tabbar active-color="#333333" inactive-color="#666666" route fixed>
+  <Tabbar
+    active-color="#333333"
+    inactive-color="#666666"
+    route
+    safe-area-inset-bottom
+  >
     <TabbarItem
       v-for="(item, index) in menuList"
       :key="index"

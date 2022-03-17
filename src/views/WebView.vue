@@ -1,7 +1,7 @@
 <template>
   <NavBar
     :title="title || '有播'"
-    left-text="返回"
+    safe-area-inset-top
     left-arrow
     @click-left="onClickLeft"
   />
