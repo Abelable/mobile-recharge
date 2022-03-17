@@ -103,7 +103,7 @@
 import { onMounted, ref, watchEffect } from "vue";
 import { useRouter } from "vue-router";
 import _ from "lodash";
-import { adLink } from "@/utils/index";
+import { adLink, webviewUrl } from "@/utils/index";
 import {
   useLocationInfo,
   useAdInfo,
@@ -265,7 +265,14 @@ const setLists = async (state: State) => {
   }
 };
 
-const signIn = () => router.push("/search");
+const signIn = () =>
+  router.push({
+    path: "/webview",
+    query: {
+      title: "签到",
+      url: `${webviewUrl}/sign-in/dist/index.html#/`,
+    },
+  });
 const navToSearch = () => router.push("/search");
 const navToCart = () => router.push("/mall/cart");
 </script>

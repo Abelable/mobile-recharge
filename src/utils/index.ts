@@ -39,3 +39,5 @@ export const adLink = (type: string, param: string) => {
       break;
   }
 };
+
+export const webviewUrl = process.env.VUE_APP_WEBVIEW_URL;

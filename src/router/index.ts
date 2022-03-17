@@ -25,11 +25,33 @@ const routes: Array<RouteRecordRaw> = [
     name: "mine",
     component: MineView,
   },
+  {
+    path: "/webview",
+    name: "webview",
+    meta: { requireAuth: true },
+    component: () => import("@/views/WebView.vue"),
+  },
+  {
+    path: "/login",
+    name: "login",
+    component: () => import("@/views/LoginView/LoginView.vue"),
+  },
 ];
 
 const router = createRouter({
   history: createWebHashHistory(),
   routes,
+});
+
+router.beforeEach((to, from, next) => {
+  if (to.meta.requireAuth && !localStorage.getItem("token")) {
+    next({
+      path: "/login",
+      query: { redirect: to.fullPath },
+    });
+  } else {
+    next();
+  }
 });
 
 export default router;
