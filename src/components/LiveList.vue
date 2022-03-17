@@ -42,11 +42,11 @@
         </div>
         <div
           class="notice-btn"
-          :class="{ active: subscribeStatus }"
+          :class="{ active: !isSubscribed }"
           v-if="liveStatus === 'notice'"
           @click.stop="toggleSubscribe"
         >
-          {{ subscribeStatus ? "点击预约" : "取消预约" }}
+          {{ !isSubscribed ? "点击预约" : "取消预约" }}
         </div>
       </div>
     </div>
@@ -90,7 +90,7 @@ const formattedDistance = computed(() =>
 );
 
 const optimisticSubscribeStatus = ref(false);
-const subscribeStatus = computed(
+const isSubscribed = computed(
   () => props.item.previewDestine === "1" || optimisticSubscribeStatus.value
 );
 

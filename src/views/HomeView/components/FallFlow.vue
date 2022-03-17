@@ -4,7 +4,7 @@
       <li>
         <slot name="banner" />
       </li>
-      <li v-for="(item, index) in lists" :key="index">
+      <li v-for="(item, index) in list" :key="index">
         <MediaList v-if="index % 2 === 0" :item="item" />
       </li>
     </ul>
@@ -12,7 +12,7 @@
       <li>
         <slot name="tiles" />
       </li>
-      <li v-for="(item, index) in lists" :key="index">
+      <li v-for="(item, index) in list" :key="index">
         <MediaList v-if="index % 2 === 1" :item="item" />
       </li>
     </ul>
@@ -21,11 +21,10 @@
 
 <script setup lang="ts">
 import { defineProps } from "vue";
+import { MediaInfo } from "../utils/api";
 import MediaList from "./MediaList.vue";
 
-defineProps({
-  lists: Array,
-});
+defineProps<{ list: MediaInfo[] }>();
 </script>
 
 <style lang="stylus" scoped>

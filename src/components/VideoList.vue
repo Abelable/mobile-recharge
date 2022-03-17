@@ -57,11 +57,11 @@ const praiseNum = computed(() =>
     : props.item.like_num
 );
 const formattedDistance = computed(() =>
-  props.item.distance < 0.1
+  Number(props.item.distance) < 0.1
     ? "<100m"
-    : props.item.distance < 1
-    ? `${(props.item.distance * 1000).toFixed(0)}m`
-    : `${props.item.distance.toFixed(1)}km`
+    : Number(props.item.distance) < 1
+    ? `${(Number(props.item.distance) * 1000).toFixed(0)}m`
+    : `${Number(props.item.distance).toFixed(1)}km`
 );
 
 const navToShortVideoDetail = () =>

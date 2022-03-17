@@ -43,15 +43,15 @@
       finished-text="没有更多了"
       @load="onLoadMore"
     >
-      <div class="foucs-lists-wrap" v-show="activeMenuIdx === 0">
+      <div class="foucs-list-wrap" v-show="activeMenuIdx === 0">
         <EmptyIllus
           v-if="!isInLogin || (isInLogin && !followedMediaList.length)"
           :isInLogin="isInLogin"
         />
         <template v-else>
-          <div class="anchor-lists-wrap">
+          <div class="anchor-list-wrap">
             <p class="desc">大家都在看</p>
-            <div class="anchor-lists">
+            <div class="anchor-list">
               <AnchorList
                 v-for="(item, index) in anchorList"
                 :key="index"
@@ -59,12 +59,12 @@
               />
             </div>
           </div>
-          <FallFlow :lists="followedMediaList" />
+          <FallFlow :list="followedMediaList" />
         </template>
       </div>
-      <div class="selected-lists-wrap" v-show="activeMenuIdx === 1">
+      <div class="selected-list-wrap" v-show="activeMenuIdx === 1">
         <img class="ad-illus" v-if="adIllus" :src="adIllus" />
-        <FallFlow :lists="recommendMediaList">
+        <FallFlow :list="recommendMediaList">
           <template v-slot:banner v-if="banner.length">
             <Swipe class="banner" :autoplay="3000" indicator-color="white">
               <SwipeItem v-for="(item, index) in banner" :key="index">
@@ -87,12 +87,12 @@
           </template>
         </FallFlow>
       </div>
-      <div class="nearby-lists-wrap" v-show="activeMenuIdx === 2">
-        <FallFlow v-if="locationInfo" :lists="nearbyMediaList" />
+      <div class="nearby-list-wrap" v-show="activeMenuIdx === 2">
+        <FallFlow v-if="locationInfo" :list="nearbyMediaList" />
         <template v-else>
           <LocationIllus @setLocationInfo="setLocationInfo" />
           <SplitLine title="好物推荐" />
-          <FallFlow :lists="recommendGoodsList" />
+          <FallFlow :list="recommendGoodsList" />
         </template>
       </div>
     </List>
@@ -100,8 +100,9 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watchEffect } from "vue";
 import { useRouter } from "vue-router";
+import _ from "lodash";
 import { adLink } from "@/utils/index";
 import {
   useLocationInfo,
@@ -129,10 +130,28 @@ enum State {
 const router = useRouter();
 const { locationInfo, setLocationInfo } = useLocationInfo();
 const { anchorList, setAnchorList } = useAnchorList();
-const { followedMediaList, setFollowedMediaList } = useFollowedMediaList();
+const {
+  followedMediaList,
+  setFollowedMediaList,
+  isLoading: loadingOfFollowedMediaList,
+  isFinished: finishedOfFollowedMediaList,
+  isRefreshing: refreshingOfFollowedMediaList,
+} = useFollowedMediaList();
 const { adIllus, banner, tilesLists, setAdInfo } = useAdInfo();
-const { recommendMediaList, setRecommendMediaList } = useRecommendMediaList();
-const { nearbyMediaList, setNearbyMediaList } = useNearbyMediaList();
+const {
+  recommendMediaList,
+  setRecommendMediaList,
+  isLoading: loadingOfRecommendMediaList,
+  isFinished: finishedOfRecommendMediaList,
+  isRefreshing: refreshingOfRecommendMediaList,
+} = useRecommendMediaList();
+const {
+  nearbyMediaList,
+  setNearbyMediaList,
+  isLoading: loadingOfNearbyMediaList,
+  isFinished: finishedOfNearbyMediaList,
+  isRefreshing: refreshingOfNearbyMediaList,
+} = useNearbyMediaList();
 const { recommendGoodsList, setRecommendGoodsList } = useRecommendGoodsList();
 
 const isInLogin = !!localStorage.getItem("token");
@@ -142,6 +161,28 @@ const activeMenuIdx = ref(1);
 const loading = ref(false);
 const finished = ref(false);
 const refreshing = ref(false);
+
+watchEffect(() => {
+  switch (activeMenuIdx.value) {
+    case 0:
+      loading.value = loadingOfFollowedMediaList.value;
+      finished.value = finishedOfFollowedMediaList.value;
+      refreshing.value = refreshingOfFollowedMediaList.value;
+      break;
+
+    case 1:
+      loading.value = loadingOfRecommendMediaList.value;
+      finished.value = finishedOfRecommendMediaList.value;
+      refreshing.value = refreshingOfRecommendMediaList.value;
+      break;
+
+    case 2:
+      loading.value = loadingOfNearbyMediaList.value;
+      finished.value = finishedOfNearbyMediaList.value;
+      refreshing.value = refreshingOfNearbyMediaList.value;
+      break;
+  }
+});
 
 onMounted(() => {
   setLocationInfo();
@@ -154,7 +195,7 @@ const switchMenu = (index: number) => {
     setLists(State.switch_menu);
   }
 };
-const onLoadMore = () => setLists(State.loadmore);
+const onLoadMore = _.debounce(() => setLists(State.loadmore), 200);
 const onRefresh = () => setLists(State.refresh);
 
 const setLists = async (state: State) => {
@@ -213,7 +254,11 @@ const setLists = async (state: State) => {
           break;
 
         case 2:
-          if (locationInfo.value) setNearbyMediaList(locationInfo.value);
+          if (locationInfo.value)
+            setNearbyMediaList(
+              locationInfo.value,
+              !nearbyMediaList.value.length
+            );
           break;
       }
       break;
@@ -306,12 +351,10 @@ const navToCart = () => router.push("/mall/cart");
 .container
   padding-top 1.92rem
   padding-bottom 1.04rem
-  &.is-iphoneX
-    padding-bottom 1.2rem
   .content-wrap
     padding 0 .24rem
     min-height calc(100vh - 1.68rem)
-    .anchor-lists-wrap
+    .anchor-list-wrap
       margin-bottom .20rem
       padding .24rem
       height 2.60rem
@@ -322,7 +365,7 @@ const navToCart = () => router.push("/mall/cart");
         color #666
         font-size .28rem
         line-height .40rem
-      .anchor-lists
+      .anchor-list
         margin-top .2rem
         display flex
         flex-wrap nowrap
