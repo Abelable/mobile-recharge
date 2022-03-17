@@ -40,25 +40,28 @@
       class="content-wrap"
       v-model="loading"
       :finished="finished"
-      finished-text="没有更多了"
+      :finished-text="
+        activeMenuIdx === 0 && emptyIllusVisible ? '' : '没有更多了'
+      "
       @load="onLoadMore"
     >
       <div class="foucs-list-wrap" v-show="activeMenuIdx === 0">
+        <div class="anchor-list-wrap">
+          <p class="desc">大家都在看</p>
+          <div class="anchor-list">
+            <AnchorList
+              v-for="(item, index) in anchorList"
+              :key="index"
+              :item="item"
+            />
+          </div>
+        </div>
         <EmptyIllus
-          v-if="!isInLogin || (isInLogin && !followedMediaList.length)"
+          style="margin-top: 1rem"
+          v-if="emptyIllusVisible"
           :isInLogin="isInLogin"
         />
         <template v-else>
-          <div class="anchor-list-wrap">
-            <p class="desc">大家都在看</p>
-            <div class="anchor-list">
-              <AnchorList
-                v-for="(item, index) in anchorList"
-                :key="index"
-                :item="item"
-              />
-            </div>
-          </div>
           <FallFlow :list="followedMediaList" />
         </template>
       </div>
@@ -100,7 +103,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, watchEffect } from "vue";
+import { onMounted, ref, watchEffect, computed } from "vue";
 import { useRouter } from "vue-router";
 import _ from "lodash";
 import { useAdLink, webviewUrl } from "@/utils/index";
@@ -153,9 +156,16 @@ const {
   isFinished: finishedOfNearbyMediaList,
   isRefreshing: refreshingOfNearbyMediaList,
 } = useNearbyMediaList();
-const { recommendGoodsList, setRecommendGoodsList } = useRecommendGoodsList();
+const {
+  recommendGoodsList,
+  setRecommendGoodsList,
+  isLoading: loadingOfRecommendGoodsList,
+} = useRecommendGoodsList();
 
 const isInLogin = !!localStorage.getItem("token");
+const emptyIllusVisible = computed(
+  () => !isInLogin || (isInLogin && !followedMediaList.value.length)
+);
 
 const activeMenuIdx = ref(1);
 
@@ -178,9 +188,15 @@ watchEffect(() => {
       break;
 
     case 2:
-      loading.value = loadingOfNearbyMediaList.value;
-      finished.value = finishedOfNearbyMediaList.value;
-      refreshing.value = refreshingOfNearbyMediaList.value;
+      if (locationInfo.value) {
+        loading.value = loadingOfNearbyMediaList.value;
+        finished.value = finishedOfNearbyMediaList.value;
+        refreshing.value = refreshingOfNearbyMediaList.value;
+      } else {
+        loading.value = loadingOfRecommendGoodsList.value;
+        finished.value = loadingOfRecommendGoodsList.value;
+        refreshing.value = loadingOfRecommendGoodsList.value;
+      }
       break;
   }
 });

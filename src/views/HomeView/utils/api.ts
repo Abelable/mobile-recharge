@@ -7,14 +7,14 @@ export interface LocationInfo {
 }
 
 export const useLocationInfo = () => {
-  const locationInfo = ref<LocationInfo>({});
+  const locationInfo = ref<LocationInfo | null>(null);
   const setLocationInfo = () => {
     const geolocation = new window.qq.maps.Geolocation(
       "BGCBZ-UFHWX-MBQ4O-TANN2-7WTZ3-CLBIP",
       "youbo"
     );
     geolocation.getLocation(
-      (info: LocationInfo) => (locationInfo.value = info)
+      (info: LocationInfo) => (locationInfo.value = info || null)
     );
   };
   return { locationInfo, setLocationInfo };
@@ -103,7 +103,7 @@ export const useFollowedMediaList = () => {
       isRefreshing.value = true;
     }
     isLoading.value = true;
-    const { list }: { list: MediaInfo[] } = await http(
+    const { list = [] }: { list: MediaInfo[] } = await http(
       "?r=lv/live-front/follow-live",
       {
         data: { page: ++page },
@@ -228,15 +228,19 @@ export const useNearbyMediaList = () => {
 
 export const useRecommendGoodsList = () => {
   const recommendGoodsList = ref<MediaInfo[]>([]);
+  const isLoading = ref(false);
+
   const setRecommendGoodsList = async () => {
+    isLoading.value = true;
     const { recommend_goods_list }: { recommend_goods_list: MediaInfo[] } =
       await http("?r=lv/live-front/recommend-goods", {
         method: "POST",
         data: { module: 1 },
       });
+    isLoading.value = false;
     recommendGoodsList.value = recommend_goods_list;
   };
-  return { recommendGoodsList, setRecommendGoodsList };
+  return { recommendGoodsList, setRecommendGoodsList, isLoading };
 };
 
 export interface AdInfo {

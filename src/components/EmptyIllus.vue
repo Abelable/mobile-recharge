@@ -10,9 +10,7 @@
 import { defineProps } from "vue";
 import { useRouter } from "vue-router";
 
-defineProps({
-  isInLogin: Boolean,
-});
+defineProps<{ isInLogin: boolean }>();
 const router = useRouter();
 const login = () => router.push("/login");
 </script>
