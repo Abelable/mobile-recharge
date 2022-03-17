@@ -1,8 +1,8 @@
 <template>
-  <div class="anchor-list">
+  <div class="anchor-item">
     <div class="avatar-wrap">
-      <img class="avatar" :src="item?.avatar" />
-      <div class="live-icon" v-if="item?.is_live == 1">
+      <img class="avatar" :src="item.avatar" />
+      <div class="live-icon" v-if="item.is_live === 1">
         <img
           style="width: 0.18rem; height: 0.24rem"
           src="https://img.ubo.vip/mp/i-media-list/live_status.gif"
@@ -15,14 +15,13 @@
 
 <script setup lang="ts">
 import { defineProps } from "vue";
+import { AnchorInfo } from "../utils/api";
 
-defineProps({
-  item: Object,
-});
+defineProps<{ item: AnchorInfo }>();
 </script>
 
 <style lang="stylus" scoped>
-.anchor-list
+.anchor-item
   display flex
   flex-direction column
   margin-right .28rem
