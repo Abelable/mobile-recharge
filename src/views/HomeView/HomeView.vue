@@ -12,7 +12,7 @@
           :key="index"
           class="menu-tab"
           :class="{ active: activeMenuIdx === index }"
-          @click="activeMenuIdx = index"
+          @click="switchMenu(index)"
         >
           {{ item }}
         </li>
@@ -70,7 +70,7 @@
               <SwipeItem v-for="(item, index) in banner" :key="index">
                 <img
                   class="banner-img"
-                  @click="navTo(item.is_belong, item.ad_link)"
+                  @click="adLink(item.is_belong, item.ad_link)"
                   :src="item.ad_code"
                 />
               </SwipeItem>
@@ -82,7 +82,7 @@
               v-for="(item, index) in tilesLists"
               :key="index"
               :src="item.ad_code"
-              @click="navTo(item.is_belong, item.ad_link)"
+              @click="adLink(item.is_belong, item.ad_link)"
             />
           </template>
         </FallFlow>
@@ -102,6 +102,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
+import { adLink } from "@/utils/index";
 import {
   useLocationInfo,
   useAdInfo,
@@ -146,6 +147,13 @@ onMounted(() => {
   setLocationInfo();
 });
 
+const switchMenu = (index: number) => {
+  if (activeMenuIdx.value !== index) {
+    document.documentElement.scrollTop = 0;
+    activeMenuIdx.value = index;
+    setLists(State.switch_menu);
+  }
+};
 const onLoadMore = () => setLists(State.loadmore);
 const onRefresh = () => setLists(State.refresh);
 

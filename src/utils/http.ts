@@ -29,7 +29,7 @@ export const http = async (
       endpoint += `${qs.stringify(data)}`;
     }
   } else {
-    config.body = JSON.stringify(data || {});
+    config.body = qs.stringify(data || {});
   }
 
   return window
