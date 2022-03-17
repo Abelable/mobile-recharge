@@ -1,9 +1,6 @@
 <template>
   <div class="goods-list" @click="navToGoodsDetail">
-    <img
-      style="width: 3.42rem; height: 3.42rem"
-      :src="item?.goods_thumb || item?.original_img"
-    />
+    <img style="width: 3.42rem; height: 3.42rem" :src="item?.goods_thumb" />
     <img
       class="spike-icon"
       v-if="item?.is_seckill"
@@ -26,23 +23,22 @@
 <script setup lang="ts">
 import { defineProps, computed } from "vue";
 import { useRouter } from "vue-router";
+import { GoodsInfo } from "../../views/HomeView/utils/api";
 
-defineProps({
-  item: Object,
-});
+const props = defineProps<{ item: GoodsInfo }>();
 
 const router = useRouter();
 
 const salesCount = computed(() => {
-  const count = item.sales_volume || item.ghost_count;
-  return count > 100000 ? `${(count / 10000).toFixed(1)}w` : count;
+  const count = props.item.sales_volume || props.item.ghost_count;
+  return count > 100000 ? `${(Number(count) / 10000).toFixed(1)}w` : count;
 });
 
 const navToGoodsDetail = () =>
   router.push({
     path: "/mall/goods",
     query: {
-      id: item.id || item.goods_id,
+      id: props.item.goods_id,
     },
   });
 </script>

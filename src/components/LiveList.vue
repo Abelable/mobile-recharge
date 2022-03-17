@@ -1,7 +1,7 @@
 <template>
   <div
     class="live-list"
-    :style="{ backgroundImage: `url(${item.cover || item.cover_url})` }"
+    :style="{ backgroundImage: `url(${item.cover})` }"
     @click="navToLiveRoom"
   >
     <div class="status-wrap">
@@ -22,10 +22,7 @@
     <div class="info-wrap">
       <div class="title">{{ item?.title }}</div>
       <div class="info">
-        <img
-          class="anchor-avatar"
-          :src="item?.userPortrait || item?.userHeadimg"
-        />
+        <img class="anchor-avatar" :src="item?.userPortrait" />
         <div class="anchor-name-wrap">
           <div class="anchor-name">{{ item?.userName }}</div>
           <div class="location-wrap" v-if="item?.distance">
@@ -45,11 +42,11 @@
         </div>
         <div
           class="notice-btn"
-          :class="{ active: item?.previewDestine == 0 }"
+          :class="{ active: subscribeStatus }"
           v-if="liveStatus === 'notice'"
           @click.stop="toggleSubscribe"
         >
-          {{ item?.previewDestine == 0 ? "点击预约" : "取消预约" }}
+          {{ subscribeStatus ? "点击预约" : "取消预约" }}
         </div>
       </div>
     </div>
@@ -57,49 +54,54 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, computed } from "vue";
+import { defineProps, computed, ref } from "vue";
 import dayjs from "dayjs";
 import { useRouter } from "vue-router";
+import { toggleSubscribeAnchor } from "@/api/common";
+import { LiveInfo } from "../views/HomeView/utils/api";
 
-const props = defineProps<{ item: object }>();
+const props = defineProps<{ item: LiveInfo }>();
 
 const router = useRouter();
 
 const liveStatus = computed(() =>
-  props.item.is_stopped == 1
+  props.item.is_stopped === "1"
     ? "video"
-    : item.start_time == 0
+    : props.item.start_time === "0"
     ? "live"
     : "notice"
 );
 const audienceNum = computed(() =>
-  item.memberNum > 100000
-    ? `${(item.memberNum / 10000).toFixed(1)}w`
-    : item.memberNum
+  Number(props.item.memberNum) > 100000
+    ? `${(Number(props.item.memberNum) / 10000).toFixed(1)}w`
+    : props.item.memberNum
 );
 const praiseNum = computed(() =>
-  item.praise > 100000 ? `${(item.praise / 10000).toFixed(1)}w` : item.praise
+  Number(props.item.praise) > 100000
+    ? `${(Number(props.item.praise) / 10000).toFixed(1)}w`
+    : props.item.praise
 );
 const formattedDistance = computed(() =>
-  item.distance < 0.1
+  Number(props.item.distance) < 0.1
     ? "<100m"
-    : item.distance < 1
-    ? `${(item.distance * 1000).toFixed(0)}m`
-    : `${(+item.distance).toFixed(1)}km`
+    : Number(props.item.distance) < 1
+    ? `${(Number(props.item.distance) * 1000).toFixed(0)}m`
+    : `${Number(props.item.distance).toFixed(1)}km`
 );
+
+const optimisticSubscribeStatus = ref(false);
+const subscribeStatus = computed(
+  () => props.item.previewDestine === "1" || optimisticSubscribeStatus.value
+);
+
 const navToLiveRoom = () =>
-  router.push({ path: "/live", query: { id: item.id } });
+  router.push({ path: "/live", query: { id: props.item.id } });
+
 const toggleSubscribe = () => {
-  const { id, previewDestine } = this.item;
-  let status;
-  if (previewDestine == 0) {
-    status = 1;
-    this.item.previewDestine = 1;
-  } else {
-    status = 0;
-    this.item.previewDestine = 0;
-  }
-  // new BaseService().toggleSubscribeAnchor(status, id);
+  const { id, previewDestine } = props.item;
+  const status = previewDestine === "0" ? 1 : 0;
+  optimisticSubscribeStatus.value = previewDestine === "0";
+  toggleSubscribeAnchor(status, id);
 };
 </script>
 

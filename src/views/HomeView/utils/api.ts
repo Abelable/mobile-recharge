@@ -52,9 +52,10 @@ export interface LiveInfo {
   memberNum: string;
   praise: string;
   owner_id: string;
-  nickname: string;
-  head_img: string;
+  userName: string;
+  userPortrait: string;
   previewDestine: string;
+  distance: string;
 }
 export interface VideoInfo {
   id: string;
@@ -68,7 +69,7 @@ export interface VideoInfo {
   head_img: string;
   province: string;
   city: string;
-  distance: number;
+  distance: string;
 }
 export interface GoodsInfo {
   goods_id: string;
@@ -79,6 +80,7 @@ export interface GoodsInfo {
   sales_count: string;
   sales_volume: number;
   ghost_count: string;
+  is_seckill: boolean;
 }
 export interface MediaInfo extends LiveInfo, VideoInfo, GoodsInfo {
   media_type: number;
