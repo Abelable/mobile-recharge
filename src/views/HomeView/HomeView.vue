@@ -103,7 +103,7 @@
 import { onMounted, ref, watchEffect } from "vue";
 import { useRouter } from "vue-router";
 import _ from "lodash";
-import { adLink, webviewUrl } from "@/utils/index";
+import { useAdLink, webviewUrl } from "@/utils/index";
 import {
   useLocationInfo,
   useAdInfo,
@@ -128,6 +128,7 @@ enum State {
 }
 
 const router = useRouter();
+const adLink = useAdLink();
 const { locationInfo, setLocationInfo } = useLocationInfo();
 const { anchorList, setAnchorList } = useAnchorList();
 const {
