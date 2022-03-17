@@ -45,27 +45,26 @@
     >
       <div class="foucs-lists-wrap" v-show="activeMenuIdx === 0">
         <EmptyIllus
-          v-if="!isInLogin || (isInLogin && !focusLists.length)"
+          v-if="!isInLogin || (isInLogin && !followedMediaList.length)"
           :isInLogin="isInLogin"
-          :noFocusLists="!focusLists.length"
         />
         <template v-else>
           <div class="anchor-lists-wrap">
             <p class="desc">大家都在看</p>
             <div class="anchor-lists">
               <AnchorList
-                v-for="(item, index) in anchorLists"
+                v-for="(item, index) in anchorList"
                 :key="index"
                 :item="item"
               />
             </div>
           </div>
-          <FallFlow :lists="focusLists" />
+          <FallFlow :lists="followedMediaList" />
         </template>
       </div>
       <div class="selected-lists-wrap" v-show="activeMenuIdx === 1">
         <img class="ad-illus" v-if="adIllus" :src="adIllus" />
-        <FallFlow :lists="selectedLists">
+        <FallFlow :lists="recommendMediaList">
           <template v-slot:banner v-if="banner.length">
             <Swipe class="banner" :autoplay="3000" indicator-color="white">
               <SwipeItem v-for="(item, index) in banner" :key="index">
@@ -89,11 +88,11 @@
         </FallFlow>
       </div>
       <div class="nearby-lists-wrap" v-show="activeMenuIdx === 2">
-        <FallFlow v-if="locationInfo" :lists="nearbyLists" />
+        <FallFlow v-if="locationInfo" :lists="nearbyMediaList" />
         <template v-else>
           <LocationIllus @setLocationInfo="setLocationInfo" />
           <SplitLine title="好物推荐" />
-          <FallFlow :lists="recommendGoodsLists" />
+          <FallFlow :lists="recommendGoodsList" />
         </template>
       </div>
     </List>
@@ -103,7 +102,15 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
-import { useLocationInfo, useAdInfo } from "./utils/api";
+import {
+  useLocationInfo,
+  useAdInfo,
+  useAnchorList,
+  useFollowedMediaList,
+  useRecommendMediaList,
+  useNearbyMediaList,
+  useRecommendGoodsList,
+} from "./utils/api";
 
 import { PullRefresh, List, Swipe, SwipeItem } from "vant";
 import EmptyIllus from "@/components/EmptyIllus.vue";
@@ -112,9 +119,20 @@ import FallFlow from "./components/FallFlow.vue";
 import LocationIllus from "./components/LocationIllus.vue";
 import AnchorList from "./components/AnchorList.vue";
 
+enum State {
+  switch_menu,
+  refresh,
+  loadmore,
+}
+
 const router = useRouter();
 const { locationInfo, setLocationInfo } = useLocationInfo();
+const { anchorList, setAnchorList } = useAnchorList();
+const { followedMediaList, setFollowedMediaList } = useFollowedMediaList();
 const { adIllus, banner, tilesLists, setAdInfo } = useAdInfo();
+const { recommendMediaList, setRecommendMediaList } = useRecommendMediaList();
+const { nearbyMediaList, setNearbyMediaList } = useNearbyMediaList();
+const { recommendGoodsList, setRecommendGoodsList } = useRecommendGoodsList();
 
 const isInLogin = !!localStorage.getItem("token");
 
@@ -123,12 +141,76 @@ const activeMenuIdx = ref(1);
 const loading = ref(false);
 const finished = ref(false);
 const refreshing = ref(false);
-const focusLists = ref([]);
 
 onMounted(() => {
   setLocationInfo();
-  setAdInfo();
 });
+
+const onLoadMore = () => setLists(State.loadmore);
+const onRefresh = () => setLists(State.refresh);
+
+const setLists = async (state: State) => {
+  switch (state) {
+    case State.switch_menu:
+      switch (activeMenuIdx.value) {
+        case 0:
+          if (!anchorList.value.length) setAnchorList();
+          if (!followedMediaList.value.length) setFollowedMediaList(true);
+          break;
+
+        case 1:
+          if (!banner.value.length) await setAdInfo();
+          if (!recommendMediaList.value.length) setRecommendMediaList(true);
+          break;
+
+        case 2:
+          if (locationInfo.value) {
+            if (!nearbyMediaList.value.length)
+              setNearbyMediaList(locationInfo.value, true);
+          } else {
+            if (!recommendGoodsList.value.length) setRecommendGoodsList();
+          }
+          break;
+      }
+      break;
+
+    case State.refresh:
+      switch (activeMenuIdx.value) {
+        case 0:
+          setAnchorList();
+          setFollowedMediaList(true);
+          break;
+
+        case 1:
+          await setAdInfo();
+          setRecommendMediaList(true);
+          break;
+
+        case 2:
+          if (locationInfo.value) setNearbyMediaList(locationInfo.value, true);
+          else setRecommendGoodsList();
+          break;
+      }
+      break;
+
+    case State.loadmore:
+      switch (activeMenuIdx.value) {
+        case 0:
+          setFollowedMediaList();
+          break;
+
+        case 1:
+          if (!banner.value.length) await setAdInfo();
+          setRecommendMediaList(!recommendMediaList.value.length);
+          break;
+
+        case 2:
+          if (locationInfo.value) setNearbyMediaList(locationInfo.value);
+          break;
+      }
+      break;
+  }
+};
 
 const signIn = () => router.push("/search");
 const navToSearch = () => router.push("/search");

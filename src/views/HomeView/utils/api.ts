@@ -167,8 +167,8 @@ export const useNearbyMediaList = () => {
   let live_offset = 0;
   let search_type = 1;
   const setNearbyMediaList = async (
-    init = false,
-    locationInfo: LocationInfo
+    locationInfo: LocationInfo,
+    init = false
   ) => {
     isLoading.value = true;
     if (init) {

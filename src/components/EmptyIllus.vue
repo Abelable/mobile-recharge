@@ -12,7 +12,6 @@ import { useRouter } from "vue-router";
 
 defineProps({
   isInLogin: Boolean,
-  noFocusLists: Boolean,
 });
 const router = useRouter();
 const login = () => router.push("/login");
