@@ -54,7 +54,7 @@ import { PullRefresh, List } from "vant";
 import EmptyIllus from "@/components/EmptyIllus.vue";
 import FallFlow from "./components/FallFlow.vue";
 
-import { ref, reactive } from "vue";
+import { ref, reactive, watchEffect } from "vue";
 import _ from "lodash";
 import {
   SocialInfo,
@@ -94,6 +94,22 @@ const {
   isRefreshing: refreshingOfRecommendList,
 } = useRecommendList();
 
+watchEffect(() => {
+  switch (activeMenuIdx.value) {
+    case 0:
+      loading.value = loadingOfFollowedList.value;
+      finished.value = finishedOfFollowedList.value;
+      refreshing.value = refreshingOfFollowedList.value;
+      break;
+
+    case 1:
+      loading.value = loadingOfRecommendList.value;
+      finished.value = finishedOfRecommendList.value;
+      refreshing.value = refreshingOfRecommendList.value;
+      break;
+  }
+});
+
 const selectMenu = (index: number) => {
   if (activeMenuIdx.value !== index) {
     document.documentElement.scrollTop = 0;
@@ -111,118 +127,43 @@ const selectTag = (index: number) => {
 const onLoadMore = _.debounce(() => setList(State.loadmore), 200);
 const onRefresh = () => setList(State.refresh);
 
-// export default {
+const setList = async (state: State) => {
+  switch (state) {
+    case State.select_menu:
+      if (activeMenuIdx.value === 0) {
+        if (!followedList.value.length) setFollowedList(true);
+      } else {
+        if (!recommendLists[activeTagIdx.value].length) setRecommendLists(true);
+      }
+      break;
 
-//   data() {
-//     return {
-//       isInLogin: false,
-//       loading: false,
-//       refreshing: false,
-//       finished: false,
-//       activeMenuIdx: 1,
-//       cateLists: [],
-//       activeCateIdx: 0,
-//       focusLists: [],
-//       recommendLists: [],
-//     };
-//   },
+    case State.loadmore:
+      if (activeMenuIdx.value === 0) setFollowedList();
+      else {
+        if (!tagList.value.length) {
+          await setTagList();
+          for (let i = 0; i < tagList.value.length; i++) {
+            recommendLists.push([]);
+          }
+          setRecommendLists(true);
+        } else setRecommendLists();
+      }
+      break;
 
-//   created() {
-//     this.isInLogin = !!localStorage.getItem("token");
-//   },
+    case State.refresh:
+      if (activeMenuIdx.value === 0) setFollowedList(true);
+      else setRecommendLists(true);
+      break;
+  }
+};
 
-//   methods: {
-//     selectMenu(index) {
-//       document.documentElement.scrollTop = 0;
-//       this.activeMenuIdx = index;
-//       this.setLists(STATE_SWITCH_TAB);
-//     },
-
-//     selectCate(index) {
-//       document.documentElement.scrollTop = 0;
-//       this.activeCateIdx = index;
-//       this.setLists(STATE_SWITCH_TAB);
-//     },
-
-//     onLoadMore() {
-//       this.setLists(STATE_LOADMORE);
-//     },
-
-//     onRefresh() {
-//       this.setLists(STATE_REFRESH);
-//     },
-
-//     async setLists(state) {
-//       switch (state) {
-//         case STATE_SWITCH_TAB:
-//           if (this.activeMenuIdx === 0) {
-//             if (!this.focusLists.length) this.setFocusLists(true);
-//           } else {
-//             if (!this.recommendLists[this.activeCateIdx].length)
-//               this.setRecommendLists(true);
-//           }
-//           break;
-
-//         case STATE_LOADMORE:
-//           if (this.activeMenuIdx === 0) this.setFocusLists();
-//           else {
-//             if (!this.cateLists.length) {
-//               await this.setCateLists();
-//               this.setRecommendLists(true);
-//             } else this.setRecommendLists();
-//           }
-//           break;
-
-//         case STATE_REFRESH:
-//           if (this.activeMenuIdx === 0) this.setFocusLists(true);
-//           else this.setRecommendLists(true);
-//           break;
-//       }
-//     },
-
-//     async setCateLists() {
-//       const { tag_list } = await socialService.getCateLists();
-//       let recommendLists = new Array(tag_list.length + 1);
-//       this.cateLists = [{ id: -1, tag_name: "全部" }, ...tag_list];
-//       this.recommendLists = recommendLists.fill([]);
-//     },
-
-//     async setFocusLists(init = false) {
-//       if (init) this.focusPage = 0;
-//       let { list } =
-//         (await socialService.getFocusSocialLists(++this.focusPage)) || {};
-//       if (list) {
-//         list.map((item) => {
-//           item.is_follow = true;
-//         });
-//         this.focusLists = init ? list : [...this.focusLists, ...list];
-//       }
-//       if (this.loading) this.loading = false;
-//       if (this.refreshing) this.refreshing = false;
-//     },
-
-//     async setRecommendLists(init = false) {
-//       const cateId = this.cateLists[this.activeCateIdx].id;
-//       if (init) {
-//         this.recommendPage = 0;
-//         this.rand = -1;
-//       }
-//       const { list, rand } = await socialService.getRecommendSocialLists(
-//         ++this.recommendPage,
-//         this.rand,
-//         cateId
-//       );
-//       this.rand = rand;
-//       this.$set(
-//         this.recommendLists,
-//         this.activeCateIdx,
-//         init ? list : [...this.recommendLists[this.activeCateIdx], ...list]
-//       );
-//       if (this.loading) this.loading = false;
-//       if (this.refreshing) this.refreshing = false;
-//     },
-//   },
-// };
+const setRecommendLists = async (init = false) => {
+  const tagId = tagList.value[activeTagIdx.value].id;
+  await setRecommendList(tagId, init);
+  recommendLists[activeTagIdx.value] = init
+    ? recommendList.value
+    : [...recommendLists[activeTagIdx.value], ...recommendList.value];
+};
 </script>
 
 <style lang="stylus" scoped>
