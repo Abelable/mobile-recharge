@@ -133,7 +133,7 @@ enum State {
   loadmore,
 }
 
-// 普通常量
+// 普通数据
 const isInLogin = !!localStorage.getItem("token");
 
 // 响应式数据
