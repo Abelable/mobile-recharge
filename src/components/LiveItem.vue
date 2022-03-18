@@ -1,6 +1,6 @@
 <template>
   <div
-    class="live-list"
+    class="live-item"
     :style="{ backgroundImage: `url(${item.cover})` }"
     @click="navToLiveRoom"
   >
@@ -103,7 +103,7 @@ const toggleSubscribe = () => {
 </script>
 
 <style lang="stylus" scoped>
-.live-list
+.live-item
   position relative
   margin-bottom .18rem
   width 3.42rem

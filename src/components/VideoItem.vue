@@ -1,6 +1,6 @@
 <template>
   <div
-    class="video-list"
+    class="video-item"
     :style="{ backgroundImage: `url(${item.cover_url})` }"
     @click="navToShortVideoDetail"
   >
@@ -69,7 +69,7 @@ const navToShortVideoDetail = () =>
 </script>
 
 <style lang="stylus" scoped>
-.video-list
+.video-item
   position relative
   margin-bottom .18rem
   width 3.42rem
