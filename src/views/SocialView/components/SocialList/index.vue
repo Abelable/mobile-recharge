@@ -1,50 +1,63 @@
 <template>
   <div class="social-list" @click="navToSocialDetail">
-    <img class="cover" :src="item.img[0]">
-    <div class="title">{{item.title}}</div>
+    <img class="cover" :src="item.img[0]" />
+    <div class="title">{{ item.title }}</div>
     <div class="info-wrap">
-      <img class="avatar" :src="item.head_img">
-      <div class="name">{{item.nickname}}</div>
-      <div class="praise-btn" @click.stop="togglePraiseStatus">
-        <img class="praise-icon" v-if="item.is_like" src="./images/praise-active.png">
-        <img class="praise-icon" v-else src="./images/praise.png">
-        <div class="praise-count">{{item.like_num || '点赞'}}</div>
+      <img class="avatar" :src="item.head_img" />
+      <div class="name">{{ item.nickname }}</div>
+      <div class="praise-btn" @click.stop="toggleStatus">
+        <img
+          class="praise-icon"
+          v-if="praiseStatus"
+          src="./images/praise-active.png"
+        />
+        <img class="praise-icon" v-else src="./images/praise.png" />
+        <div class="praise-count">{{ praiseCount || "点赞" }}</div>
       </div>
     </div>
   </div>
 </template>
 
-<script>
-import checkLogin from '@/mixins/checkLogin'
-import SocialService from '../../utils/socialService'
+<script setup lang="ts">
+import { defineProps, ref, watchEffect } from "vue";
+import { useRouter } from "vue-router";
+import { useCheckLogin } from "@/utils";
+import { togglePraiseStatus } from "@/api/common";
+import { SocialInfo } from "../../utils/api";
 
-export default {
-  mixins: [checkLogin],
+const router = useRouter();
+const checkLogin = useCheckLogin();
 
-  props: {
-    item: Object
-  }, 
+const props = defineProps<{ item: SocialInfo }>();
 
-  methods: {
-    togglePraiseStatus() {
-      this.checkLogin(() => {
-        let { id, like_num, is_like } = this.item
-        new SocialService().togglePraiseStatus(id)
-        this.item.like_num = is_like ? --like_num : ++like_num
-        this.item.is_like = !is_like
-      })
+const praiseStatus = ref(false);
+const praiseCount = ref(0);
+
+watchEffect(() => {
+  praiseStatus.value = !!props.item.is_like;
+  praiseCount.value = props.item.like_num;
+});
+
+const navToSocialDetail = () => {
+  router.push({
+    path: "/social/detail",
+    query: {
+      id: props.item.id,
     },
+  });
+};
 
-    navToSocialDetail() {
-      this.$router.push({ 
-        path: '/social/detail',
-        query: {
-          id: this.item.id
-        }
-      })
-    }
-  }
-}
+const toggleStatus = () => {
+  checkLogin(() => {
+    togglePraiseStatus(props.item.id);
+    praiseCount.value = praiseStatus.value
+      ? praiseCount.value > 0
+        ? --praiseCount.value
+        : 0
+      : ++praiseCount.value;
+    praiseStatus.value = !praiseStatus.value;
+  });
+};
 </script>
 
 <style lang="stylus" scoped>

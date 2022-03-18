@@ -1,5 +1,7 @@
 import { useRouter } from "vue-router";
 
+export const webviewUrl = process.env.VUE_APP_WEBVIEW_URL;
+
 export const useAdLink = () => {
   const router = useRouter();
   const adLink = (type: string, param: string) => {
@@ -39,4 +41,13 @@ export const useAdLink = () => {
   return adLink;
 };
 
-export const webviewUrl = process.env.VUE_APP_WEBVIEW_URL;
+export const useCheckLogin = () => {
+  const router = useRouter();
+  const checkLogin = (success: () => void, toLogin = true) => {
+    if (localStorage.getItem("token")) success();
+    else {
+      toLogin && router.push("/login");
+    }
+  };
+  return checkLogin;
+};

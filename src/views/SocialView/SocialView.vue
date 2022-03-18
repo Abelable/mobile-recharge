@@ -33,7 +33,7 @@
             :isInLogin="isInLogin"
             :noFocusLists="!followedList.length"
           />
-          <FallFlow v-else :lists="followedList" />
+          <FallFlow v-else :list="followedList" />
         </div>
         <div class="recommend-lists-wrap" v-show="activeMenuIdx === 1">
           <div
@@ -41,7 +41,7 @@
             v-for="(lists, index) in recommendLists"
             :key="index"
           >
-            <FallFlow v-show="activeTagIdx === index" :lists="lists" />
+            <FallFlow v-show="activeTagIdx === index" :list="lists" />
           </div>
         </div>
       </List>

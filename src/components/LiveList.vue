@@ -42,11 +42,11 @@
         </div>
         <div
           class="notice-btn"
-          :class="{ active: !isSubscribed }"
+          :class="{ active: !subscribedStatus }"
           v-if="liveStatus === 'notice'"
           @click.stop="toggleSubscribe"
         >
-          {{ !isSubscribed ? "点击预约" : "取消预约" }}
+          {{ !subscribedStatus ? "点击预约" : "取消预约" }}
         </div>
       </div>
     </div>
@@ -54,15 +54,19 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, computed, ref } from "vue";
+import { defineProps, computed, ref, watchEffect } from "vue";
 import dayjs from "dayjs";
 import { useRouter } from "vue-router";
 import { toggleSubscribeAnchor } from "@/api/common";
 import { LiveInfo } from "../views/HomeView/utils/api";
 
+const router = useRouter();
+
 const props = defineProps<{ item: LiveInfo }>();
 
-const router = useRouter();
+const subscribedStatus = ref(false);
+
+watchEffect(() => (subscribedStatus.value = props.item.previewDestine === "1"));
 
 const liveStatus = computed(() =>
   props.item.is_stopped === "1"
@@ -89,19 +93,12 @@ const formattedDistance = computed(() =>
     : `${Number(props.item.distance).toFixed(1)}km`
 );
 
-const optimisticSubscribeStatus = ref(false);
-const isSubscribed = computed(
-  () => props.item.previewDestine === "1" || optimisticSubscribeStatus.value
-);
-
 const navToLiveRoom = () =>
   router.push({ path: "/live", query: { id: props.item.id } });
 
 const toggleSubscribe = () => {
-  const { id, previewDestine } = props.item;
-  const status = previewDestine === "0" ? 1 : 0;
-  optimisticSubscribeStatus.value = previewDestine === "0";
-  toggleSubscribeAnchor(status, id);
+  toggleSubscribeAnchor(subscribedStatus.value ? 0 : 1, props.item.id);
+  subscribedStatus.value = !subscribedStatus.value;
 };
 </script>
 

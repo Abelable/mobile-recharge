@@ -4,7 +4,7 @@
       <li>
         <slot name="banner" />
       </li>
-      <li v-for="(item, index) in lists" :key="index">
+      <li v-for="(item, index) in list" :key="index">
         <SocialList v-if="index % 2 === 0" :item="item" />
       </li>
     </ul>
@@ -12,23 +12,19 @@
       <li>
         <slot name="tiles" />
       </li>
-      <li v-for="(item, index) in lists" :key="index">
+      <li v-for="(item, index) in list" :key="index">
         <SocialList v-if="index % 2 === 1" :item="item" />
       </li>
     </ul>
   </div>
 </template>
 
-<script>
-import SocialList from './SocialList/index'
+<script setup lang="ts">
+import SocialList from "./SocialList/index.vue";
+import { defineProps } from "vue";
+import { SocialInfo } from "../utils/api";
 
-export default {
-  components: { SocialList },
-
-  props: {
-    lists: Array
-  }
-}
+defineProps<{ list: SocialInfo[] }>();
 </script>
 
 <style lang="stylus" scoped>
