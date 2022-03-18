@@ -95,7 +95,7 @@
         <template v-else>
           <LocationIllus @setLocationInfo="setLocationInfo" />
           <SplitLine title="好物推荐" />
-          <RecommendGoodsList :list="recommendGoodsList" />
+          <GoodsList :list="recommendGoodsList" />
         </template>
       </div>
     </List>
@@ -107,7 +107,7 @@
 import { PullRefresh, List, Swipe, SwipeItem } from "vant";
 import EmptyIllus from "@/components/EmptyIllus.vue";
 import SplitLine from "@/components/SplitLine.vue";
-import RecommendGoodsList from "@/components/RecommendGoodsList.vue";
+import GoodsList from "@/components/GoodsList.vue";
 import FallFlow from "./components/FallFlow.vue";
 import LocationIllus from "./components/LocationIllus.vue";
 import AnchorList from "./components/AnchorList.vue";

@@ -45,14 +45,14 @@
 
     <SplitLine title="好物推荐" />
     <div class="recommend-goods-wrap">
-      <RecommendGoodsList :list="recommendGoodsList" />
+      <GoodsList :list="recommendGoodsList" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import SplitLine from "@/components/SplitLine.vue";
-import RecommendGoodsList from "@/components/RecommendGoodsList.vue";
+import GoodsList from "@/components/GoodsList.vue";
 import NewsList from "./components/NewsList.vue";
 
 import { ref, onMounted } from "vue";
