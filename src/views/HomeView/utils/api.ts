@@ -19,6 +19,7 @@ export const useLocationInfo = () => {
   };
   return { locationInfo, setLocationInfo };
 };
+
 export interface AnchorInfo {
   id: string;
   user_id: string;
