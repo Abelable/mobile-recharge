@@ -103,6 +103,13 @@
 </template>
 
 <script setup lang="ts">
+import { PullRefresh, List, Swipe, SwipeItem } from "vant";
+import EmptyIllus from "@/components/EmptyIllus.vue";
+import SplitLine from "@/components/SplitLine.vue";
+import FallFlow from "./components/FallFlow.vue";
+import LocationIllus from "./components/LocationIllus.vue";
+import AnchorList from "./components/AnchorList.vue";
+
 import { onMounted, ref, watchEffect, computed } from "vue";
 import { useRouter } from "vue-router";
 import _ from "lodash";
@@ -117,20 +124,23 @@ import {
   useRecommendGoodsList,
 } from "./utils/api";
 
-import { PullRefresh, List, Swipe, SwipeItem } from "vant";
-import EmptyIllus from "@/components/EmptyIllus.vue";
-import SplitLine from "@/components/SplitLine.vue";
-import FallFlow from "./components/FallFlow.vue";
-import LocationIllus from "./components/LocationIllus.vue";
-import AnchorList from "./components/AnchorList.vue";
-
 enum State {
   switch_menu,
   refresh,
   loadmore,
 }
 
-const router = useRouter();
+const isInLogin = !!localStorage.getItem("token");
+
+const loading = ref(false);
+const finished = ref(false);
+const refreshing = ref(false);
+const activeMenuIdx = ref(1);
+
+const emptyIllusVisible = computed(
+  () => !isInLogin || (isInLogin && !followedMediaList.value.length)
+);
+
 const adLink = useAdLink();
 const { locationInfo, setLocationInfo } = useLocationInfo();
 const { anchorList, setAnchorList } = useAnchorList();
@@ -161,17 +171,6 @@ const {
   setRecommendGoodsList,
   isLoading: loadingOfRecommendGoodsList,
 } = useRecommendGoodsList();
-
-const isInLogin = !!localStorage.getItem("token");
-const emptyIllusVisible = computed(
-  () => !isInLogin || (isInLogin && !followedMediaList.value.length)
-);
-
-const activeMenuIdx = ref(1);
-
-const loading = ref(false);
-const finished = ref(false);
-const refreshing = ref(false);
 
 watchEffect(() => {
   switch (activeMenuIdx.value) {
@@ -209,13 +208,13 @@ const switchMenu = (index: number) => {
   if (activeMenuIdx.value !== index) {
     document.documentElement.scrollTop = 0;
     activeMenuIdx.value = index;
-    setLists(State.switch_menu);
+    setList(State.switch_menu);
   }
 };
-const onLoadMore = _.debounce(() => setLists(State.loadmore), 200);
-const onRefresh = () => setLists(State.refresh);
+const onLoadMore = _.debounce(() => setList(State.loadmore), 200);
+const onRefresh = () => setList(State.refresh);
 
-const setLists = async (state: State) => {
+const setList = async (state: State) => {
   switch (state) {
     case State.switch_menu:
       switch (activeMenuIdx.value) {
@@ -282,6 +281,7 @@ const setLists = async (state: State) => {
   }
 };
 
+const router = useRouter();
 const signIn = () =>
   router.push({
     path: "/webview",
