@@ -1,5 +1,10 @@
 <template>
-  <router-view />
+  <router-view v-if="tabBarVisible" v-slot="{ Component }">
+    <keep-alive>
+      <component :is="Component" />
+    </keep-alive>
+  </router-view>
+  <router-view v-if="!tabBarVisible" />
   <TabBar v-show="tabBarVisible" />
 </template>
 
