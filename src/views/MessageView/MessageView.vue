@@ -45,15 +45,15 @@
 
     <SplitLine title="好物推荐" />
     <div class="recommend-goods-wrap">
-      <FallFlow :list="recommendGoodsList" />
+      <RecommendGoodsList :list="recommendGoodsList" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import SplitLine from "@/components/SplitLine.vue";
+import RecommendGoodsList from "@/components/RecommendGoodsList.vue";
 import NewsList from "./components/NewsList.vue";
-import FallFlow from "./components/FallFlow.vue";
 
 import { ref, onMounted } from "vue";
 import { useRecommendGoodsList } from "@/api/common";

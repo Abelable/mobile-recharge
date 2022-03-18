@@ -1,6 +1,5 @@
 import { ref } from "vue";
 import { http } from "@/utils/http";
-import { GoodsInfo } from "@/api/common";
 
 export interface LocationInfo {
   lng?: string;
@@ -74,7 +73,7 @@ export interface VideoInfo {
   distance: string;
 }
 
-export interface MediaInfo extends LiveInfo, VideoInfo, GoodsInfo {
+export interface MediaInfo extends LiveInfo, VideoInfo {
   media_type: number;
   last_id: number;
   live_offset: number;
