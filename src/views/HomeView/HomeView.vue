@@ -103,6 +103,7 @@
 </template>
 
 <script setup lang="ts">
+// 引入组件
 import { PullRefresh, List, Swipe, SwipeItem } from "vant";
 import EmptyIllus from "@/components/EmptyIllus.vue";
 import SplitLine from "@/components/SplitLine.vue";
@@ -110,6 +111,7 @@ import FallFlow from "./components/FallFlow.vue";
 import LocationIllus from "./components/LocationIllus.vue";
 import AnchorList from "./components/AnchorList.vue";
 
+// 引入方法
 import { onMounted, ref, watchEffect, computed } from "vue";
 import { useRouter } from "vue-router";
 import _ from "lodash";
@@ -124,23 +126,24 @@ import {
   useRecommendGoodsList,
 } from "./utils/api";
 
+// ts
 enum State {
   switch_menu,
   refresh,
   loadmore,
 }
 
+// 普通常量
 const isInLogin = !!localStorage.getItem("token");
 
+// 响应式数据
 const loading = ref(false);
 const finished = ref(false);
 const refreshing = ref(false);
 const activeMenuIdx = ref(1);
 
-const emptyIllusVisible = computed(
-  () => !isInLogin || (isInLogin && !followedMediaList.value.length)
-);
-
+// composition API
+const router = useRouter();
 const adLink = useAdLink();
 const { locationInfo, setLocationInfo } = useLocationInfo();
 const { anchorList, setAnchorList } = useAnchorList();
@@ -172,6 +175,12 @@ const {
   isLoading: loadingOfRecommendGoodsList,
 } = useRecommendGoodsList();
 
+// 计算属性
+const emptyIllusVisible = computed(
+  () => !isInLogin || (isInLogin && !followedMediaList.value.length)
+);
+
+// 数据监听
 watchEffect(() => {
   switch (activeMenuIdx.value) {
     case 0:
@@ -200,10 +209,12 @@ watchEffect(() => {
   }
 });
 
+// 生命周期
 onMounted(() => {
   setLocationInfo();
 });
 
+// 用户交互
 const switchMenu = (index: number) => {
   if (activeMenuIdx.value !== index) {
     document.documentElement.scrollTop = 0;
@@ -214,6 +225,7 @@ const switchMenu = (index: number) => {
 const onLoadMore = _.debounce(() => setList(State.loadmore), 200);
 const onRefresh = () => setList(State.refresh);
 
+// 具体方法
 const setList = async (state: State) => {
   switch (state) {
     case State.switch_menu:
@@ -281,7 +293,6 @@ const setList = async (state: State) => {
   }
 };
 
-const router = useRouter();
 const signIn = () =>
   router.push({
     path: "/webview",

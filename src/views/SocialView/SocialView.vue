@@ -25,12 +25,7 @@
       </ul>
     </div>
 
-    <PullRefresh
-      class="lists-wrap"
-      :class="{ 'is-iphoneX': isIphoneX }"
-      v-model="refreshing"
-      @refresh="onRefresh"
-    >
+    <PullRefresh class="lists-wrap" v-model="refreshing" @refresh="onRefresh">
       <List v-model="loading" :finished="finished" @load="onLoadMore">
         <div class="focus-lists" v-show="activeMenuIdx === 0">
           <EmptyIllus
@@ -280,8 +275,6 @@ const onRefresh = () => setList(State.refresh);
   .lists-wrap
     padding 1rem .24rem
     min-height 100vh
-    &.is-iphoneX
-      padding-bottom 1.24rem
     .recommend-lists-wrap
       padding-top .5rem
 </style>
