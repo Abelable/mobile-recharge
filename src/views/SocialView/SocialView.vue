@@ -75,7 +75,7 @@ const loading = ref(false);
 const finished = ref(false);
 const refreshing = ref(false);
 const activeMenuIdx = ref(1);
-const activeTagIdx = ref(1);
+const activeTagIdx = ref(0);
 const recommendLists = reactive<SocialInfo[][]>([]);
 
 const { tagList, setTagList } = useTagList();
