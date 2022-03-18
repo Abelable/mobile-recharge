@@ -2,7 +2,7 @@ import { createRouter, createWebHashHistory, RouteRecordRaw } from "vue-router";
 import HomeView from "@/views/HomeView/HomeView.vue";
 import SocialView from "@/views/SocialView/SocialView.vue";
 import MessageView from "@/views/MessageView/MessageView.vue";
-import MineView from "@/views/MineView.vue";
+import MineView from "@/views/MineView/MineView.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
