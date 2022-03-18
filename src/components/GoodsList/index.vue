@@ -1,5 +1,5 @@
 <template>
-  <div class="goods-list" @click="navToGoodsDetail">
+  <div class="goods-item" @click="navToGoodsDetail">
     <img style="width: 3.42rem; height: 3.42rem" :src="item?.goods_thumb" />
     <img
       class="spike-icon"
@@ -23,7 +23,7 @@
 <script setup lang="ts">
 import { defineProps, computed } from "vue";
 import { useRouter } from "vue-router";
-import { GoodsInfo } from "../../views/HomeView/utils/api";
+import { GoodsInfo } from "@/api/common";
 
 const props = defineProps<{ item: GoodsInfo }>();
 
@@ -44,7 +44,7 @@ const navToGoodsDetail = () =>
 </script>
 
 <style lang="stylus" scoped>
-.goods-list
+.goods-item
   position relative
   margin-bottom .18rem
   width 3.42rem

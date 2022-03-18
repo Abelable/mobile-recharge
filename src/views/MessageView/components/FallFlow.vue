@@ -5,7 +5,7 @@
         <slot name="banner" />
       </li>
       <li v-for="(item, index) in list" :key="index">
-        <MediaList v-if="index % 2 === 0" :item="item" />
+        <GoodsList v-if="index % 2 === 0" :item="item" />
       </li>
     </ul>
     <ul>
@@ -13,18 +13,18 @@
         <slot name="tiles" />
       </li>
       <li v-for="(item, index) in list" :key="index">
-        <MediaList v-if="index % 2 === 1" :item="item" />
+        <GoodsList v-if="index % 2 === 1" :item="item" />
       </li>
     </ul>
   </div>
 </template>
 
 <script setup lang="ts">
-import MediaList from "./MediaList.vue";
+import GoodsList from "@/components/GoodsList/index.vue";
 import { defineProps } from "vue";
-import { MediaInfo } from "../utils/api";
+import { GoodsInfo } from "@/api/common";
 
-defineProps<{ list: MediaInfo[] }>();
+defineProps<{ list: GoodsInfo[] }>();
 </script>
 
 <style lang="stylus" scoped>

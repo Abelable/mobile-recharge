@@ -116,6 +116,7 @@ import { onMounted, ref, watchEffect, computed } from "vue";
 import { useRouter } from "vue-router";
 import _ from "lodash";
 import { useAdLink, webviewUrl } from "@/utils/index";
+import { useRecommendGoodsList } from "@/api/common";
 import {
   useLocationInfo,
   useAdInfo,
@@ -123,7 +124,6 @@ import {
   useFollowedMediaList,
   useRecommendMediaList,
   useNearbyMediaList,
-  useRecommendGoodsList,
 } from "./utils/api";
 
 // ts

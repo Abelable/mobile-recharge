@@ -1,5 +1,6 @@
-import { http } from "@/utils/http";
 import { ref } from "vue";
+import { http } from "@/utils/http";
+import { GoodsInfo } from "@/api/common";
 
 export interface LocationInfo {
   lng?: string;
@@ -72,17 +73,7 @@ export interface VideoInfo {
   city: string;
   distance: string;
 }
-export interface GoodsInfo {
-  goods_id: string;
-  goods_name: string;
-  goods_thumb: string;
-  market_price: string;
-  shop_price: string;
-  sales_count: string;
-  sales_volume: number;
-  ghost_count: string;
-  is_seckill: boolean;
-}
+
 export interface MediaInfo extends LiveInfo, VideoInfo, GoodsInfo {
   media_type: number;
   last_id: number;
@@ -225,23 +216,6 @@ export const useNearbyMediaList = () => {
     isFinished,
     isRefreshing,
   };
-};
-
-export const useRecommendGoodsList = () => {
-  const recommendGoodsList = ref<MediaInfo[]>([]);
-  const isLoading = ref(false);
-
-  const setRecommendGoodsList = async () => {
-    isLoading.value = true;
-    const { recommend_goods_list }: { recommend_goods_list: MediaInfo[] } =
-      await http("?r=lv/live-front/recommend-goods", {
-        method: "POST",
-        data: { module: 1 },
-      });
-    isLoading.value = false;
-    recommendGoodsList.value = recommend_goods_list;
-  };
-  return { recommendGoodsList, setRecommendGoodsList, isLoading };
 };
 
 export interface AdInfo {
