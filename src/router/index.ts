@@ -36,6 +36,11 @@ const routes: Array<RouteRecordRaw> = [
     name: "login",
     component: () => import("@/pages/common/login/index.vue"),
   },
+  {
+    path: "/mine/order_list",
+    name: "order_list",
+    component: () => import("@/pages/mine/subpages/order-list/index.vue"),
+  },
 ];
 
 const router = createRouter({

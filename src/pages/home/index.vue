@@ -215,7 +215,7 @@ onMounted(() => {
   setLocationInfo();
 });
 
-// 用户交互
+// 方法
 const switchMenu = (index: number) => {
   if (activeMenuIdx.value !== index) {
     document.documentElement.scrollTop = 0;
@@ -226,7 +226,6 @@ const switchMenu = (index: number) => {
 const onLoadMore = _.debounce(() => setList(State.loadmore), 200);
 const onRefresh = () => setList(State.refresh);
 
-// 具体方法
 const setList = async (state: State) => {
   switch (state) {
     case State.switch_menu:

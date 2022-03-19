@@ -1,16 +1,11 @@
 <template>
-  <NavBar
-    :title="title || '有播'"
-    safe-area-inset-top
-    left-arrow
-    @click-left="onClickLeft"
-  />
+  <NavBar :title="title || '有播'" />
   <iframe style="width: 100vw; height: 100vh" :title="title" :src="url" />
 </template>
 
 <script setup lang="ts">
+import NavBar from "@/components/NavBar.vue";
 import { useRoute } from "vue-router";
-import { NavBar } from "vant";
 
 const route = useRoute();
 const title = route.query.title as string;
@@ -21,6 +16,4 @@ url =
         "token"
       )}`
     : url;
-
-const onClickLeft = () => history.back();
 </script>

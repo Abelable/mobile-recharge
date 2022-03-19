@@ -138,7 +138,7 @@ const formatMobile = (mobile: string) =>
 const login = () => router.push("/login");
 const navToOrderList = (status: number) => {
   if (status === 6) router.push("/mine/refund");
-  else router.push({ path: "/mine/order", query: { status } });
+  else router.push({ path: "/mine/order_list", query: { status } });
 };
 const navTo = (name: string) => router.push(`/mine/${name}`);
 </script>
