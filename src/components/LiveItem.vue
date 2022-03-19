@@ -58,7 +58,7 @@ import { defineProps, computed, toRef } from "vue";
 import dayjs from "dayjs";
 import { useRouter } from "vue-router";
 import { toggleSubscribeAnchor } from "@/api/common";
-import { LiveInfo } from "../views/HomeView/utils/api";
+import { LiveInfo } from "@/types";
 
 const router = useRouter();
 

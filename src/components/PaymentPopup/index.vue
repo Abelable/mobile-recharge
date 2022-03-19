@@ -5,14 +5,14 @@
       <ul class="options">
         <li class="option">
           <div class="type">
-            <img class="icon" src="./images/alipay.png" alt="">
+            <img class="icon" src="./images/alipay.png" alt="" />
             <span>支付宝</span>
           </div>
-          <Radio name="alipay" checked-color="#B87900"/>
+          <Radio name="alipay" checked-color="#B87900" />
         </li>
         <li class="option">
           <div class="type">
-            <img class="icon" src="./images/weixin.png" alt="">
+            <img class="icon" src="./images/weixin.png" alt="" />
             <span>微信支付</span>
           </div>
           <Radio name="wxpay" checked-color="#B87900" />
@@ -23,25 +23,18 @@
   </div>
 </template>
 
-<script>
-import { RadioGroup, Radio } from 'vant'
+<script setup lang="ts">
+import { RadioGroup, Radio } from "vant";
+import { ref, defineEmits } from "vue";
 
-export default {
-  components: { RadioGroup, Radio },
+const emit = defineEmits(["pay"]);
 
-  data() {
-    return {
-      type: 'alipay'
-    }
-  },
+const type = ref("alipay");
+const invalid = ref(false);
 
-  methods: {
-    pay() {
-      !this.invalid && this.$emit('pay', this.type)
-      this.invalid = true
-    }
-  }
-}
+const pay = () => {
+  !invalid.value && emit("pay", type.value);
+};
 </script>
 
 <style lang="stylus" scoped>

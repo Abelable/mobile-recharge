@@ -41,3 +41,16 @@ export const useRecommendGoodsList = () => {
   };
   return { recommendGoodsList, setRecommendGoodsList, isLoading };
 };
+
+export enum PayType {
+  alipay = "alipay",
+  wxpay = "wxpay",
+}
+export const getPaymentParams = async (
+  order_sn: string,
+  pay_code: PayType,
+  openid: string
+) =>
+  await http("/api/v4/payment/change_payment", {
+    data: { order_sn, pay_code, openid },
+  });

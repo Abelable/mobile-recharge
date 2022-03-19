@@ -48,9 +48,12 @@ import OrderItem from "./components/OrderItem.vue";
 
 import { ref, reactive, onMounted } from "vue";
 import { useRoute } from "vue-router";
+import { usePayment } from "@/utils/payment";
 import { OrderInfo, useOrderList } from "./utils/api";
+import { PayType } from "@/api/common";
 
 const route = useRoute();
+const { pay } = usePayment();
 const { orderList, setOrderList } = useOrderList();
 
 const menuList = [
@@ -61,13 +64,13 @@ const menuList = [
   { name: "已完成", status: 3 },
 ];
 const pageList = [0, 0, 0, 0, 0];
+let orderSn = "";
 
 const loading = ref(false);
 const finished = ref(false);
 const refreshing = ref(false);
 const selectedMenuIdx = ref(0);
 const orderLists = reactive<OrderInfo[][]>([[], [], [], [], []]);
-const orderSn = ref("");
 const paymentPopupVisible = ref(false);
 
 onMounted(() => {
@@ -83,16 +86,12 @@ const onLoadMore = () => setOrderLists();
 const onRefresh = () => setOrderLists(true);
 const showPaymentPopup = (sn: string) => {
   paymentPopupVisible.value = true;
-  orderSn.value = sn;
+  orderSn = sn;
 };
 
-const prepay = (type: number) => {
+const prepay = (type: PayType) => {
   paymentPopupVisible.value = false;
-  pay(type);
-};
-
-const pay = (type: number) => {
-  console.log(type);
+  pay(orderSn, type);
 };
 
 const setOrderLists = async (init = false) => {

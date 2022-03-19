@@ -1,5 +1,6 @@
 import { ref } from "vue";
 import { http } from "@/utils/http";
+import { LiveInfo, VideoInfo } from "@/types";
 
 export interface LocationInfo {
   lng?: string;
@@ -9,7 +10,8 @@ export interface LocationInfo {
 export const useLocationInfo = () => {
   const locationInfo = ref<LocationInfo | null>(null);
   const setLocationInfo = () => {
-    const geolocation = new window.qq.maps.Geolocation(
+    const Geolocation = (window as any).qq.maps.Geolocation;
+    const geolocation = new Geolocation(
       "BGCBZ-UFHWX-MBQ4O-TANN2-7WTZ3-CLBIP",
       "youbo"
     );
@@ -39,39 +41,6 @@ export const useAnchorList = () => {
   };
   return { anchorList, setAnchorList };
 };
-
-export interface LiveInfo {
-  id: string;
-  title: string;
-  cover: string;
-  url: string;
-  group_id: string;
-  direction: string;
-  is_stopped: string;
-  start_time: string;
-  position: string;
-  memberNum: string;
-  praise: string;
-  owner_id: string;
-  userName: string;
-  userPortrait: string;
-  previewDestine: string;
-  distance: string;
-}
-export interface VideoInfo {
-  id: string;
-  title: string;
-  cover_url: string;
-  play_url: string;
-  like_num: number;
-  view_num: number;
-  user_id: string;
-  nickname: string;
-  head_img: string;
-  province: string;
-  city: string;
-  distance: string;
-}
 
 export interface MediaInfo extends LiveInfo, VideoInfo {
   media_type: number;
