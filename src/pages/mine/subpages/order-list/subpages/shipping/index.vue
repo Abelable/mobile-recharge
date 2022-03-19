@@ -3,40 +3,36 @@
     <NavBar title="订单物流" />
 
     <div class="info-wrap">
-      <div>物流公司：{{shippingInfo.shipping_name}}</div>
-      <div>运单编号：{{shippingInfo.invoice_no}}</div>
+      <div>物流公司：{{ shippingInfo?.shipping_name }}</div>
+      <div>运单编号：{{ shippingInfo?.invoice_no }}</div>
     </div>
 
     <ul class="shipping-lists">
-      <li class="shipping-list" v-for="(item, index) in shippingInfo.list" :key="index">
+      <li
+        class="shipping-list"
+        v-for="(item, index) in shippingInfo?.list"
+        :key="index"
+      >
         <div class="line"></div>
         <div class="desc-wrap">
-          <div class="desc">{{item.context}}</div>
-          <div>{{item.time}}</div>
+          <div class="desc">{{ item.context }}</div>
+          <div>{{ item.time }}</div>
         </div>
       </li>
     </ul>
   </div>
 </template>
 
-<script>
-import NavBar from '@/components/NavBar'
-import OrderService from '../../utils/orderService'
+<script setup lang="ts">
+import NavBar from "@/components/NavBar.vue";
+import { onMounted } from "vue";
+import { useRoute } from "vue-router";
+import { useShippingInfo } from "../../utils/api";
 
-export default {
-  components: { NavBar },
+const route = useRoute();
+const { shippingInfo, setShippingInfo } = useShippingInfo();
 
-  data() {
-    return {
-      shippingInfo: {}
-    }
-  },
-
-  async created() {
-    const [shippingInfo] = await new OrderService().getShippingTracker(this.$route.query.id) || []
-    this.shippingInfo = shippingInfo
-  }
-}
+onMounted(() => setShippingInfo(route.query.id as string));
 </script>
 
 <style lang="stylus" scoped>

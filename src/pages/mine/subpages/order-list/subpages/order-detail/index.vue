@@ -121,16 +121,16 @@ onMounted(() => {
   setOrderInfo(orderId);
 });
 
-const navToShipping = () =>
-  router.push({
-    path: "/mine/order/shipping",
-    query: { id: orderId },
-  });
-
 const navToGoods = () =>
   router.push({
     path: "/mall/goods",
     query: { id: orderInfo.value?.goods[0].goods_id },
+  });
+
+const navToShipping = () =>
+  router.push({
+    path: "/mine/order/shipping",
+    query: { id: orderId },
   });
 
 const copyOrderSn = () => {

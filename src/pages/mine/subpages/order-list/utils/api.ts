@@ -37,3 +37,28 @@ export const useOrderInfo = () => {
   };
   return { orderInfo, setOrderInfo };
 };
+
+export interface ShippingRecord {
+  id: string;
+  context: string;
+  time: string;
+}
+export interface ShippingInfo {
+  id: string;
+  shipping_name: string;
+  invoice_no: string;
+  list: ShippingRecord[];
+}
+export const useShippingInfo = () => {
+  const shippingInfo = ref<ShippingInfo>();
+
+  const setShippingInfo = async (order_id: string) => {
+    const [info]: [ShippingInfo] = await http(
+      "/api/v4/order/tracker-order-id",
+      { data: { order_id } }
+    );
+    shippingInfo.value = info;
+  };
+
+  return { shippingInfo, setShippingInfo };
+};
