@@ -1,6 +1,6 @@
 <template>
   <NavBar :title="title || '有播'" />
-  <iframe style="width: 100vw; height: 100vh" :title="title" :src="url" />
+  <iframe class="content-wrap" style="" :title="title" :src="url" />
 </template>
 
 <script setup lang="ts">
@@ -17,3 +17,10 @@ url =
       )}`
     : url;
 </script>
+
+<style lang="stylus" scoped>
+.content-wrap
+  margin-top: .88rem
+  width: 100vw
+  height: calc(100vh - .88rem)
+</style>
