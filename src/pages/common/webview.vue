@@ -1,6 +1,6 @@
 <template>
   <NavBar :title="title || '有播'" />
-  <iframe class="content-wrap" style="" :title="title" :src="url" />
+  <iframe class="content-wrap" :title="title" :src="url" />
 </template>
 
 <script setup lang="ts">
