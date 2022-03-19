@@ -1,113 +1,140 @@
 <template>
   <div class="container">
     <NavBar title="订单详情" />
-    <div class="order-status">{{status}}</div>
+    <div class="order-status">{{ status }}</div>
 
     <div class="info-wrap">
       <div class="consignee-info">
         <div class="user-info">
-          <img style="width: .36rem; height: .36rem;" src="https://img.ubo.vip/mp/mine/order-detail/user-info-icon.png">
-          <div class="name">{{orderInfo.consignee}}</div>
-          <div>{{orderInfo.mobile}}</div>
+          <img
+            style="width: 0.36rem; height: 0.36rem"
+            src="https://img.ubo.vip/mp/mine/order-detail/user-info-icon.png"
+          />
+          <div class="name">{{ orderInfo?.consignee }}</div>
+          <div>{{ orderInfo?.mobile }}</div>
         </div>
-        <div class="address-info">{{orderInfo.address}}</div>
-        <div class="shipping-info" v-if="orderInfo.order_status_to === 2 && orderInfo.invoice_no" @click="navToShipping">
-          <img style="width: .38rem; height: .38rem;" src="https://img.ubo.vip/mp/mine/order-detail/shipping-icon.png">
-          <div class="shipping-tips">{{orderInfo.shipping_status}}</div>
-          <img style="width: .30rem; height: .30rem;" src="https://img.ubo.vip/mp/to-icon.png">
+        <div class="address-info">{{ orderInfo?.address }}</div>
+        <div
+          class="shipping-info"
+          v-if="orderInfo?.order_status_to === 2 && orderInfo?.invoice_no"
+          @click="navToShipping"
+        >
+          <img
+            style="width: 0.38rem; height: 0.38rem"
+            src="https://img.ubo.vip/mp/mine/order-detail/shipping-icon.png"
+          />
+          <div class="shipping-tips">{{ orderInfo?.shipping_status }}</div>
+          <img
+            style="width: 0.3rem; height: 0.3rem"
+            src="https://img.ubo.vip/mp/to-icon.png"
+          />
         </div>
       </div>
 
       <div class="order-info">
-        <GoodsList v-if="orderInfo.goods" :item="orderInfo.goods[0]" :isDetail="true" :orderStatus="orderInfo.order_status_to" :orderId="orderInfo.order_id" />
+        <GoodsList
+          v-if="orderInfo?.goods"
+          :item="orderInfo.goods[0]"
+          :isDetail="true"
+          :orderStatus="orderInfo.order_status_to"
+          :orderId="orderInfo.order_id"
+        />
         <ul class="price-lists">
           <li class="price-list">
             <span>商品合计</span>
-            <span>{{orderInfo.goods_amount_formated}}</span>
+            <span>{{ orderInfo?.goods_amount_formated }}</span>
           </li>
           <li class="price-list">
             <span>运费</span>
-            <span>+{{orderInfo.shipping_fee_formated}}</span>
+            <span>+{{ orderInfo?.shipping_fee_formated }}</span>
           </li>
           <li class="price-list">
             <span>余额</span>
-            <span>-{{orderInfo.surplus_formated}}</span>
+            <span>-{{ orderInfo?.surplus_formated }}</span>
           </li>
           <li class="price-list">
             <span>优惠券折扣</span>
-            <span>-{{orderInfo.bonus}}</span>
+            <span>-{{ orderInfo?.bonus }}</span>
           </li>
           <li class="price-list total">
-            <span class="total-tips">{{orderInfo.order_status_to == 1 || orderInfo.order_status_to == 3 ? '应付金额' : '实付金额'}}</span>
-            <span>{{orderInfo.order_status_to == 1 || orderInfo.order_status_to == 3 ? orderInfo.order_amount_formated : orderInfo.money_paid_formated}}</span>
+            <span class="total-tips">{{
+              orderInfo?.order_status_to == 1 || orderInfo?.order_status_to == 3
+                ? "应付金额"
+                : "实付金额"
+            }}</span>
+            <span>{{
+              orderInfo?.order_status_to == 1 || orderInfo?.order_status_to == 3
+                ? orderInfo.order_amount_formated
+                : orderInfo?.money_paid_formated
+            }}</span>
           </li>
         </ul>
       </div>
 
-      <div class="order-notes" v-if="orderInfo.postscript">
+      <div class="order-notes" v-if="orderInfo?.postscript">
         <h3 class="title">订单备注：</h3>
-        <p class="notes">{{orderInfo.postscript}}</p>
+        <p class="notes">{{ orderInfo.postscript }}</p>
       </div>
 
       <div class="other-info">
         <div class="info-list">
-          <span>订单编号：{{orderInfo.order_sn}}</span>
-          <span style="color: #B87900; font-size: .28rem;" @click="copyOrderSn">复制</span>
+          <span>订单编号：{{ orderInfo?.order_sn }}</span>
+          <span style="color: #b87900; font-size: 0.28rem" @click="copyOrderSn"
+            >复制</span
+          >
         </div>
-        <div class="info-list">创建时间：{{orderInfo.add_time}}</div>
-        <div class="info-list" v-if="orderInfo.pay_time">支付时间：{{orderInfo.pay_time}}</div>
+        <div class="info-list">创建时间：{{ orderInfo?.add_time }}</div>
+        <div class="info-list" v-if="orderInfo?.pay_time">
+          支付时间：{{ orderInfo.pay_time }}
+        </div>
       </div>
     </div>
   </div>
 </template>
 
-<script>
-import { Toast } from 'vant'
-import NavBar from '@/components/NavBar'
-import GoodsList from '../../components/GoodsList'
+<script setup lang="ts">
+import { Toast } from "vant";
+import NavBar from "@/components/NavBar.vue";
+import GoodsList from "../../components/GoodsItem.vue";
 
-import OrderService from '../../utils/orderService'
+import { onMounted, computed } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import { useOrderInfo } from "../../utils/api";
 
-export default {
-  components: { NavBar, GoodsList },
+const route = useRoute();
+const router = useRouter();
+const { orderInfo, setOrderInfo } = useOrderInfo();
 
-  data() {
-    return {
-      orderInfo: {}
-    }
-  },
+let orderId = "";
 
-  computed: {
-    status() {
-      const statusArr = this.orderInfo.shipping_id ? ['未付款', '待收货', '已取消', '售后中', '已完成', '待发货'] : ['未付款', '待发货', '已取消', '售后中', '已完成', '待发货'];
-      return statusArr[this.orderInfo.order_status_to - 1]
-    }
-  },
+const status = computed(() => {
+  const statusArr =
+    orderInfo.value && orderInfo.value.shipping_id
+      ? ["未付款", "待收货", "已取消", "售后中", "已完成", "待发货"]
+      : ["未付款", "待发货", "已取消", "售后中", "已完成", "待发货"];
+  return orderInfo.value && statusArr[orderInfo.value.order_status_to - 1];
+});
 
-  async created() {
-    this.orderId = this.$route.query.id
-    this.orderInfo = await new OrderService().getOrderDetail(this.orderId)
-  },
+onMounted(() => {
+  orderId = route.query.id as string;
+  setOrderInfo(orderId);
+});
 
-  methods: {
-    navToShipping() {
-      this.$router.push({
-        path: '/mine/order/shipping',
-        query: { id: this.orderId }
-      })
-    },
+const navToShipping = () =>
+  router.push({
+    path: "/mine/order/shipping",
+    query: { id: orderId },
+  });
 
-    copyOrderSn() {
-      const aux = document.createElement("input") 
-      aux.setAttribute("value", this.orderInfo.order_sn) 
-      document.body.appendChild(aux) 
-      aux.select()
-      document.execCommand("copy") 
-      document.body.removeChild(aux)
-      Toast.success('复制成功')
-    }
-  }
-}
+const copyOrderSn = () => {
+  const aux = document.createElement("input");
+  aux.setAttribute("value", orderInfo.value ? orderInfo.value.order_sn : "");
+  document.body.appendChild(aux);
+  aux.select();
+  document.execCommand("copy");
+  document.body.removeChild(aux);
+  Toast.success("复制成功");
+};
 </script>
 
 <style lang="stylus" scoped>

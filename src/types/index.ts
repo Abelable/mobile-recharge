@@ -30,3 +30,52 @@ export interface VideoInfo {
   city: string;
   distance: string;
 }
+
+export interface GoodsInfo {
+  goods_id: string;
+  goods_name: string;
+  goods_thumb: string;
+  market_price: string;
+  shop_price: string;
+  sales_count: string;
+  sales_volume: number;
+  ghost_count: string;
+  is_seckill: boolean;
+}
+export interface OrderGoodsInfo extends GoodsInfo {
+  goods_number: number;
+  goods_sn: string;
+  goods_price: string;
+  goods_cause: number;
+  goods_attr: string;
+  rec_id: number;
+  ret_id: number;
+}
+
+export interface OrderInfo {
+  order_id: number;
+  order_sn: string;
+  invoice_no: string;
+  order_status_to: number;
+  order_goods: OrderGoodsInfo[];
+  goods: OrderGoodsInfo[];
+  order_goods_num: number;
+  bonus: string;
+  shipping_id: number;
+  shipping_status: string;
+  goods_amount_formated: string;
+  shipping_fee_formated: string;
+  surplus_formated: string;
+  money_paid_formated: string;
+  order_amount_formated: string;
+  total_amount_formated: string;
+  shop_id: number;
+  shop_logo: string;
+  shop_name: string;
+  consignee: string;
+  mobile: string;
+  address: string;
+  add_time: string;
+  pay_time: string;
+  postscript: string;
+}

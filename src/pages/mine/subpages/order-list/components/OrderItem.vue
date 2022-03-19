@@ -71,12 +71,8 @@ import GoodsItem from "./GoodsItem.vue";
 
 import { defineProps, defineEmits, computed, toRefs } from "vue";
 import { useRouter } from "vue-router";
-import {
-  OrderInfo,
-  deleteOrder,
-  cancelOrder,
-  confirmOrder,
-} from "../utils/api";
+import { deleteOrder, cancelOrder, confirmOrder } from "../utils/api";
+import { OrderInfo } from "@/types";
 
 enum Method {
   delete,
@@ -99,7 +95,7 @@ const status = computed(() => {
 
 const navToOrderDetail = () =>
   router.push({
-    path: "/mine/order/order-detail",
+    path: "/mine/order_list/order_detail",
     query: {
       id: props.item.order_id,
     },

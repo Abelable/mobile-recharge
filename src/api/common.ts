@@ -1,3 +1,4 @@
+import { GoodsInfo } from "@/types";
 import { http } from "@/utils/http";
 import { ref } from "vue";
 
@@ -12,18 +13,6 @@ export const togglePraiseStatus = async (video_id: string) =>
     method: "POST",
     data: { video_id },
   });
-
-export interface GoodsInfo {
-  goods_id: string;
-  goods_name: string;
-  goods_thumb: string;
-  market_price: string;
-  shop_price: string;
-  sales_count: string;
-  sales_volume: number;
-  ghost_count: string;
-  is_seckill: boolean;
-}
 
 export const useRecommendGoodsList = () => {
   const recommendGoodsList = ref<GoodsInfo[]>([]);
