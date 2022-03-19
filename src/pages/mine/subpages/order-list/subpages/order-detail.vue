@@ -96,11 +96,11 @@
 <script setup lang="ts">
 import { Toast } from "vant";
 import NavBar from "@/components/NavBar.vue";
-import GoodsItem from "../../components/GoodsItem.vue";
+import GoodsItem from "../components/GoodsItem.vue";
 
 import { onMounted, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { useOrderInfo } from "../../utils/api";
+import { useOrderInfo } from "../utils/api";
 
 const route = useRoute();
 const router = useRouter();
@@ -129,7 +129,7 @@ const navToGoods = () =>
 
 const navToShipping = () =>
   router.push({
-    path: "/mine/order/shipping",
+    path: "/mine/order_list/shipping",
     query: { id: orderId },
   });
 

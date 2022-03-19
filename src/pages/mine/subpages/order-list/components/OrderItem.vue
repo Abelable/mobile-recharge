@@ -103,7 +103,7 @@ const navToOrderDetail = () =>
 
 const navToShipping = () =>
   router.push({
-    path: "/mine/order/shipping",
+    path: "/mine/order_list/shipping",
     query: {
       id: props.item.order_id,
     },

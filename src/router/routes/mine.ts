@@ -16,9 +16,13 @@ const mine: Array<RouteRecordRaw> = [
     path: "/mine/order_list/order_detail",
     name: "order_detail",
     component: () =>
-      import(
-        "@/pages/mine/subpages/order-list/subpages/order-detail/index.vue"
-      ),
+      import("@/pages/mine/subpages/order-list/subpages/order-detail.vue"),
+  },
+  {
+    path: "/mine/order_list/shipping",
+    name: "order_shipping",
+    component: () =>
+      import("@/pages/mine/subpages/order-list/subpages/shipping.vue"),
   },
 ];
 
