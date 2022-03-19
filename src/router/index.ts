@@ -1,40 +1,40 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from "vue-router";
-import HomeView from "@/views/HomeView/HomeView.vue";
-import SocialView from "@/views/SocialView/SocialView.vue";
-import MessageView from "@/views/MessageView/MessageView.vue";
-import MineView from "@/views/MineView/MineView.vue";
+import HomePage from "@/pages/home/index.vue";
+import SocialPage from "@/pages/social/index.vue";
+import MessagePage from "@/pages/message/index.vue";
+import MinePage from "@/pages/mine/index.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
     name: "home",
-    component: HomeView,
+    component: HomePage,
   },
   {
     path: "/social",
     name: "social",
-    component: SocialView,
+    component: SocialPage,
   },
   {
     path: "/message",
     name: "message",
-    component: MessageView,
+    component: MessagePage,
   },
   {
     path: "/mine",
     name: "mine",
-    component: MineView,
+    component: MinePage,
   },
   {
     path: "/webview",
     name: "webview",
     meta: { requireAuth: true },
-    component: () => import("@/views/WebView.vue"),
+    component: () => import("@/pages/common/webview.vue"),
   },
   {
     path: "/login",
     name: "login",
-    component: () => import("@/views/LoginView/LoginView.vue"),
+    component: () => import("@/pages/common/login/index.vue"),
   },
 ];
 
