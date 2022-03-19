@@ -54,7 +54,7 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, computed, toRef } from "vue";
+import { computed, toRef } from "vue";
 import dayjs from "dayjs";
 import { useRouter } from "vue-router";
 import { toggleSubscribeAnchor } from "@/api/common";

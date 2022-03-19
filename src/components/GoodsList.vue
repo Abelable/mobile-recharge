@@ -15,8 +15,7 @@
 
 <script setup lang="ts">
 import GoodsItem from "@/components/GoodsItem/index.vue";
-import { defineProps } from "vue";
-import { GoodsInfo } from "@/api/common";
+import { GoodsInfo } from "@/types";
 
 defineProps<{ list: GoodsInfo[] }>();
 </script>
