@@ -1,43 +1,41 @@
 <template>
-  <div>
-    <NavBar title="我的订单">
-      <template v-slot:custom-menu>
-        <ul class="menu-lists">
-          <li
-            class="menu-list"
-            :class="{ active: index === selectedMenuIdx }"
-            v-for="(item, index) in menuList"
-            :key="index"
-            @click="selectMenu(index)"
-          >
-            {{ item.name }}
-          </li>
-        </ul>
-      </template>
-    </NavBar>
-
-    <PullRefresh v-model="refreshing" @refresh="onRefresh">
-      <List
-        class="order-lists-wrap"
-        v-model="loading"
-        :finished="finished"
-        @load="onLoadMore"
-        finished-text="没有更多了"
-      >
-        <OrderItem
-          v-for="(item, index) in orderLists[selectedMenuIdx]"
+  <NavBar title="我的订单">
+    <template v-slot:custom-menu>
+      <ul class="menu-lists">
+        <li
+          class="menu-list"
+          :class="{ active: index === selectedMenuIdx }"
+          v-for="(item, index) in menuList"
           :key="index"
-          :item="item"
-          @refresh="onRefresh"
-          @pay="showPaymentPopup"
-        />
-      </List>
-    </PullRefresh>
+          @click="selectMenu(index)"
+        >
+          {{ item.name }}
+        </li>
+      </ul>
+    </template>
+  </NavBar>
 
-    <Popup v-model="paymentPopupVisible" position="bottom" closeable round>
-      <PaymentPopup @pay="prepay" />
-    </Popup>
-  </div>
+  <PullRefresh v-model="refreshing" @refresh="onRefresh">
+    <List
+      class="order-lists-wrap"
+      v-model="loading"
+      :finished="finished"
+      @load="onLoadMore"
+      finished-text="没有更多了"
+    >
+      <OrderItem
+        v-for="(item, index) in orderLists[selectedMenuIdx]"
+        :key="index"
+        :item="item"
+        @refresh="onRefresh"
+        @pay="showPaymentPopup"
+      />
+    </List>
+  </PullRefresh>
+
+  <Popup v-model="paymentPopupVisible" position="bottom" closeable round>
+    <PaymentPopup @pay="prepay" />
+  </Popup>
 </template>
 
 <script setup lang="ts">
@@ -48,6 +46,7 @@ import OrderItem from "./components/OrderItem.vue";
 
 import { ref, reactive, onMounted } from "vue";
 import { useRoute } from "vue-router";
+import _ from "lodash";
 import { usePayment } from "@/utils/payment";
 import { OrderInfo, useOrderList } from "./utils/api";
 import { PayType } from "@/api/common";
@@ -73,17 +72,22 @@ const selectedMenuIdx = ref(0);
 const orderLists = reactive<OrderInfo[][]>([[], [], [], [], []]);
 const paymentPopupVisible = ref(false);
 
-onMounted(() => {
-  const status = route.query.status || 0;
-  const curMenuIdx = menuList.findIndex((item) => item.status === status);
-  selectedMenuIdx.value = curMenuIdx;
-});
+onMounted(
+  () =>
+    (selectedMenuIdx.value = menuList.findIndex(
+      (item) => item.status === Number(route.query.status)
+    ))
+);
 
 const selectMenu = (index: number) => {
-  selectedMenuIdx.value = index;
+  if (index !== selectedMenuIdx.value) {
+    selectedMenuIdx.value = index;
+    if (!orderLists[selectedMenuIdx.value].length) setOrderLists(true);
+  }
 };
-const onLoadMore = () => setOrderLists();
+const onLoadMore = _.debounce(() => setOrderLists(), 200);
 const onRefresh = () => setOrderLists(true);
+
 const showPaymentPopup = (sn: string) => {
   paymentPopupVisible.value = true;
   orderSn = sn;
@@ -128,7 +132,7 @@ const setOrderLists = async (init = false) => {
       font-size .34rem
       font-weight 500
 .order-lists-wrap
-  padding .24rem
-  padding-top 1.92rem
+  margin-top 1.92rem
+  padding 0 .24rem
   min-height calc(100vh - 1.68rem)
 </style>
