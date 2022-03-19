@@ -1,12 +1,12 @@
 <template>
   <div class="fall-flow">
     <ul>
-      <li v-for="(item, index) in list" :key="index">
+      <li v-for="(item, index) in list" :key="item.goods_id">
         <GoodsItem v-if="index % 2 === 0" :item="item" />
       </li>
     </ul>
     <ul>
-      <li v-for="(item, index) in list" :key="index">
+      <li v-for="(item, index) in list" :key="item.goods_id">
         <GoodsItem v-if="index % 2 === 1" :item="item" />
       </li>
     </ul>

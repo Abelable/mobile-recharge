@@ -4,7 +4,7 @@
       <li>
         <slot name="banner" />
       </li>
-      <li v-for="(item, index) in list" :key="index">
+      <li v-for="(item, index) in list" :key="item.id">
         <MediaList v-if="index % 2 === 0" :item="item" />
       </li>
     </ul>
@@ -12,7 +12,7 @@
       <li>
         <slot name="tiles" />
       </li>
-      <li v-for="(item, index) in list" :key="index">
+      <li v-for="(item, index) in list" :key="item.id">
         <MediaList v-if="index % 2 === 1" :item="item" />
       </li>
     </ul>

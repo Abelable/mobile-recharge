@@ -8,18 +8,18 @@
       <div class="praise-btn" @click.stop="toggleStatus">
         <img
           class="praise-icon"
-          v-if="praiseStatus"
+          v-if="is_like"
           src="./images/praise-active.png"
         />
         <img class="praise-icon" v-else src="./images/praise.png" />
-        <div class="praise-count">{{ praiseCount || "点赞" }}</div>
+        <div class="praise-count">{{ like_num || "点赞" }}</div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { defineProps, ref, watchEffect } from "vue";
+import { defineProps, toRefs } from "vue";
 import { useRouter } from "vue-router";
 import { useCheckLogin } from "@/utils";
 import { togglePraiseStatus } from "@/api/common";
@@ -30,13 +30,7 @@ const checkLogin = useCheckLogin();
 
 const props = defineProps<{ item: SocialInfo }>();
 
-const praiseStatus = ref(false);
-const praiseCount = ref(0);
-
-watchEffect(() => {
-  praiseStatus.value = !!props.item.is_like;
-  praiseCount.value = props.item.like_num;
-});
+const { is_like, like_num } = toRefs(props.item);
 
 const navToSocialDetail = () => {
   router.push({
@@ -50,12 +44,12 @@ const navToSocialDetail = () => {
 const toggleStatus = () => {
   checkLogin(() => {
     togglePraiseStatus(props.item.id);
-    praiseCount.value = praiseStatus.value
-      ? praiseCount.value > 0
-        ? --praiseCount.value
+    like_num.value = is_like.value
+      ? like_num.value > 0
+        ? --like_num.value
         : 0
-      : ++praiseCount.value;
-    praiseStatus.value = !praiseStatus.value;
+      : ++like_num.value;
+    is_like.value = is_like.value ? 0 : 1;
   });
 };
 </script>
