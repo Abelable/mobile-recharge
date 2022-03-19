@@ -69,7 +69,7 @@
 <script setup lang="ts">
 import GoodsItem from "./GoodsItem.vue";
 
-import { defineProps, defineEmits, computed, toRefs } from "vue";
+import { computed, toRefs } from "vue";
 import { useRouter } from "vue-router";
 import { deleteOrder, cancelOrder, confirmOrder } from "../utils/api";
 import { OrderInfo } from "@/types";

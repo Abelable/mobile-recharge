@@ -21,9 +21,9 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, computed } from "vue";
+import { GoodsInfo } from "@/types";
+import { computed } from "vue";
 import { useRouter } from "vue-router";
-import { GoodsInfo } from "@/api/common";
 
 const props = defineProps<{ item: GoodsInfo }>();
 

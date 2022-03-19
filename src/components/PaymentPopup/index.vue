@@ -25,7 +25,7 @@
 
 <script setup lang="ts">
 import { RadioGroup, Radio } from "vant";
-import { ref, defineEmits } from "vue";
+import { ref } from "vue";
 
 const emit = defineEmits(["pay"]);
 

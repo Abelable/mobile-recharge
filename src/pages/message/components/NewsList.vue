@@ -15,7 +15,6 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps } from "vue";
 import { MessageInfo } from "../utils/api";
 
 defineProps<{ item: MessageInfo }>();

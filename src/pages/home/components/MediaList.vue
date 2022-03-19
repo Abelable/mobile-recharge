@@ -7,7 +7,6 @@
 import LiveItem from "@/components/LiveItem.vue";
 import VideoItem from "@/components/VideoItem.vue";
 
-import { defineProps } from "vue";
 import { MediaInfo } from "../utils/api";
 
 defineProps<{ item: MediaInfo }>();

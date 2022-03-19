@@ -34,7 +34,6 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps } from "vue";
 import { useRouter } from "vue-router";
 import { webviewUrl } from "@/utils/index";
 import { OrderGoodsInfo } from "@/types";

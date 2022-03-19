@@ -38,9 +38,9 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, computed } from "vue";
+import { VideoInfo } from "@/types";
+import { computed } from "vue";
 import { useRouter } from "vue-router";
-import { VideoInfo } from "../views/HomeView/utils/api";
 
 const props = defineProps<{ item: VideoInfo }>();
 

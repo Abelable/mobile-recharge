@@ -21,7 +21,6 @@
 
 <script setup lang="ts">
 import SocialList from "./SocialList/index.vue";
-import { defineProps } from "vue";
 import { SocialInfo } from "../utils/api";
 
 defineProps<{ list: SocialInfo[] }>();

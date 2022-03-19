@@ -21,7 +21,6 @@
 
 <script setup lang="ts">
 import MediaList from "./MediaList.vue";
-import { defineProps } from "vue";
 import { MediaInfo } from "../utils/api";
 
 defineProps<{ list: MediaInfo[] }>();

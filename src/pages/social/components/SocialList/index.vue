@@ -19,7 +19,7 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, toRefs } from "vue";
+import { toRefs } from "vue";
 import { useRouter } from "vue-router";
 import { useCheckLogin } from "@/utils";
 import { togglePraiseStatus } from "@/api/common";
