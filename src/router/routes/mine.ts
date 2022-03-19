@@ -24,6 +24,11 @@ const mine: Array<RouteRecordRaw> = [
     component: () =>
       import("@/pages/mine/subpages/order-list/subpages/shipping.vue"),
   },
+  {
+    path: "/mine/refund",
+    name: "order_refund",
+    component: () => import("@/pages/mine/subpages/refund/index.vue"),
+  },
 ];
 
 export default mine;
