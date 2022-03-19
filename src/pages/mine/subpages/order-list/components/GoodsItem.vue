@@ -1,5 +1,5 @@
 <template>
-  <div class="goods-item" @click="navToGoods">
+  <div class="goods-item">
     <img class="pic" :src="item.goods_thumb" />
     <div class="info">
       <div class="title">{{ item.goods_name }}</div>
@@ -37,7 +37,7 @@
 import { defineProps } from "vue";
 import { useRouter } from "vue-router";
 import { webviewUrl } from "@/utils/index";
-import { OrderGoodsInfo } from "../utils/api";
+import { OrderGoodsInfo } from "@/types";
 
 const router = useRouter();
 
@@ -48,11 +48,6 @@ const props = defineProps<{
   orderStatus?: number;
 }>();
 
-const navToGoods = () =>
-  router.push({
-    path: "/mall/goods",
-    query: { id: props.item.goods_id },
-  });
 const toRefund = () => {
   const { goods_cause, rec_id, ret_id } = props.item;
   const url =

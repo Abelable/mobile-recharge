@@ -32,8 +32,9 @@
       </div>
 
       <div class="order-info">
-        <GoodsList
+        <GoodsItem
           v-if="orderInfo?.goods"
+          @click="navToGoods"
           :item="orderInfo.goods[0]"
           :isDetail="true"
           :orderStatus="orderInfo.order_status_to"
@@ -95,7 +96,7 @@
 <script setup lang="ts">
 import { Toast } from "vant";
 import NavBar from "@/components/NavBar.vue";
-import GoodsList from "../../components/GoodsItem.vue";
+import GoodsItem from "../../components/GoodsItem.vue";
 
 import { onMounted, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
@@ -124,6 +125,12 @@ const navToShipping = () =>
   router.push({
     path: "/mine/order/shipping",
     query: { id: orderId },
+  });
+
+const navToGoods = () =>
+  router.push({
+    path: "/mall/goods",
+    query: { id: orderInfo.value?.goods[0].goods_id },
   });
 
 const copyOrderSn = () => {
