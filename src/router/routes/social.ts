@@ -5,6 +5,7 @@ const social: Array<RouteRecordRaw> = [
   {
     path: "/social",
     name: "social",
+    meta: { keepAlive: true },
     component: SocialPage,
   },
 ];

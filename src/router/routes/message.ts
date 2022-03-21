@@ -5,6 +5,7 @@ const message: Array<RouteRecordRaw> = [
   {
     path: "/message",
     name: "message",
+    meta: { keepAlive: true },
     component: MessagePage,
   },
 ];
