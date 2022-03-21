@@ -37,6 +37,13 @@ const mine: Array<RouteRecordRaw> = [
     meta: { keepAlive: true, requireAuth: true },
     component: () => import("@/pages/mine/subpages/address/index.vue"),
   },
+  {
+    path: "/mine/address/editor",
+    name: "address_editor",
+    meta: { keepAlive: true, requireAuth: true },
+    component: () =>
+      import("@/pages/mine/subpages/address/subpages/address-editor/index.vue"),
+  },
 ];
 
 export default mine;

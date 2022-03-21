@@ -40,6 +40,7 @@ export const getAddressInfo = async (
   address_id: string
 ): Promise<AddressDetailInfo> =>
   await http("/api/v4/address/show", {
+    method: "POST",
     data: { address_id },
   });
 

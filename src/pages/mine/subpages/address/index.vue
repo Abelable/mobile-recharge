@@ -32,67 +32,49 @@
   <div class="add-address-btn" @click="addAddress">添加地址</div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { SwipeCell } from "vant";
 import NavBar from "@/components/NavBar.vue";
 
-import { defineComponent, ref, onActivated } from "vue";
-import { useRouter } from "vue-router";
+import { ref, onActivated } from "vue";
+import { useRouter, useRoute } from "vue-router";
 import * as api from "./utils/api";
 
-export default defineComponent({
-  components: { SwipeCell, NavBar },
+const isSelectAddress = ref(false);
+const router = useRouter();
+const route = useRoute();
+const { addressList, setAddressList } = api.useAddressList();
 
-  setup() {
-    const isSelectAddress = ref(false);
-    const router = useRouter();
-    const { addressList, setAddressList } = api.useAddressList();
-
-    onActivated(() => setAddressList());
-
-    const chooseAddress = (id: number) => {
-      if (isSelectAddress.value) {
-        router.push({
-          path: "/mall/goods/create-order",
-          query: {
-            addressId: id,
-          },
-        });
-      } else {
-        router.push({
-          path: "/mine/address/editor",
-          query: { id },
-        });
-      }
-    };
-    const editAddress = (id: number) =>
-      router.push({
-        path: "/mine/address/editor",
-        query: { id },
-      });
-    const addAddress = () => router.push({ path: "/mine/address/editor" });
-    const deleteAddress = (id: number) => {
-      api.deleteAddress(id);
-      addressList.value = addressList.value.filter((item) => item.id != id);
-    };
-
-    return {
-      isSelectAddress,
-      addressList,
-      setAddressList,
-      chooseAddress,
-      editAddress,
-      addAddress,
-      deleteAddress,
-    };
-  },
-
-  beforeRouteEnter(to, from, next) {
-    next((vm: any) => {
-      if (from.path === "/mall/goods/create-order") vm.isSelectAddress = true;
-    });
-  },
+onActivated(() => {
+  isSelectAddress.value = route.query.isSelectAddress === "true";
+  setAddressList();
 });
+
+const chooseAddress = (id: number) => {
+  if (isSelectAddress.value) {
+    router.push({
+      path: "/mall/goods/create-order",
+      query: {
+        addressId: id,
+      },
+    });
+  } else {
+    router.push({
+      path: "/mine/address/editor",
+      query: { id },
+    });
+  }
+};
+const editAddress = (id: number) =>
+  router.push({
+    path: "/mine/address/editor",
+    query: { id },
+  });
+const addAddress = () => router.push({ path: "/mine/address/editor" });
+const deleteAddress = (id: number) => {
+  api.deleteAddress(id);
+  addressList.value = addressList.value.filter((item) => item.id != id);
+};
 </script>
 
 <style lang="stylus" scoped>
