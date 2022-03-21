@@ -16,7 +16,7 @@ import type {
 } from "./api";
 
 export const useLocationInfo = () => {
-  const locationInfo = ref<LocationInfo | null>(null);
+  const locationInfo = ref<LocationInfo>();
   const setLocationInfo = async () =>
     (locationInfo.value = await getLocationInfo());
   return { locationInfo, setLocationInfo };
