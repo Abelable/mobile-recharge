@@ -1,3 +1,4 @@
+: any: { [x: string]: string; }: number: any, reginInfo
 <template>
   <div>
     <Picker
@@ -15,7 +16,7 @@
 import { Picker } from "vant";
 
 import { reactive, ref, onMounted } from "vue";
-import { getRegion } from "../../../utils/api";
+import { getRegion, reginInfo } from "../../../utils/api";
 
 const props = withDefaults(defineProps<{ regionArr: string[] }>(), {
   regionArr: () => ["北京", "北京", "东城区"],
@@ -23,14 +24,14 @@ const props = withDefaults(defineProps<{ regionArr: string[] }>(), {
 
 const emit = defineEmits(["confirm", "cancel"]);
 
-let provinceArr = [];
+let provinceArr: reginInfo[] = [];
 let provinceIdx = 0;
-let cityArr = [];
+let cityArr: reginInfo[] = [];
 let cityIdx = 0;
-let areaArr = [];
+let areaArr: reginInfo[] = [];
 let areaIdx = 0;
 
-const columns = reactive([
+const columns = reactive<{ values: string[]; defaultIndex: number }[]>([
   {
     values: [],
     defaultIndex: 0,
@@ -74,7 +75,11 @@ const initRegion = async () => {
   loading.value = false;
 };
 
-const onChange = async (picker, value, index) => {
+const onChange = async (
+  picker: any,
+  value: { [x: string]: string },
+  index: number
+) => {
   if (index === 0) {
     provinceIdx = provinceArr.findIndex((item) => value[index] === item.name);
     cityArr = await getRegion(provinceArr[provinceIdx].id, 2);
@@ -104,7 +109,7 @@ const onChange = async (picker, value, index) => {
   }
 };
 
-const onConfirm = (value) => {
+const onConfirm = (value: any) => {
   const regionIdArr = [
     provinceArr[provinceIdx].id,
     cityArr[cityIdx].id,
