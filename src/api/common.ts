@@ -43,3 +43,8 @@ export const getPaymentParams = async (
   await http("/api/v4/payment/change_payment", {
     data: { order_sn, pay_code, openid },
   });
+
+export const uploadFile = async (content: string): Promise<string[]> =>
+  await http("/api/v4/user/material", {
+    data: { "file[content]": content },
+  });
