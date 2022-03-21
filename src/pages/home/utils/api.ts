@@ -77,37 +77,37 @@ export const getFollowedMediaList = async (
   return list || [];
 };
 
+interface RecommendData {
+  last_id: number;
+  live_offset: number;
+  search_type: number;
+  page: number;
+}
 export const getRecommendMediaList = async (
-  last_id: number,
-  live_offset: number,
-  search_type: number,
-  page: number
+  data: RecommendData
 ): Promise<MediaInfo[]> => {
   const { list = [] }: { list: MediaInfo[] } =
     (await http("?r=lv/live-front/waterfall", {
       method: "POST",
-      data: { last_id, live_offset, search_type, page },
+      data,
     })) || {};
   return list || [];
 };
 
-export const getNearbyMediaList = async ({
-  live_offset,
-  search_type,
-  page,
-  lng,
-  lat,
-}: {
+interface NearbyData {
   live_offset: number;
   search_type: number;
   page: number;
   lng: string;
   lat: string;
-}): Promise<MediaInfo[]> => {
+}
+export const getNearbyMediaList = async (
+  data: NearbyData
+): Promise<MediaInfo[]> => {
   const { list }: { list: MediaInfo[] } =
     (await http("?r=lv/live-front/nearby", {
       method: "POST",
-      data: { live_offset, search_type, page, lng, lat },
+      data,
     })) || {};
   return list || [];
 };

@@ -99,12 +99,12 @@ export const useRecommendMediaList = () => {
       isRefreshing.value = true;
     }
     ++page;
-    const list: MediaInfo[] = await getRecommendMediaList(
+    const list: MediaInfo[] = await getRecommendMediaList({
       last_id,
       live_offset,
       search_type,
-      page
-    );
+      page,
+    });
     isLoading.value = false;
     isRefreshing.value = false;
     if (list.length) {
