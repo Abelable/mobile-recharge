@@ -24,9 +24,9 @@ export const http = async (
 
   if (config.method.toUpperCase() === "GET") {
     if (endpoint.includes("?r=")) {
-      endpoint += `?${qs.stringify(data)}`;
-    } else {
       endpoint += `${qs.stringify(data)}`;
+    } else {
+      endpoint += `?${qs.stringify(data)}`;
     }
   } else {
     config.body = qs.stringify(data || {});
