@@ -78,7 +78,7 @@
       <div class="save-btn" @click="save">保存</div>
     </div>
 
-    <Popup v-model="regionPickerVisible" position="bottom" round>
+    <Popup v-model:show="regionPickerVisible" position="bottom" round>
       <RegionPicker
         :regionArr="regionArr"
         @confirm="onRegionPickerComfirm"
