@@ -71,8 +71,8 @@ export const getFollowedMediaList = async (
 ): Promise<MediaInfo[]> => {
   const { list = [] }: { list: MediaInfo[] } =
     (await http("?r=lv/live-front/follow-live", {
-      data: { page },
       method: "POST",
+      data: { page },
     })) || {};
   return list || [];
 };
@@ -85,8 +85,8 @@ export const getRecommendMediaList = async (
 ): Promise<MediaInfo[]> => {
   const { list = [] }: { list: MediaInfo[] } =
     (await http("?r=lv/live-front/waterfall", {
-      data: { last_id, live_offset, search_type, page },
       method: "POST",
+      data: { last_id, live_offset, search_type, page },
     })) || {};
   return list || [];
 };
@@ -106,8 +106,8 @@ export const getNearbyMediaList = async ({
 }): Promise<MediaInfo[]> => {
   const { list }: { list: MediaInfo[] } =
     (await http("?r=lv/live-front/nearby", {
-      data: { live_offset, search_type, page, lng, lat },
       method: "POST",
+      data: { live_offset, search_type, page, lng, lat },
     })) || {};
   return list || [];
 };
