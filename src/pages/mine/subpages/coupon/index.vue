@@ -63,9 +63,9 @@
           :key="index"
           :item="item"
         />
-        <view class="ineffective-title" v-if="ineffectiveCouponList.length"
-          >即将生效</view
-        >
+        <div class="ineffective-title" v-if="ineffectiveCouponList.length">
+          即将生效
+        </div>
         <CouponItem
           v-for="(item, index) in ineffectiveCouponList"
           :key="index"
