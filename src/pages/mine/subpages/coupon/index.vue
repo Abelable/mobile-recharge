@@ -103,6 +103,7 @@ import RulePop from "./components/RulePop.vue";
 import CouponItem from "./components/CouponItem.vue";
 
 import { ref } from "vue";
+import _ from "lodash";
 import * as api from "./utils/api";
 
 const { couponList, setCouponList } = api.useCouponList();
@@ -120,7 +121,7 @@ const overdueCouponList = ref<api.CouponInfo[]>([]);
 const couponCode = ref("");
 const rulePopupVisible = ref(false);
 
-const onLoadMore = () => setCouponLists();
+const onLoadMore = _.debounce(() => setCouponLists());
 const onRefresh = () => setCouponLists(true);
 const selectTap = (index: number) => {
   if (index !== currentType.value) {

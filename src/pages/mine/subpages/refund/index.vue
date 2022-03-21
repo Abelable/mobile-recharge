@@ -22,6 +22,8 @@
 import { PullRefresh, List } from "vant";
 import NavBar from "@/components/NavBar.vue";
 import OrderItem from "./components/OrderItem.vue";
+
+import _ from "lodash";
 import { useRefundOrderList } from "./utils/api";
 
 const {
@@ -32,7 +34,7 @@ const {
   isRefreshing,
 } = useRefundOrderList();
 
-const onLoadMore = () => setRefundOrderList();
+const onLoadMore = _.debounce(() => setRefundOrderList(), 200);
 const onRefresh = () => setRefundOrderList(true);
 </script>
 
