@@ -120,12 +120,13 @@ import _ from "lodash";
 import { useAdLink, webviewUrl } from "@/utils/index";
 import { useRecommendGoodsList } from "@/api/common";
 import {
+  useLocationInfo,
+  useAnchorList,
   useAdInfo,
   useFollowedMediaList,
   useRecommendMediaList,
   useNearbyMediaList,
-} from "./utils/api";
-import { useLocationInfo, useAnchorList } from "./utils";
+} from "./utils";
 
 // ts
 enum State {
