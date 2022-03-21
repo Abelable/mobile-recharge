@@ -3,24 +3,22 @@ import { http } from "@/utils/http";
 import { LiveInfo, VideoInfo } from "@/types";
 
 export interface LocationInfo {
-  lng?: string;
-  lat?: string;
+  lng: string;
+  lat: string;
 }
 
-export const useLocationInfo = () => {
-  const locationInfo = ref<LocationInfo | null>(null);
-  const setLocationInfo = () => {
-    const Geolocation = (window as any).qq.maps.Geolocation;
-    const geolocation = new Geolocation(
+export const getLocationInfo = async (): Promise<LocationInfo> =>
+  new Promise((resolve) => {
+    const geolocation = new window.qq.maps.Geolocation(
       "BGCBZ-UFHWX-MBQ4O-TANN2-7WTZ3-CLBIP",
       "youbo"
     );
     geolocation.getLocation(
-      (info: LocationInfo) => (locationInfo.value = info || null)
+      (info: ({ [key in string]: unknown } & LocationInfo) | undefined) => {
+        if (info) resolve({ lng: info.lng, lat: info.lng });
+      }
     );
-  };
-  return { locationInfo, setLocationInfo };
-};
+  });
 
 export interface AnchorInfo {
   id: string;
@@ -32,14 +30,12 @@ export interface AnchorInfo {
   sort: string;
 }
 
-export const useAnchorList = () => {
-  const anchorList = ref<AnchorInfo[]>([]);
-  const setAnchorList = async () => {
-    const { recommend_anchor_list }: { recommend_anchor_list: AnchorInfo[] } =
-      await http("?r=lv/live-front/recommend-anchor", { method: "POST" });
-    anchorList.value = recommend_anchor_list;
-  };
-  return { anchorList, setAnchorList };
+export const getAnchorList = async (): Promise<AnchorInfo[]> => {
+  const {
+    recommend_anchor_list = [],
+  }: { recommend_anchor_list: AnchorInfo[] } =
+    (await http("?r=lv/live-front/recommend-anchor", { method: "POST" })) || {};
+  return recommend_anchor_list || [];
 };
 
 export interface MediaInfo extends LiveInfo, VideoInfo {
@@ -136,6 +132,20 @@ export const useRecommendMediaList = () => {
     isFinished,
     isRefreshing,
   };
+};
+
+export const getRecommendMediaList = async (
+  last_id: number,
+  live_offset: number,
+  search_type: number,
+  page: number
+): Promise<MediaInfo[]> => {
+  const { list = [] }: { list: MediaInfo[] } =
+    (await http("?r=lv/live-front/waterfall", {
+      data: { last_id, live_offset, search_type, page },
+      method: "POST",
+    })) || {};
+  return list || [];
 };
 
 export const useNearbyMediaList = () => {

@@ -1,3 +1,13 @@
+declare global {
+  interface Window {
+    qq: any;
+    WeixinJSBridge: any;
+  }
+  interface Document {
+    attachEvent: any;
+  }
+}
+
 export interface LiveInfo {
   id: string;
   title: string;

@@ -20,22 +20,22 @@ export const usePayment = () => {
   };
 
   const wxpay = () => {
-    if (typeof (window as any).WeixinJSBridge == "undefined") {
+    if (typeof window.WeixinJSBridge == "undefined") {
       if (document.addEventListener)
         document.addEventListener(
           "WeixinJSBridgeReady",
           onWxBridgeReady,
           false
         );
-      else if ((document as any).attachEvent) {
-        (document as any).attachEvent("WeixinJSBridgeReady", onWxBridgeReady);
-        (document as any).attachEvent("onWeixinJSBridgeReady", onWxBridgeReady);
+      else if (document?.attachEvent) {
+        document.attachEvent("WeixinJSBridgeReady", onWxBridgeReady);
+        document.attachEvent("onWeixinJSBridgeReady", onWxBridgeReady);
       }
     } else onWxBridgeReady();
   };
 
   const onWxBridgeReady = () => {
-    (window as any).WeixinJSBridge.invoke(
+    window.WeixinJSBridge.invoke(
       "getBrandWCPayRequest",
       wxPayment.value,
       (res: any) => {

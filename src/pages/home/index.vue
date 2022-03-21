@@ -1,3 +1,4 @@
+import { useAnchorList } from "./utils";
 <template>
   <div class="navigation-bar">
     <div class="menu-tabs-wrap">
@@ -119,13 +120,12 @@ import _ from "lodash";
 import { useAdLink, webviewUrl } from "@/utils/index";
 import { useRecommendGoodsList } from "@/api/common";
 import {
-  useLocationInfo,
   useAdInfo,
-  useAnchorList,
   useFollowedMediaList,
   useRecommendMediaList,
   useNearbyMediaList,
 } from "./utils/api";
+import { useLocationInfo, useAnchorList } from "./utils";
 
 // ts
 enum State {
