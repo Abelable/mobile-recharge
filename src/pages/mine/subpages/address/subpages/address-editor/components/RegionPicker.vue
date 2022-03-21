@@ -75,11 +75,7 @@ const initRegion = async () => {
   loading.value = false;
 };
 
-const onChange = async (
-  picker: any,
-  value: { [x: string]: string },
-  index: number
-) => {
+const onChange = async (value: { [x: string]: string }, index: number) => {
   if (index === 0) {
     provinceIdx = provinceArr.findIndex((item) => value[index] === item.name);
     cityArr = await getRegion(provinceArr[provinceIdx].id, 2);
