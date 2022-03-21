@@ -1,4 +1,3 @@
-import { ref } from "vue";
 import { http } from "@/utils/http";
 import { LiveInfo, VideoInfo } from "@/types";
 
