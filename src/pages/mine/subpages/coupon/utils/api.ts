@@ -30,7 +30,7 @@ export const getCouponList = async (
     (await http("/api/v4/coupon/bonus", {
       data: { type, page, size },
     })) || {};
-  return bonus;
+  return bonus || [];
 };
 
 export const exchangeCoupon = async (coupon: string) =>

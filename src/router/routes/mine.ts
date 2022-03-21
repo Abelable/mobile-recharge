@@ -44,6 +44,11 @@ const mine: Array<RouteRecordRaw> = [
     component: () =>
       import("@/pages/mine/subpages/address/subpages/address-editor/index.vue"),
   },
+  {
+    name: "coupon",
+    path: "/mine/coupon",
+    component: () => import("@/pages/mine/subpages/coupon/index.vue"),
+  },
 ];
 
 export default mine;
