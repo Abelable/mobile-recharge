@@ -31,7 +31,7 @@ export const getLiveTrackList = async (
   page: number,
   page_size: number
 ): Promise<LiveItemInfo[]> =>
-  await http("?=lv/live/my-browse-history", {
+  await http("?r=lv/live/my-browse-history", {
     method: "POST",
     data: { page, page_size },
   });

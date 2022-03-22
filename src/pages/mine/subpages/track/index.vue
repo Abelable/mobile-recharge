@@ -1,5 +1,3 @@
-async , LiveItemInfoimport { GoodsItemInfo } from "./utils/api"; import { ref }
-from "vue";
 <template>
   <NavBar title="足迹">
     <template v-slot:custom-menu>
@@ -39,7 +37,7 @@ from "vue";
         </TrackItem>
       </div>
       <div class="live-track-lists" v-show="selectedIdx === 1">
-        <TrackList
+        <TrackItem
           v-for="(item, index) in liveTrackList"
           :key="index"
           :time="item.date"
@@ -49,7 +47,7 @@ from "vue";
             :key="liveIndex"
             :item="liveItem"
           />
-        </TrackList>
+        </TrackItem>
       </div>
     </List>
   </PullRefresh>
@@ -63,6 +61,7 @@ import GoodsItem from "./components/GoodsItem.vue";
 import LiveItem from "./components/LiveItem.vue";
 
 import { ref } from "vue";
+import _ from "lodash";
 import {
   GoodsItemInfo,
   LiveItemInfo,
@@ -83,7 +82,7 @@ const selectedIdx = ref(0);
 const goodsTrackList = ref<GoodsTrackList>([]);
 const liveTrackList = ref<LiveTrackList>([]);
 
-const onLoadMore = () => setList();
+const onLoadMore = _.debounce(() => setList(), 200);
 const onRefresh = () => setList(true);
 const selectMenu = (index: number) => {
   if (index !== selectedIdx.value) {
