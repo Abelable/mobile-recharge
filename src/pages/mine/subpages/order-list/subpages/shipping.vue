@@ -27,7 +27,7 @@
 import NavBar from "@/components/NavBar.vue";
 import { onMounted } from "vue";
 import { useRoute } from "vue-router";
-import { useShippingInfo } from "../utils/api";
+import { useShippingInfo } from "../utils";
 
 const route = useRoute();
 const { shippingInfo, setShippingInfo } = useShippingInfo();

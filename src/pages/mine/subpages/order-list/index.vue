@@ -48,7 +48,7 @@ import { ref, reactive, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import _ from "lodash";
 import { usePayment } from "@/utils/payment";
-import { useOrderList } from "./utils/api";
+import { useOrderList } from "./utils";
 import { PayType } from "@/api/common";
 import { OrderInfo } from "@/types";
 

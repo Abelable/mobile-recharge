@@ -100,7 +100,7 @@ import GoodsItem from "../components/GoodsItem.vue";
 
 import { onMounted, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { useOrderInfo } from "../utils/api";
+import { useOrderInfo } from "../utils";
 
 const route = useRoute();
 const router = useRouter();
