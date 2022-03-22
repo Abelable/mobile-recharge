@@ -1,4 +1,3 @@
-import { ref } from "vue";
 import { http } from "@/utils/http";
 
 export interface AddressInfo {
@@ -15,16 +14,8 @@ export interface AddressInfo {
   is_checked: 0 | 1;
 }
 
-export const useAddressList = () => {
-  const addressList = ref<AddressInfo[]>([]);
-
-  const setAddressList = async () => {
-    const list = await http("/api/v4/address");
-    addressList.value = list;
-  };
-
-  return { addressList, setAddressList };
-};
+export const getAddressList = async (): Promise<AddressInfo[]> =>
+  await http("/api/v4/address");
 
 export const deleteAddress = async (address_id: number | string) =>
   await http("/api/v4/address/destroy", {

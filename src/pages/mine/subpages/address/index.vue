@@ -39,11 +39,12 @@ import NavBar from "@/components/NavBar.vue";
 import { ref, onActivated } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import * as api from "./utils/api";
+import { useAddressList } from "./utils";
 
 const isSelectAddress = ref(false);
 const router = useRouter();
 const route = useRoute();
-const { addressList, setAddressList } = api.useAddressList();
+const { addressList, setAddressList } = useAddressList();
 
 onActivated(() => {
   isSelectAddress.value = route.query.isSelectAddress === "true";
