@@ -152,30 +152,20 @@ const { anchorList, setAnchorList } = useAnchorList();
 const {
   followedMediaList,
   setFollowedMediaList,
-  isLoading: loadingOfFollowedMediaList,
   isFinished: finishedOfFollowedMediaList,
-  isRefreshing: refreshingOfFollowedMediaList,
 } = useFollowedMediaList();
 const { adIllus, banner, tilesLists, setAdInfo } = useAdInfo();
 const {
   recommendMediaList,
   setRecommendMediaList,
-  isLoading: loadingOfRecommendMediaList,
   isFinished: finishedOfRecommendMediaList,
-  isRefreshing: refreshingOfRecommendMediaList,
 } = useRecommendMediaList();
 const {
   nearbyMediaList,
   setNearbyMediaList,
-  isLoading: loadingOfNearbyMediaList,
   isFinished: finishedOfNearbyMediaList,
-  isRefreshing: refreshingOfNearbyMediaList,
 } = useNearbyMediaList();
-const {
-  recommendGoodsList,
-  setRecommendGoodsList,
-  isLoading: loadingOfRecommendGoodsList,
-} = useRecommendGoodsList();
+const { recommendGoodsList, setRecommendGoodsList } = useRecommendGoodsList();
 
 // 计算属性
 const emptyIllusVisible = computed(
@@ -186,26 +176,18 @@ const emptyIllusVisible = computed(
 watchEffect(() => {
   switch (activeMenuIdx.value) {
     case 0:
-      loading.value = loadingOfFollowedMediaList.value;
       finished.value = finishedOfFollowedMediaList.value;
-      refreshing.value = refreshingOfFollowedMediaList.value;
       break;
 
     case 1:
-      loading.value = loadingOfRecommendMediaList.value;
       finished.value = finishedOfRecommendMediaList.value;
-      refreshing.value = refreshingOfRecommendMediaList.value;
       break;
 
     case 2:
       if (locationInfo.value) {
-        loading.value = loadingOfNearbyMediaList.value;
         finished.value = finishedOfNearbyMediaList.value;
-        refreshing.value = refreshingOfNearbyMediaList.value;
       } else {
-        loading.value = loadingOfRecommendGoodsList.value;
-        finished.value = loadingOfRecommendGoodsList.value;
-        refreshing.value = loadingOfRecommendGoodsList.value;
+        refreshing.value = loading.value;
       }
       break;
   }
@@ -233,20 +215,21 @@ const setList = async (state: State) => {
       switch (activeMenuIdx.value) {
         case 0:
           if (!anchorList.value.length) setAnchorList();
-          if (!followedMediaList.value.length) setFollowedMediaList(true);
+          if (!followedMediaList.value.length) await setFollowedMediaList(true);
           break;
 
         case 1:
           if (!banner.value.length) await setAdInfo();
-          if (!recommendMediaList.value.length) setRecommendMediaList(true);
+          if (!recommendMediaList.value.length)
+            await setRecommendMediaList(true);
           break;
 
         case 2:
           if (locationInfo.value) {
             if (!nearbyMediaList.value.length)
-              setNearbyMediaList(locationInfo.value, true);
+              await setNearbyMediaList(locationInfo.value, true);
           } else {
-            if (!recommendGoodsList.value.length) setRecommendGoodsList();
+            if (!recommendGoodsList.value.length) await setRecommendGoodsList();
           }
           break;
       }
@@ -256,17 +239,18 @@ const setList = async (state: State) => {
       switch (activeMenuIdx.value) {
         case 0:
           setAnchorList();
-          setFollowedMediaList(true);
+          await setFollowedMediaList(true);
           break;
 
         case 1:
           await setAdInfo();
-          setRecommendMediaList(true);
+          await setRecommendMediaList(true);
           break;
 
         case 2:
-          if (locationInfo.value) setNearbyMediaList(locationInfo.value, true);
-          else setRecommendGoodsList();
+          if (locationInfo.value)
+            await setNearbyMediaList(locationInfo.value, true);
+          else await setRecommendGoodsList();
           break;
       }
       break;
@@ -274,17 +258,17 @@ const setList = async (state: State) => {
     case State.loadmore:
       switch (activeMenuIdx.value) {
         case 0:
-          setFollowedMediaList();
+          await setFollowedMediaList();
           break;
 
         case 1:
           if (!banner.value.length) await setAdInfo();
-          setRecommendMediaList(!recommendMediaList.value.length);
+          await setRecommendMediaList(!recommendMediaList.value.length);
           break;
 
         case 2:
           if (locationInfo.value)
-            setNearbyMediaList(
+            await setNearbyMediaList(
               locationInfo.value,
               !nearbyMediaList.value.length
             );
@@ -292,6 +276,8 @@ const setList = async (state: State) => {
       }
       break;
   }
+  loading.value = false;
+  refreshing.value = false;
 };
 
 const signIn = () =>

@@ -46,22 +46,16 @@ export const useAdInfo = () => {
 
 export const useFollowedMediaList = () => {
   const followedMediaList = ref<MediaInfo[]>([]);
-  const isLoading = ref(false);
   const isFinished = ref(false);
-  const isRefreshing = ref(false);
 
   let page = 0;
   const setFollowedMediaList = async (init = false) => {
-    isLoading.value = true;
     if (init) {
       page = 0;
       isFinished.value = false;
-      isRefreshing.value = true;
     }
     ++page;
     const list: MediaInfo[] = await getFollowedMediaList(page);
-    isLoading.value = false;
-    isRefreshing.value = false;
     if (list.length) {
       followedMediaList.value = init
         ? list
@@ -72,31 +66,25 @@ export const useFollowedMediaList = () => {
   return {
     followedMediaList,
     setFollowedMediaList,
-    isLoading,
     isFinished,
-    isRefreshing,
   };
 };
 
 export const useRecommendMediaList = () => {
   const recommendMediaList = ref<MediaInfo[]>([]);
-  const isLoading = ref(false);
   const isFinished = ref(false);
-  const isRefreshing = ref(false);
 
   let page = 0;
   let last_id = 0;
   let live_offset = 0;
   let search_type = 1;
   const setRecommendMediaList = async (init = false) => {
-    isLoading.value = true;
     if (init) {
       page = 0;
       last_id = 0;
       live_offset = 0;
       search_type = 1;
       isFinished.value = false;
-      isRefreshing.value = true;
     }
     ++page;
     const list: MediaInfo[] = await getRecommendMediaList({
@@ -105,8 +93,6 @@ export const useRecommendMediaList = () => {
       search_type,
       page,
     });
-    isLoading.value = false;
-    isRefreshing.value = false;
     if (list.length) {
       recommendMediaList.value = init
         ? list
@@ -121,17 +107,13 @@ export const useRecommendMediaList = () => {
   return {
     recommendMediaList,
     setRecommendMediaList,
-    isLoading,
     isFinished,
-    isRefreshing,
   };
 };
 
 export const useNearbyMediaList = () => {
   const nearbyMediaList = ref<MediaInfo[]>([]);
-  const isLoading = ref(false);
   const isFinished = ref(false);
-  const isRefreshing = ref(false);
 
   let page = 0;
   let live_offset = 0;
@@ -140,13 +122,11 @@ export const useNearbyMediaList = () => {
     locationInfo: LocationInfo,
     init = false
   ) => {
-    isLoading.value = true;
     if (init) {
       page = 0;
       live_offset = 0;
       search_type = 1;
       isFinished.value = false;
-      isRefreshing.value = true;
     }
     ++page;
     const list: MediaInfo[] = await getNearbyMediaList({
@@ -155,8 +135,6 @@ export const useNearbyMediaList = () => {
       page,
       ...locationInfo,
     });
-    isLoading.value = false;
-    isRefreshing.value = false;
     if (list.length) {
       nearbyMediaList.value = init ? list : [...nearbyMediaList.value, ...list];
       const lastItem = list[list.length - 1];
@@ -168,8 +146,6 @@ export const useNearbyMediaList = () => {
   return {
     nearbyMediaList,
     setNearbyMediaList,
-    isLoading,
     isFinished,
-    isRefreshing,
   };
 };

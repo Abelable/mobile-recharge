@@ -16,19 +16,16 @@ export const togglePraiseStatus = async (video_id: string) =>
 
 export const useRecommendGoodsList = () => {
   const recommendGoodsList = ref<GoodsInfo[]>([]);
-  const isLoading = ref(false);
 
   const setRecommendGoodsList = async (module = 1) => {
-    isLoading.value = true;
     const { recommend_goods_list }: { recommend_goods_list: GoodsInfo[] } =
       await http("?r=lv/live-front/recommend-goods", {
         method: "POST",
         data: { module },
       });
-    isLoading.value = false;
     recommendGoodsList.value = recommend_goods_list;
   };
-  return { recommendGoodsList, setRecommendGoodsList, isLoading };
+  return { recommendGoodsList, setRecommendGoodsList };
 };
 
 export enum PayType {
