@@ -49,6 +49,12 @@ const mine: Array<RouteRecordRaw> = [
     meta: { requireAuth: true },
     component: () => import("@/pages/mine/subpages/coupon/index.vue"),
   },
+  {
+    name: "track",
+    path: "/mine/track",
+    meta: { requireAuth: true },
+    component: () => import("@/pages/mine/subpages/track/index.vue"),
+  },
 ];
 
 export default mine;
