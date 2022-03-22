@@ -11,7 +11,7 @@ const mine: Array<RouteRecordRaw> = [
   {
     path: "/mine/order_list",
     name: "order_list",
-    meta: { keepAlive: true, requireAuth: true },
+    meta: { requireAuth: true },
     component: () => import("@/pages/mine/subpages/order-list/index.vue"),
   },
   {
@@ -40,13 +40,13 @@ const mine: Array<RouteRecordRaw> = [
   {
     path: "/mine/address/editor",
     name: "address_editor",
-    meta: { keepAlive: true, requireAuth: true },
     component: () =>
       import("@/pages/mine/subpages/address/subpages/address-editor/index.vue"),
   },
   {
     name: "coupon",
     path: "/mine/coupon",
+    meta: { requireAuth: true },
     component: () => import("@/pages/mine/subpages/coupon/index.vue"),
   },
 ];
