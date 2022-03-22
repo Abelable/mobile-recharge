@@ -100,7 +100,7 @@ import { Image } from "vant";
 
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
-import { useMineInfo } from "./utils/api";
+import { useMineInfo } from "./utils";
 
 const router = useRouter();
 const { userInfo, fansCount, followCount, orderCountList, setMineInfo } =
