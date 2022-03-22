@@ -24,7 +24,7 @@ import NavBar from "@/components/NavBar.vue";
 import OrderItem from "./components/OrderItem.vue";
 
 import _ from "lodash";
-import { useRefundOrderList } from "./utils/api";
+import { useRefundOrderList } from "./utils";
 
 const {
   refundOrderList,
