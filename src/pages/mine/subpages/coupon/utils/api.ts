@@ -1,5 +1,4 @@
 import { http } from "@/utils/http";
-import { ref } from "vue";
 
 export interface CouponInfo {
   bonus_id: number;
@@ -13,13 +12,6 @@ export interface CouponInfo {
   is_belong: string;
   ad_link: string;
 }
-
-export const useCouponList = () => {
-  const couponList = ref<CouponInfo[]>([]);
-  const setCouponList = async (type: number, page: number, size = 10) =>
-    (couponList.value = await getCouponList(type, page, size));
-  return { couponList, setCouponList };
-};
 
 export const getCouponList = async (
   type: number,

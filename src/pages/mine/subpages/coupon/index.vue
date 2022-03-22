@@ -29,7 +29,7 @@
         placeholder="请输入优惠券兑换码"
         v-model="couponCode"
       />
-      <div class="exchange-btn" @click="exchangeCoupon">兑换</div>
+      <div class="exchange-btn" @click="exchange">兑换</div>
     </SwipeItem>
     <SwipeItem class="show-btn-wrap">
       <div class="show-btn" @click="showExchange">
@@ -104,9 +104,10 @@ import CouponItem from "./components/CouponItem.vue";
 
 import { ref } from "vue";
 import _ from "lodash";
-import * as api from "./utils/api";
+import { CouponInfo, exchangeCoupon } from "./utils/api";
+import { useCouponList } from "./utils";
 
-const { couponList, setCouponList } = api.useCouponList();
+const { couponList, setCouponList } = useCouponList();
 
 let pageArr = [0, 0];
 
@@ -115,9 +116,9 @@ const loading = ref(false);
 const finished = ref(false);
 const refreshing = ref(false);
 const currentType = ref(0);
-const effectiveCouponList = ref<api.CouponInfo[]>([]);
-const ineffectiveCouponList = ref<api.CouponInfo[]>([]);
-const overdueCouponList = ref<api.CouponInfo[]>([]);
+const effectiveCouponList = ref<CouponInfo[]>([]);
+const ineffectiveCouponList = ref<CouponInfo[]>([]);
+const overdueCouponList = ref<CouponInfo[]>([]);
 const couponCode = ref("");
 const rulePopupVisible = ref(false);
 
@@ -145,8 +146,8 @@ const setCouponLists = async (init = false) => {
   refreshing.value = false;
   if (couponList.value.length) {
     if (currentType.value === 0) {
-      let effectiveList: api.CouponInfo[] = [];
-      let ineffectiveList: api.CouponInfo[] = [];
+      let effectiveList: CouponInfo[] = [];
+      let ineffectiveList: CouponInfo[] = [];
       couponList.value.forEach((item) => {
         if (item.use_start_date_time) ineffectiveList.push(item);
         else effectiveList.push(item);
@@ -164,12 +165,12 @@ const setCouponLists = async (init = false) => {
   } else finished.value = true;
 };
 
-const exchangeCoupon = () => {
+const exchange = () => {
   if (!couponCode.value) {
     Toast("请输入兑换码");
     return;
   }
-  api.exchangeCoupon(couponCode.value);
+  exchangeCoupon(couponCode.value);
 };
 
 const showExchange = () => swipeRef.value?.prev();
