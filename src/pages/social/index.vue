@@ -56,12 +56,8 @@ import FallFlow from "./components/FallFlow.vue";
 
 import { ref, reactive, watchEffect } from "vue";
 import _ from "lodash";
-import {
-  SocialInfo,
-  useTagList,
-  useFollowedList,
-  useRecommendList,
-} from "./utils/api";
+import { SocialInfo } from "./utils/api";
+import { useFollowedList, useTagList, useRecommendList } from "./utils";
 
 enum State {
   select_menu,

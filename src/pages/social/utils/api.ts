@@ -6,16 +6,13 @@ export interface TagInfo {
   tag_name: string;
 }
 
-export const useTagList = () => {
-  const tagList = ref<TagInfo[]>([]);
-  const setTagList = async () => {
-    const { tag_list = [] }: { tag_list: TagInfo[] } = await http(
-      "?r=lv/short-video/tag-list",
-      { method: "POST", data: { type: 2 } }
-    );
-    tagList.value = [{ id: "-1", tag_name: "全部" }, ...tag_list];
-  };
-  return { tagList, setTagList };
+export const getTagList = async () => {
+  const { tag_list = [] }: { tag_list: TagInfo[] } =
+    (await http("?r=lv/short-video/tag-list", {
+      method: "POST",
+      data: { type: 2 },
+    })) || {};
+  return [{ id: "-1", tag_name: "全部" }, ...(tag_list || [])];
 };
 
 export interface SocialInfo {
@@ -38,82 +35,26 @@ export interface SocialInfo {
   is_like: 0 | 1;
 }
 
-export const useFollowedList = () => {
-  const followedList = ref<SocialInfo[]>([]);
-  const isLoading = ref(false);
-  const isFinished = ref(false);
-  const isRefreshing = ref(false);
-
-  let page = 0;
-  const setFollowedList = async (init = false) => {
-    if (init) {
-      page = 0;
-      isFinished.value = false;
-      isRefreshing.value = true;
-    }
-    isLoading.value = true;
-    const { list = [] }: { list: SocialInfo[] } = await http(
-      "?r=lv/short-video/short-follow",
-      {
-        data: { page: ++page },
-        method: "POST",
-      }
-    );
-    isLoading.value = false;
-    isRefreshing.value = false;
-    if (list.length) {
-      followedList.value = init ? list : [...followedList.value, ...list];
-    } else isFinished.value = true;
-  };
-
-  return {
-    followedList,
-    setFollowedList,
-    isLoading,
-    isFinished,
-    isRefreshing,
-  };
+export const getFollowedList = async (page: number): Promise<SocialInfo[]> => {
+  const { list = [] }: { list: SocialInfo[] } =
+    (await http("?r=lv/short-video/short-follow", {
+      data: { page },
+      method: "POST",
+    })) || {};
+  return list || [];
 };
 
-export const useRecommendList = () => {
-  const recommendList = ref<SocialInfo[]>([]);
-  const isLoading = ref(false);
-  const isFinished = ref(false);
-  const isRefreshing = ref(false);
-
-  let rand = -1;
-  let page = 0;
-  const setRecommendList = async (tag_id: string, init = false) => {
-    isLoading.value = true;
-    if (init) {
-      rand = -1;
-      page = 0;
-      isFinished.value = false;
-      isRefreshing.value = true;
+export const getRecommendList = async (
+  tag_id: string,
+  rand: number,
+  page: number
+): Promise<{ list: SocialInfo[]; rand: number }> => {
+  const res: { list: SocialInfo[]; rand: number } = await http(
+    "?r=lv/short-video/short-recommend",
+    {
+      data: { tag_id, rand, page },
+      method: "POST",
     }
-    ++page;
-    const res: { list: SocialInfo[]; rand: number } = await http(
-      "?r=lv/short-video/short-recommend",
-      {
-        data: { tag_id, rand, page },
-        method: "POST",
-      }
-    );
-    isLoading.value = false;
-    isRefreshing.value = false;
-    if (res.list.length) {
-      recommendList.value = init
-        ? res.list
-        : [...recommendList.value, ...res.list];
-      rand = res.rand;
-    } else isFinished.value = true;
-  };
-
-  return {
-    recommendList,
-    setRecommendList,
-    isLoading,
-    isFinished,
-    isRefreshing,
-  };
+  );
+  return res;
 };
