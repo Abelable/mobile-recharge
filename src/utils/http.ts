@@ -36,6 +36,7 @@ export const http = async (
     .fetch(`${endpoint.includes("?r=") ? liveUrl : mmsUrl}${endpoint}`, config)
     .then(async (response) => {
       const data = await response.json();
-      return response.ok && data.code === 1001 ? data.data : {};
+      if (response.ok && data.code === 1001) return data.data;
+      else return Promise.reject(data);
     });
 };
