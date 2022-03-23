@@ -42,6 +42,7 @@ export interface VideoInfo {
 }
 
 export interface GoodsInfo {
+  id: number;
   goods_id: string;
   goods_name: string;
   goods_thumb: string;
@@ -51,6 +52,7 @@ export interface GoodsInfo {
   sales_volume: number;
   ghost_count: string;
   is_seckill: boolean;
+  split_money: string;
 }
 export interface OrderGoodsInfo extends GoodsInfo {
   goods_number: number;
