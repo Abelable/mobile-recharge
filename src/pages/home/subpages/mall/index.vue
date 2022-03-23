@@ -229,7 +229,7 @@ const navBack = () => router.go(-1);
 const navToSearch = () => router.push("/search");
 const navToCart = () => router.push("/mall/cart");
 const navToCate = (id: number, name: string) =>
-  router.push({ path: "/cate", query: { id, name } });
+  router.push({ path: "/mall/category_detail", query: { id, name } });
 </script>
 
 <style lang="stylus" scoped>

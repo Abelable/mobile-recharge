@@ -13,6 +13,12 @@ const home: Array<RouteRecordRaw> = [
     name: "mall",
     component: () => import("@/pages/home/subpages/mall/index.vue"),
   },
+  {
+    path: "/mall/category_detail",
+    name: "category_detail",
+    component: () =>
+      import("@/pages/home/subpages/mall/subpages/category-detail.vue"),
+  },
 ];
 
 export default home;

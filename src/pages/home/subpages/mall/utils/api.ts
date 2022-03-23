@@ -47,6 +47,12 @@ export const getSecgoodsList = async (
     data: { cate_id, size, page },
   });
 
-// async getCategoryGoodsList(cat_id, page = 1, page_size = 5) {
-//   return await this.post({ url: `${this.mmsUrl}/api/v4/category/goods_list`, data: { cat_id, page, page_size } })
-// }
+export const getCategoryGoodsList = async (
+  cat_id: number,
+  page: number,
+  page_size: number
+): Promise<GoodsInfo[]> =>
+  await http("/api/v4/category/goods_list", {
+    method: "POST",
+    data: { cat_id, page, page_size },
+  });
