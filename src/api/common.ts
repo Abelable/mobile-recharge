@@ -45,3 +45,34 @@ export const uploadFile = async (content: string): Promise<string[]> =>
   await http("/api/v4/user/material", {
     data: { "file[content]": content },
   });
+
+export const addCart = async (
+  goods_id: string,
+  spec: (number | undefined)[],
+  num: number,
+  rec_type = 10
+) =>
+  await http("/api/v4/cart/add", {
+    method: "POST",
+    data: { goods_id, spec, num, rec_type },
+  });
+
+export const updateCartGoods = async ({
+  rec_id,
+  num,
+  spec,
+}: {
+  rec_id: number;
+  num: number;
+  spec: string;
+}) =>
+  await http("/api/v4/cart/update", {
+    method: "POST",
+    data: { rec_id, num, spec },
+  });
+
+export const getGoodsInfo = async (goods_id: string) =>
+  await http("?r=tbb/goods-detail/index", {
+    method: " POST",
+    data: { goods_id },
+  });

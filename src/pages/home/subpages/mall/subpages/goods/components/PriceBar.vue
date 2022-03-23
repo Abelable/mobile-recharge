@@ -4,34 +4,43 @@
       <div class="price">
         <div class="shop-price">
           <span>￥</span>
-          <span style="font-size: .48rem;">{{shopPrice.split('.')[0]}}</span>
-          <span>.{{shopPrice.split('.')[1]}}</span>
+          <span style="font-size: 0.48rem">{{ shopPrice.split(".")[0] }}</span>
+          <span>.{{ shopPrice.split(".")[1] }}</span>
         </div>
-        <div class="market-price">原价￥{{marketPrice}}</div>
+        <div class="market-price">原价￥{{ marketPrice }}</div>
       </div>
-      <div class="sale-amount">{{salesVolume}}件已买</div>
+      <div class="sale-amount">{{ salesVolume }}件已买</div>
     </div>
 
     <div class="sale-bar" v-if="goodsType === 1">
       <div class="price">
         <div class="shop-price">
           <span>￥</span>
-          <span style="font-size: .48rem;">{{shopPrice.split('.')[0]}}</span>
-          <span>.{{shopPrice.split('.')[1]}}</span>
+          <span style="font-size: 0.48rem">{{ shopPrice.split(".")[0] }}</span>
+          <span>.{{ shopPrice.split(".")[1] }}</span>
         </div>
-        <div class="market-price">原价￥{{marketPrice}}</div>
+        <div class="market-price">原价￥{{ marketPrice }}</div>
       </div>
       <div class="sale-slogan">
-        <img style="width: 2.04rem; height: .50rem;" src="https://img.ubo.vip/mp/selection/goods-detail/sale-slogan.png">
+        <img
+          style="width: 2.04rem; height: 0.5rem"
+          src="https://img.ubo.vip/mp/selection/goods-detail/sale-slogan.png"
+        />
       </div>
       <div class="count-down-wrap">
         <div class="progress-bar">
-          <span>仅剩{{progressInfo.stock}}件</span>
+          <span>仅剩{{ progressInfo.stock }}件</span>
           <div class="inner" :style="{ width: progressInfo.percent / 100 }">
-            <p class="tip">仅剩{{progressInfo.stock}}件</p>
+            <p class="tip">仅剩{{ progressInfo.stock }}件</p>
           </div>
         </div>
-        <div class="count-down">{{`${this.unStart ? '距开始剩' : '距结束剩'} ${hours}:${minutes}:${seconds}`}}</div>
+        <div class="count-down">
+          {{
+            `${
+              unStart ? "距开始剩" : "距结束剩"
+            } ${hours}:${minutes}:${seconds}`
+          }}
+        </div>
       </div>
     </div>
 
@@ -39,20 +48,20 @@
       <div class="price">
         <div class="shop-price">
           <span>￥</span>
-          <span style="font-size: .48rem;">{{shopPrice.split('.')[0]}}</span>
-          <span>.{{shopPrice.split('.')[1]}}</span>
+          <span style="font-size: 0.48rem">{{ shopPrice.split(".")[0] }}</span>
+          <span>.{{ shopPrice.split(".")[1] }}</span>
         </div>
-        <div class="market-price">原价￥{{marketPrice}}</div>
+        <div class="market-price">原价￥{{ marketPrice }}</div>
       </div>
-      <div class="stock">库存{{stock}}件</div>
+      <div class="stock">库存{{ stock }}件</div>
       <div class="count-down-wrap">
         <div class="tips">距离结束仅剩</div>
         <div class="count-down">
-          <div class="time">{{hours}}</div>
-          <div style="margin: 0 .05rem;">:</div>
-          <div class="time">{{minutes}}</div>
-          <div style="margin: 0 .05rem;">:</div>
-          <div class="time">{{seconds}}</div>
+          <div class="time">{{ hours }}</div>
+          <div style="margin: 0 0.05rem">:</div>
+          <div class="time">{{ minutes }}</div>
+          <div style="margin: 0 0.05rem">:</div>
+          <div class="time">{{ seconds }}</div>
         </div>
       </div>
     </div>
@@ -62,60 +71,59 @@
         <div class="pirce">
           <span class="shop-pirce">
             <span>￥</span>
-            <span style="font-size: .56rem;">{{shopPrice.split('.')[0]}}</span>
-            <span>.{{shopPrice.split('.')[1]}}</span>
+            <span style="font-size: 0.56rem">{{
+              shopPrice.split(".")[0]
+            }}</span>
+            <span>.{{ shopPrice.split(".")[1] }}</span>
           </span>
-          <span class="market-pirce">￥{{marketPrice}}</span>
+          <span class="market-pirce">￥{{ marketPrice }}</span>
         </div>
-        <div class="desc">{{unStart ? '限量：' + spikeInfo.sec_limit || pikeInfo.all_order_number + '件' : '已抢购：' + spikeInfo.all_order_number + '件'}}</div>
+        <div class="desc">
+          {{
+            unStart
+              ? "限量：" + spikeInfo.sec_limit ||
+                spikeInfo.all_order_number + "件"
+              : "已抢购：" + spikeInfo.all_order_number + "件"
+          }}
+        </div>
       </div>
       <div class="count-down-wrap">
         <div class="tips">限时秒杀</div>
         <div class="count-down">
           <span v-if="unStart">即将开抢 </span>
-          <span>{{hours}}:{{minutes}}:{{seconds}}</span>
+          <span>{{ hours }}:{{ minutes }}:{{ seconds }}</span>
         </div>
       </div>
     </div>
   </div>
 </template>
 
-<script>
-export default {
-  props: {
-    goodsType: Number,
-    shopPrice: String,
-    marketPrice: String,
-    salesVolume: Number,
-    stock: Number,
-    progressInfo: Object,
-    spikeInfo: Object,
-    countDown: Number,
-    unStart: Boolean
-  },
+<script setup lang="ts">
+import { computed } from "vue";
+import { formatNumber } from "@/utils";
 
-  computed: {
-    hours() {
-      const date = new Date(this.countDown * 1000)
-      return this.formatNumber(date.getHours())
-    },
-    minutes() {
-      const date = new Date(this.countDown * 1000)
-      return this.formatNumber(date.getMinutes())
-    },
-    seconds() {
-      const date = new Date(this.countDown * 1000)
-      return this.formatNumber(date.getSeconds())
-    }
-  },
-
-  methods: {
-    formatNumber(n) {
-      n = n.toString()
-      return n[1] ? n : '0' + n
-    }
-  }
+interface PropsType {
+  goodsType: number;
+  shopPrice: string;
+  marketPrice: string;
+  salesVolume: number;
+  stock: number;
+  progressInfo: { stock: number; percent: number };
+  spikeInfo: { sec_limit: number; all_order_number: number };
+  countDown: number;
+  unStart: boolean;
 }
+const props = defineProps<PropsType>();
+
+const hours = computed(() =>
+  formatNumber(new Date(props.countDown * 1000).getHours())
+);
+const minutes = computed(() =>
+  formatNumber(new Date(props.countDown * 1000).getMinutes())
+);
+const seconds = computed(() =>
+  formatNumber(new Date(props.countDown * 1000).getSeconds())
+);
 </script>
 
 <style lang="stylus" scoped>

@@ -51,3 +51,5 @@ export const useCheckLogin = () => {
   };
   return checkLogin;
 };
+
+export const formatNumber = (n: number) => (n.toString()[1] ? n : "0" + n);

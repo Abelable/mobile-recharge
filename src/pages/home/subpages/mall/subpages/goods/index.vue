@@ -1,84 +1,165 @@
 <template>
   <div class="container" :class="{ 'is-iphoneX': isIphoneX }">
-    <div class="nav-bar" :class="{show: showNavBar}">
+    <div class="nav-bar" :class="{ show: showNavBar }">
       <div class="back-icon" @click="navBack" />
       <div class="menu-wrap" :class="{ show: showNavBar }">
-        <div class="menu-tips" :class="{ show: !detailActive }" @click="scrollToTop">宝贝</div>
+        <div
+          class="menu-tips"
+          :class="{ show: !detailActive }"
+          @click="scrollToTop"
+        >
+          宝贝
+        </div>
         <div class="menu-split">|</div>
-        <div class="menu-tips" :class="{ show: detailActive }" @click="scrollToDetail">详情</div>
+        <div
+          class="menu-tips"
+          :class="{ show: detailActive }"
+          @click="scrollToDetail"
+        >
+          详情
+        </div>
       </div>
     </div>
 
     <div class="banner-wrap">
-      <Swipe class="banner" :autoplay="5000" :show-indicators="false" @change="bannerChange">
-        <SwipeItem v-for="(item, index) in banner" :key="index" @click="previewBanner(index)">
-          <img class="banner-img" :src="item">
+      <Swipe
+        class="banner"
+        :autoplay="5000"
+        :show-indicators="false"
+        @change="bannerChange"
+      >
+        <SwipeItem
+          v-for="(item, index) in banner"
+          :key="index"
+          @click="previewBanner(index)"
+        >
+          <img class="banner-img" :src="item" />
         </SwipeItem>
       </Swipe>
       <div class="dots">
-        <span class="cur-idx">{{curBannerIdx + 1}}</span>
-        <span> / {{banner.length}}</span>
+        <span class="cur-idx">{{ curBannerIdx + 1 }}</span>
+        <span> / {{ banner.length }}</span>
       </div>
       <div class="hot-tips" v-if="goodsType === 1">
-        <img class="icon" src="https://img.ubo.vip/mp/selection/goods-detail/hot-icon.png" >
-        <div>热销{{salesVolume}}件</div>
+        <img
+          class="icon"
+          src="https://img.ubo.vip/mp/selection/goods-detail/hot-icon.png"
+        />
+        <div>热销{{ salesVolume }}件</div>
       </div>
-      <div class="sale-amount-tips" v-if="goodsType === 2">销售{{salesVolume}}件</div>
+      <div class="sale-amount-tips" v-if="goodsType === 2">
+        销售{{ salesVolume }}件
+      </div>
     </div>
 
     <div class="goods-info-wrap">
-      <PriceBar :goodsType="goodsType" :shopPrice="shopPrice" :marketPrice="marketPrice" :salesVolume="salesVolume" :stock="stock" :progressInfo="progressInfo" :spikeInfo="spikeInfo" :countDown="countDown" :unStart="unStart" />
+      <PriceBar
+        :goodsType="goodsType"
+        :shopPrice="shopPrice"
+        :marketPrice="marketPrice"
+        :salesVolume="salesVolume"
+        :stock="stock"
+        :progressInfo="progressInfo"
+        :spikeInfo="spikeInfo"
+        :countDown="countDown"
+        :unStart="unStart"
+      />
       <div class="bonus-bar" v-if="bonusLists.length">
         <ul class="bonus-tips">
-          <li class="tip" v-for="(item, index) in bonusLists.slice(0, 3)" :key="index">{{item.limit_tip}}</li>
+          <li
+            class="tip"
+            v-for="(item, index) in bonusLists.slice(0, 3)"
+            :key="index"
+          >
+            {{ item.limit_tip }}
+          </li>
         </ul>
         <div class="btn" @click="showBonusModal">
           <p>领券</p>
-          <img style="width: .32rem; height: .32rem;" src="./images/right-arrow.png" alt="">
+          <img
+            style="width: 0.32rem; height: 0.32rem"
+            src="./images/right-arrow.png"
+            alt=""
+          />
         </div>
       </div>
       <div class="goods-name">
-        <span v-if="goodsType === 1 || goodsType === 1" class="goods-tag" :class="{ sale: goodsType === 1 }">{{goodsType === 1 ? '特卖' : '品质优选'}}</span>
-        <span>{{goodsName}}</span>
+        <span
+          v-if="goodsType === 1 || goodsType === 1"
+          class="goods-tag"
+          :class="{ sale: goodsType === 1 }"
+          >{{ goodsType === 1 ? "特卖" : "品质优选" }}</span
+        >
+        <span>{{ goodsName }}</span>
       </div>
-      <div class="labels" v-if="keywords">{{keywords}}</div>
+      <div class="labels" v-if="keywords">{{ keywords }}</div>
       <div class="alarm-tip" v-if="noticeInfo">
-        <img class="icon" src="https://img.ubo.vip/mp/selection/goods-detail/alarm-icon.png">
-        <span>{{noticeInfo}}</span>
+        <img
+          class="icon"
+          src="https://img.ubo.vip/mp/selection/goods-detail/alarm-icon.png"
+        />
+        <span>{{ noticeInfo }}</span>
       </div>
     </div>
 
     <div class="promotion-bar" v-if="promotionLists.length">
       <ul class="tips">
-        <li class="tip" v-for="(item, index) in promotionLists.slice(0, 2)" :key="index">
-          <div class="icon">{{item.tip_content}}</div>
-          <div>{{item.show_name}}</div>
+        <li
+          class="tip"
+          v-for="(item, index) in promotionLists.slice(0, 2)"
+          :key="index"
+        >
+          <div class="icon">{{ item.tip_content }}</div>
+          <div>{{ item.show_name }}</div>
         </li>
       </ul>
-      <img style="width: .44rem; height: .44rem;" @click="showPromotionModal" src="https://img.ubo.vip/mp/selection/goods-detail/i-menu-list/more-icon.png">
+      <img
+        style="width: 0.44rem; height: 0.44rem"
+        @click="showPromotionModal"
+        src="https://img.ubo.vip/mp/selection/goods-detail/i-menu-list/more-icon.png"
+      />
     </div>
 
     <div class="service-bar" v-if="serviceLists.length">
       <ul class="tips">
-        <li class="tip" v-for="(item, index) in serviceLists.slice(0, 3)" :key="index">
-          <img class="icon" src="https://img.ubo.vip/mp/selection/goods-detail/service-icon.png">
-          <div>{{item.name}}</div>
+        <li
+          class="tip"
+          v-for="(item, index) in serviceLists.slice(0, 3)"
+          :key="index"
+        >
+          <img
+            class="icon"
+            src="https://img.ubo.vip/mp/selection/goods-detail/service-icon.png"
+          />
+          <div>{{ item.name }}</div>
         </li>
       </ul>
-      <img style="width: .44rem; height: .44rem;" @click="showServiceModal" src="https://img.ubo.vip/mp/selection/goods-detail/i-menu-list/more-icon.png">
+      <img
+        style="width: 0.44rem; height: 0.44rem"
+        @click="showServiceModal"
+        src="https://img.ubo.vip/mp/selection/goods-detail/i-menu-list/more-icon.png"
+      />
     </div>
 
     <div class="spec-bar" v-if="goodsType !== 6">
       <p class="name">规格</p>
       <div class="btn" @click="showSpecPopup(0)">
-        <p class="desc">{{specTips || '请选择'}}</p>
-        <img style="width: .16rem; height: .16rem;" src="https://img.ubo.vip/mp/selection/goods-detail/to-icon.png">
+        <p class="desc">{{ specTips || "请选择" }}</p>
+        <img
+          style="width: 0.16rem; height: 0.16rem"
+          src="https://img.ubo.vip/mp/selection/goods-detail/to-icon.png"
+        />
       </div>
     </div>
 
-    <Swipe class="mid-banner" v-if="midBanner.length" :autoplay="3000" indicator-color="white">
+    <Swipe
+      class="mid-banner"
+      v-if="midBanner.length"
+      :autoplay="3000"
+      indicator-color="white"
+    >
       <SwipeItem v-for="(item, index) in midBanner" :key="index">
-        <img class="banner-img" :src="item.ad_code">
+        <img class="banner-img" :src="item.ad_code" />
       </SwipeItem>
     </Swipe>
 
@@ -86,19 +167,35 @@
       <div class="shop-info">
         <div class="shop">
           <div class="img-wrap">
-            <img class="img" :src="supplierInfo.supplier_img" alt="">
-            <img class="firm-icon" v-if="supplierInfo.is_enterprise" src="https://img.ubo.vip/mp/selection/goods-detail/firm-icon.png" alt="">
+            <img class="img" :src="supplierInfo.supplier_img" alt="" />
+            <img
+              class="firm-icon"
+              v-if="supplierInfo.is_enterprise"
+              src="https://img.ubo.vip/mp/selection/goods-detail/firm-icon.png"
+              alt=""
+            />
           </div>
-          <p class="name">{{supplierInfo.supplier_name}}</p>
-          <img style="width: .48rem; height: .48rem;" src="./images/shop-icon.png" alt="">
+          <p class="name">{{ supplierInfo.supplier_name }}</p>
+          <img
+            style="width: 0.48rem; height: 0.48rem"
+            src="./images/shop-icon.png"
+            alt=""
+          />
         </div>
         <div class="btn" @click="navToShop">
           <p>进入店铺</p>
-          <img style="width: .16rem; height: .16rem;" src="https://img.ubo.vip/mp/selection/goods-detail/to-icon.png">
+          <img
+            style="width: 0.16rem; height: 0.16rem"
+            src="https://img.ubo.vip/mp/selection/goods-detail/to-icon.png"
+          />
         </div>
       </div>
       <div class="show-case">
-        <GoodList v-for="(item, index) in supplierInfo.top_goods" :key="index" :item="item" />
+        <GoodItem
+          v-for="(item, index) in supplierInfo.top_goods"
+          :key="index"
+          :item="item"
+        />
       </div>
     </div>
 
@@ -108,31 +205,37 @@
         <h3 class="title">产品规格</h3>
         <ul class="lists" v-for="(item, index) in goodsDetailSpec" :key="index">
           <li class="list">
-            <p class="label">{{item.label}}</p>
-            <p class="detail">{{item.price}}</p>
+            <p class="label">{{ item.label }}</p>
+            <p class="detail">{{ item.price }}</p>
           </li>
         </ul>
       </div>
       <div class="imgs">
-        <img v-for="(item, index) in goodsDetailImgs" :key="index" @click="previewDetailImgs(index)" style="width: 100%" :src="item"/>
+        <img
+          v-for="(item, index) in goodsDetailImgs"
+          :key="index"
+          @click="previewDetailImgs(index)"
+          style="width: 100%"
+          :src="item"
+        />
       </div>
     </div>
 
     <SplitLine title="为您推荐" v-if="recommendGoods.length" />
     <div class="recommend-goods" v-if="recommendGoods.length">
-      <FallFlow :lists="recommendGoods"/>
+      <GoodsList :list="recommendGoods" />
     </div>
 
     <div class="nomore-tip">到底啦~</div>
 
     <div class="bottom-bar" :class="{ 'is-iphoneX': isIphoneX }">
       <div class="cart-icon" @click="navToCart">
-        <img class="icon" src="./images/cart-icon.png" alt="">
+        <img class="icon" src="./images/cart-icon.png" alt="" />
         <p class="desc">购物车</p>
-        <div class="count">{{cartCount}}</div>
+        <div class="count">{{ cartCount }}</div>
       </div>
       <div class="customer-icon">
-        <img class="icon" src="./images/customer-icon.png" alt="">
+        <img class="icon" src="./images/customer-icon.png" alt="" />
         <p class="desc">客服</p>
       </div>
       <div class="add-cart-btn" @click="showSpecPopup(1)">加入购物车</div>
@@ -140,202 +243,232 @@
     </div>
 
     <Popup v-model="specPopupVisible" position="bottom" closeable round>
-      <SpecPopup :actionType="actionType" :goodsId="goodsId" :goodsImg="goodsImg" :goodsName="goodsName" :basePrice="shopPrice" :stock="stock" :specInfo="specInfo" @commitSelectedSpec="setSpecTips" @hideSpecPopup="hideSpecPopup"/>
+      <SpecPopup
+        :actionType="actionType"
+        :goodsId="goodsId"
+        :goodsImg="goodsImg"
+        :goodsName="goodsName"
+        :basePrice="shopPrice"
+        :stock="stock"
+        :specInfo="specInfo"
+        @commitSelectedSpec="setSpecTips"
+        @hideSpecPopup="hideSpecPopup"
+      />
     </Popup>
   </div>
 </template>
 
-<script>
-import { Swipe, SwipeItem, ImagePreview, Popup } from 'vant'
-import SplitLine from '@/components/SplitLine'
-import PriceBar from './components/PriceBar'
-import GoodList from './components/GoodList'
-import FallFlow from './components/FallFlow'
-import SpecPopup from '@/components/SpecPopup'
+<script setup lang="ts">
+import { Swipe, SwipeItem, ImagePreview, Popup } from "vant";
+import SplitLine from "@/components/SplitLine.vue";
+import SpecPopup from "@/components/SpecPopup.vue";
+import GoodsList from "@/components/GoodsList.vue";
+import PriceBar from "./components/PriceBar.vue";
+import GoodItem from "./components/GoodItem.vue";
 
-import { mapState } from 'vuex'
-import GoodsService from './utils/goodsService'
+import { isIphoneX } from "@/utils/envJudgment";
 
-let goodsService = new GoodsService()
+// import { mapState } from "vuex";
+// import GoodsService from "./utils/goodsService";
 
-export default {
-  components: { Swipe, SwipeItem, Popup, PriceBar, GoodList, SplitLine, FallFlow, SpecPopup },
+// let goodsService = new GoodsService();
 
-  data() {
-    return {
-      goodsId: this.$route.query.id,
-      goodsType: 0, // 商品类型：0-普通 1-特卖 2-促销 6-秒杀
-      goodsName: '',
-      goodsImg: '',
-      keywords: '',
-      noticeInfo: '',
-      shopPrice: '',
-      marketPrice: '',
-      stock: 0,
-      banner: [],
-      midBanner: [],
-      curBannerIdx: 0,
-      salesVolume: 0,
-      progressInfo: null,
-      spikeInfo: null,
-      countDown: 0,
-      unStart: false,
-      bonusLists: [],
-      promotionLists: [],
-      serviceLists: [],
-      supplierInfo: null,
-      goodsDetailSpec: [],
-      goodsDetailImgs: [],
-      recommendGoods: [],
-      specInfo: null,
-      specTips: '',
-      actionType: 0,
-      // 页面滚动
-      showNavBar: false,
-      detailActive: false,
-      specPopupVisible: false
-    }
-  },
+// export default {
+//   data() {
+//     return {
+//       goodsId: this.$route.query.id,
+//       goodsType: 0, // 商品类型：0-普通 1-特卖 2-促销 6-秒杀
+//       goodsName: "",
+//       goodsImg: "",
+//       keywords: "",
+//       noticeInfo: "",
+//       shopPrice: "",
+//       marketPrice: "",
+//       stock: 0,
+//       banner: [],
+//       midBanner: [],
+//       curBannerIdx: 0,
+//       salesVolume: 0,
+//       progressInfo: null,
+//       spikeInfo: null,
+//       countDown: 0,
+//       unStart: false,
+//       bonusLists: [],
+//       promotionLists: [],
+//       serviceLists: [],
+//       supplierInfo: null,
+//       goodsDetailSpec: [],
+//       goodsDetailImgs: [],
+//       recommendGoods: [],
+//       specInfo: null,
+//       specTips: "",
+//       actionType: 0,
+//       // 页面滚动
+//       showNavBar: false,
+//       detailActive: false,
+//       specPopupVisible: false,
+//     };
+//   },
 
-  computed: {
-    ...mapState({
-      cartCount: state => state.cartCount
-    })
-  },
+//   computed: {
+//     ...mapState({
+//       cartCount: (state) => state.cartCount,
+//     }),
+//   },
 
-  created() {
-    this.setGoodsInfo()
-  },
+//   created() {
+//     this.setGoodsInfo();
+//   },
 
-  mounted() {
-    window.addEventListener('scroll', this.handleScroll, true)
-    this.detailTop = this.$refs.detail.$el.getBoundingClientRect().top
-  },
+//   mounted() {
+//     window.addEventListener("scroll", this.handleScroll, true);
+//     this.detailTop = this.$refs.detail.$el.getBoundingClientRect().top;
+//   },
 
-  destroyed() {
-    if (this.countDownInterval) clearInterval(this.countDownInterval)
-    window.removeEventListener('scroll', this.handleScroll)
-  },
+//   unmounted() {
+//     if (this.countDownInterval) clearInterval(this.countDownInterval);
+//     window.removeEventListener("scroll", this.handleScroll);
+//   },
 
-  methods: {
-    async setGoodsInfo() {
-      const { 
-        img, mid_banner,
-        goods_type, goods_name, default_attr_img,
-        seckill, promote_price, shop_price, market_price, 
-        ghost_count, goods_number,
-        keywords, noti_info,
-        special_buy_status,
-        bonus_info, manjian, goods_service,
-        supplier_info, 
-        product_specification, goods_desc_array,
-        recommend_goods, attr_goods_info
-      } = await goodsService.getGoodsInfo(this.goodsId)
+//   methods: {
+//     async setGoodsInfo() {
+//       const {
+//         img,
+//         mid_banner,
+//         goods_type,
+//         goods_name,
+//         default_attr_img,
+//         seckill,
+//         promote_price,
+//         shop_price,
+//         market_price,
+//         ghost_count,
+//         goods_number,
+//         keywords,
+//         noti_info,
+//         special_buy_status,
+//         bonus_info,
+//         manjian,
+//         goods_service,
+//         supplier_info,
+//         product_specification,
+//         goods_desc_array,
+//         recommend_goods,
+//         attr_goods_info,
+//       } = await goodsService.getGoodsInfo(this.goodsId);
 
-      this.goodsType = +goods_type
-      this.goodsName = goods_name
-      this.goodsImg = default_attr_img
-      this.shopPrice = seckill ? seckill.sec_price : Number(promote_price) ? promote_price : shop_price
-      this.marketPrice = market_price
-      this.salesVolume = ghost_count
-      this.stock = goods_number
-      this.keywords = keywords
-      this.noticeInfo = noti_info
-      this.bonusLists = bonus_info,
-      this.promotionLists = manjian
-      this.serviceLists = goods_service
-      this.supplierInfo = supplier_info
-      this.goodsDetailSpec = product_specification
-      this.recommendGoods = recommend_goods
-      this.specInfo = attr_goods_info
+//       this.goodsType = +goods_type;
+//       this.goodsName = goods_name;
+//       this.goodsImg = default_attr_img;
+//       this.shopPrice = seckill
+//         ? seckill.sec_price
+//         : Number(promote_price)
+//         ? promote_price
+//         : shop_price;
+//       this.marketPrice = market_price;
+//       this.salesVolume = ghost_count;
+//       this.stock = goods_number;
+//       this.keywords = keywords;
+//       this.noticeInfo = noti_info;
+//       (this.bonusLists = bonus_info), (this.promotionLists = manjian);
+//       this.serviceLists = goods_service;
+//       this.supplierInfo = supplier_info;
+//       this.goodsDetailSpec = product_specification;
+//       this.recommendGoods = recommend_goods;
+//       this.specInfo = attr_goods_info;
 
-      img.forEach((item, index) => {
-        this.$set(this.banner, index, item.thumb_url)
-      })
-      this.midBanner = mid_banner
+//       img.forEach((item, index) => {
+//         this.$set(this.banner, index, item.thumb_url);
+//       });
+//       this.midBanner = mid_banner;
 
-      goods_desc_array.forEach((item, index) => {
-        this.$set(this.goodsDetailImgs, index, item.url)
-      })
+//       goods_desc_array.forEach((item, index) => {
+//         this.$set(this.goodsDetailImgs, index, item.url);
+//       });
 
-      if (special_buy_status && special_buy_status.total_count) {
-        const { sale_count, total_count } = special_buy_status || {}
-        this.progressInfo = {
-          percent: sale_count / total_count,
-          stock: total_count - sale_count
-        }
-      }
-      if (special_buy_status && special_buy_status.end_time) {
-        let { allow_buy_time, end_time } = special_buy_status
-        this.setCountDown(+allow_buy_time, +end_time)
-      }
+//       if (special_buy_status && special_buy_status.total_count) {
+//         const { sale_count, total_count } = special_buy_status || {};
+//         this.progressInfo = {
+//           percent: sale_count / total_count,
+//           stock: total_count - sale_count,
+//         };
+//       }
+//       if (special_buy_status && special_buy_status.end_time) {
+//         let { allow_buy_time, end_time } = special_buy_status;
+//         this.setCountDown(+allow_buy_time, +end_time);
+//       }
 
-      this.spikeInfo = seckill
-      if (seckill) {
-        let { begin_time_format, end_time_format } = seckill
-        this.setCountDown(+begin_time_format, +end_time_format)
-      }
-    },
+//       this.spikeInfo = seckill;
+//       if (seckill) {
+//         let { begin_time_format, end_time_format } = seckill;
+//         this.setCountDown(+begin_time_format, +end_time_format);
+//       }
+//     },
 
-    setCountDown(startTime, endTime) {
-      const nowTime = Date.now() / 1000
-      this.unStart = startTime > nowTime
-      let time = this.unStart ? startTime - nowTime : endTime - nowTime
-      this.countDownInterval = setInterval(() => {
-        this.countDown = --time
-        if (time <= 1) clearInterval(this.countDownInterval)
-      }, 1000)
-    },
+//     setCountDown(startTime, endTime) {
+//       const nowTime = Date.now() / 1000;
+//       this.unStart = startTime > nowTime;
+//       let time = this.unStart ? startTime - nowTime : endTime - nowTime;
+//       this.countDownInterval = setInterval(() => {
+//         this.countDown = --time;
+//         if (time <= 1) clearInterval(this.countDownInterval);
+//       }, 1000);
+//     },
 
-    bannerChange(index) {
-      this.curBannerIdx = index
-    },
+//     bannerChange(index) {
+//       this.curBannerIdx = index;
+//     },
 
-    previewBanner(index) {
-      ImagePreview({ images: this.banner, startPosition: index })
-    },
+//     previewBanner(index) {
+//       ImagePreview({ images: this.banner, startPosition: index });
+//     },
 
-    previewDetailImgs(index) {
-      ImagePreview({ images: this.goodsDetailImgs, startPosition: index })
-    },
+//     previewDetailImgs(index) {
+//       ImagePreview({ images: this.goodsDetailImgs, startPosition: index });
+//     },
 
-    setSpecTips(tips) {
-      this.specTips = tips
-    },
+//     setSpecTips(tips) {
+//       this.specTips = tips;
+//     },
 
-    showBonusModal() {},
-    showPromotionModal() {},
-    showServiceModal() {},
-    showSpecPopup(type) {
-      this.actionType = type
-      this.specPopupVisible = true
-    },
-    hideSpecPopup() {
-      this.specPopupVisible = false
-    },
+//     showBonusModal() {},
+//     showPromotionModal() {},
+//     showServiceModal() {},
+//     showSpecPopup(type) {
+//       this.actionType = type;
+//       this.specPopupVisible = true;
+//     },
+//     hideSpecPopup() {
+//       this.specPopupVisible = false;
+//     },
 
-    handleScroll() {
-      this.scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
-      if (this.scrollTop >= 100 && !this.showNavBar) this.showNavBar = true
-      else if (this.scrollTop < 100 && this.showNavBar) this.showNavBar = false
-      if (this.scrollTop >= this.detailTop && !this.detailActive) this.detailActive = true
-      else if (this.scrollTop < this.detailTop && this.detailActive) this.detailActive = false
-    },
-    scrollToTop() {
-      window.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
-    },
-    scrollToDetail() {
-      window.scrollTo({ top: this.detailTop + 1, left: 0, behavior: 'smooth' })
-    },
-    navToCart() {
-      this.$router.push('/mall/cart')
-    },
-    navToShop() {},
-    navBack() {
-      this.$router.go(-1)
-    }
-  }
-}
+//     handleScroll() {
+//       this.scrollTop =
+//         window.pageYOffset ||
+//         document.documentElement.scrollTop ||
+//         document.body.scrollTop;
+//       if (this.scrollTop >= 100 && !this.showNavBar) this.showNavBar = true;
+//       else if (this.scrollTop < 100 && this.showNavBar) this.showNavBar = false;
+//       if (this.scrollTop >= this.detailTop && !this.detailActive)
+//         this.detailActive = true;
+//       else if (this.scrollTop < this.detailTop && this.detailActive)
+//         this.detailActive = false;
+//     },
+//     scrollToTop() {
+//       window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+//     },
+//     scrollToDetail() {
+//       window.scrollTo({ top: this.detailTop + 1, left: 0, behavior: "smooth" });
+//     },
+//     navToCart() {
+//       this.$router.push("/mall/cart");
+//     },
+//     navToShop() {},
+//     navBack() {
+//       this.$router.go(-1);
+//     },
+//   },
+// };
 </script>
 
 <style lang="stylus" scoped>
@@ -657,7 +790,7 @@ export default {
         font-weight 500
         border-bottom .02rem solid #939393
       .lists
-        .list 
+        .list
           display flex
           margin-top .20rem
           font-size .28rem

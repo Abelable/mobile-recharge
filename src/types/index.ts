@@ -46,6 +46,7 @@ export interface GoodsInfo {
   goods_id: string;
   goods_name: string;
   goods_thumb: string;
+  original_img: string;
   market_price: string;
   shop_price: string;
   sales_count: string;
@@ -53,6 +54,7 @@ export interface GoodsInfo {
   ghost_count: string;
   is_seckill: boolean;
   split_money: string;
+  active_info: string;
 }
 export interface OrderGoodsInfo extends GoodsInfo {
   goods_number: number;

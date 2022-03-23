@@ -1,43 +1,35 @@
 <template>
-  <div class="goods-list" @click="navToGoods">
+  <div class="goods-item" @click="navToGoods">
     <div class="img-wrap">
-      <img class="img" :src="item.original_img" >
-      <div class="active-tip">{{item.active_info}}</div>
+      <img class="img" :src="item.original_img" />
+      <div class="active-tip">{{ item.active_info }}</div>
     </div>
-    <div class="title">{{item.goods_name}}</div>
+    <div class="title">{{ item.goods_name }}</div>
     <div class="price-wrap">
       <div class="shop-price">
         <span>￥</span>
-        <span class="int">{{item.shop_price.split('.')[0]}}</span>
-        <span>.{{item.shop_price.split('.')[1]}}</span>
+        <span class="int">{{ item.shop_price.split(".")[0] }}</span>
+        <span>.{{ item.shop_price.split(".")[1] }}</span>
       </div>
     </div>
   </div>
 </template>
 
-<script>
-export default {
-  inject: ['routerRefresh'],
+<script setup lang="ts">
+import { GoodsInfo } from "@/types/index";
+import { useRouter } from "vue-router";
+const router = useRouter();
+const props = defineProps<{ item: GoodsInfo }>();
 
-  props: {
-    item: Object
-  },
-  methods: {
-    navToGoods() {
-      this.$router.push({
-        path: '/mall/goods',
-        query: { 
-          id: this.item.goods_id
-        }
-      })
-      this.routerRefresh()
-    }
-  }
-}
+//   inject: ['routerRefresh'],
+const navToGoods = () => {
+  router.push({ path: "/mall/goods", query: { id: props.item.goods_id } });
+  // this.routerRefresh()
+};
 </script>
 
 <style lang="stylus" scoped>
-.goods-list
+.goods-item
   display flex
   flex-direction column
   justify-content space-between
