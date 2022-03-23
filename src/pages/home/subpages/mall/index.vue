@@ -67,7 +67,7 @@
           />
         </div>
         <div class="goods-wrap" v-show="secActiveTabIdx !== 0">
-          <FallFlow :list="secCateLists[secActiveTabIdx]" />
+          <FallFlow :list="secCateLists[secActiveTabIdx] || []" />
         </div>
       </div>
 
@@ -95,16 +95,16 @@
             <img
               style="width: 0.76rem; height: 0.76rem"
               :src="`https://img.ubo.vip/mp/selection/${
-                cateTabs[activeTabIdx].isStretch ? 'shrinkage' : 'stretch'
+                cateTabs[activeTabIdx].isStretch ? 'stretch' : 'shrinkage'
               }-icon.png`"
             />
             <div>
-              {{ cateTabs[activeTabIdx].isStretch ? "收起" : "展开全部" }}
+              {{ cateTabs[activeTabIdx].isStretch ? "展开全部" : "收起" }}
             </div>
           </li>
         </ul>
         <div class="goods-wrap">
-          <FallFlow :list="cateLists[activeTabIdx]" />
+          <FallFlow :list="cateLists[activeTabIdx] || []" />
         </div>
       </div>
     </List>
@@ -146,9 +146,7 @@ const finished = ref(false);
 const refreshing = ref(false);
 const activeTabIdx = ref(0);
 const secActiveTabIdx = ref(0);
-const cateTabs: CateTabInfo[] = reactive([
-  { name: "热门", id: 0, isStretch: true, get_parent_id: [] },
-]);
+const cateTabs: CateTabInfo[] = reactive([]);
 const secCateTabs: SelectionInfo[] = reactive([
   { id: -99, cate_name: "今日有选" },
 ]);
@@ -166,7 +164,7 @@ const onLoadMore = _.debounce(async () => {
       setCateLists(true);
     } else setCateLists();
   }
-}, 2000);
+}, 200);
 const onRefresh = () => {
   if (activeTabIdx.value === 0 && secActiveTabIdx.value !== 0)
     setSecCateLists(true);
@@ -175,23 +173,24 @@ const onRefresh = () => {
 const selectCate = (index: number) => {
   if (activeTabIdx.value !== index) {
     activeTabIdx.value = index;
-    if (!cateLists[index].length) setCateLists(true);
+    if (!cateLists[index]) setCateLists(true);
   }
 };
 const selectSecCate = (index: number) => {
   if (secActiveTabIdx.value !== index) {
     secActiveTabIdx.value = index;
-    if (index !== 0 && !secCateLists[index].length) setSecCateLists(true);
+    if (index !== 0 && !secCateLists[index]) setSecCateLists(true);
   }
 };
 
 const setCateTabs = async () => {
+  cateTabs.push({ name: "热门", id: 0, isStretch: true, get_parent_id: [] });
   const list: CategoryInfo[] = await getCategoryList();
   list.forEach((item) => cateTabs.push({ isStretch: true, ...item }));
   catePageArr = Array(cateTabs.length).fill(0);
 };
 const setSecCateTabs = async () => {
-  const list: SelectionInfo[] = await getSeletionTab();
+  const { list = [] }: { list: SelectionInfo[] } = await getSeletionTab();
   list.forEach((item) => secCateTabs.push(item));
   secCatePageArr = Array(cateTabs.length).fill(0);
 };

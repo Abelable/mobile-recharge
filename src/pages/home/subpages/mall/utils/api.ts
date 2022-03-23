@@ -21,7 +21,7 @@ export interface SelectionInfo {
   cate_name: string;
 }
 
-export const getSeletionTab = async (): Promise<SelectionInfo[]> =>
+export const getSeletionTab = async (): Promise<{ list: SelectionInfo[] }> =>
   await http("/api/v4/lvbo/get-yx-category");
 
 export interface BannerInfo {

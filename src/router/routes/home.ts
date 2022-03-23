@@ -8,6 +8,11 @@ const home: Array<RouteRecordRaw> = [
     meta: { keepAlive: true },
     component: HomePage,
   },
+  {
+    path: "/mall",
+    name: "mall",
+    component: () => import("@/pages/home/subpages/mall/index.vue"),
+  },
 ];
 
 export default home;
