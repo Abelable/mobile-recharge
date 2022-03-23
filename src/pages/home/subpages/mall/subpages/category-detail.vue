@@ -1,5 +1,5 @@
 <template>
-  <NavBar :title="title" />
+  <NavBar :title="name" />
   <PullRefresh class="container" v-model="refreshing" @refresh="onRefresh">
     <List v-model="loading" :finished="finished" @load="onLoadMore">
       <GoodsList :list="goodslist" />
@@ -8,6 +8,7 @@
 </template>
 
 <script setup lang="ts">
+import { PullRefresh, List } from "vant";
 import NavBar from "@/components/NavBar.vue";
 import GoodsList from "@/components/GoodsList.vue";
 
@@ -25,12 +26,12 @@ const loading = ref(false);
 const finished = ref(false);
 const refreshing = ref(false);
 const id = ref(0);
-const title = ref("");
+const name = ref("");
 const goodslist = ref<GoodsInfo[]>([]);
 
 onMounted(() => {
   id.value = Number(route.query.id);
-  title.value = route.query.title as string;
+  name.value = route.query.name as string;
 });
 
 const onLoadMore = _.debounce(() => setGoodsList(), 200);
@@ -50,4 +51,5 @@ const setGoodsList = async (init = false) => {
 <style lang="stylus" scoped>
 .container
   margin-top: .88rem
+  padding: .24rem
 </style>
