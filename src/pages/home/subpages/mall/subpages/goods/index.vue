@@ -356,7 +356,7 @@ const progressInfo = computed(() => {
   };
 });
 
-setTimeout(async () => {
+const timeout = setTimeout(async () => {
   goodsId.value = route.query.id as string;
   await setGoodsInfo();
   detailTop = detailRef.value.$el.getBoundingClientRect().top;
@@ -364,6 +364,7 @@ setTimeout(async () => {
 });
 
 onUnmounted(() => {
+  clearTimeout(timeout);
   if (countDownInterval) clearInterval(countDownInterval);
   window.removeEventListener("scroll", handleScroll);
 });
