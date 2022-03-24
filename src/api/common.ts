@@ -156,3 +156,9 @@ export const getGoodsInfo = async (
     method: " POST",
     data: { goods_id },
   });
+
+export const getNewBonus = async (type_id: string) =>
+  await http("?r=tbb/bonus/get-new-bonus", {
+    method: "POST",
+    data: { type_id },
+  });

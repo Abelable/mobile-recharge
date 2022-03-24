@@ -1,98 +1,92 @@
 <template>
-  <div>
-    <div class="nomal-bar" v-if="goodsType === '0'">
-      <div class="price">
-        <div class="shop-price">
-          <span>￥</span>
-          <span style="font-size: 0.48rem">{{ shopPrice.split(".")[0] }}</span>
-          <span>.{{ shopPrice.split(".")[1] }}</span>
-        </div>
-        <div class="market-price">原价￥{{ marketPrice }}</div>
+  <div class="nomal-bar" v-if="goodsType === '0'">
+    <div class="price">
+      <div class="shop-price">
+        <span>￥</span>
+        <span style="font-size: 0.48rem">{{ shopPrice.split(".")[0] }}</span>
+        <span>.{{ shopPrice.split(".")[1] }}</span>
       </div>
-      <div class="sale-amount">{{ salesVolume }}件已买</div>
+      <div class="market-price">原价￥{{ marketPrice }}</div>
     </div>
+    <div class="sale-amount">{{ salesVolume }}件已买</div>
+  </div>
 
-    <div class="sale-bar" v-if="goodsType === '1'">
-      <div class="price">
-        <div class="shop-price">
-          <span>￥</span>
-          <span style="font-size: 0.48rem">{{ shopPrice.split(".")[0] }}</span>
-          <span>.{{ shopPrice.split(".")[1] }}</span>
-        </div>
-        <div class="market-price">原价￥{{ marketPrice }}</div>
+  <div class="sale-bar" v-if="goodsType === '1'">
+    <div class="price">
+      <div class="shop-price">
+        <span>￥</span>
+        <span style="font-size: 0.48rem">{{ shopPrice.split(".")[0] }}</span>
+        <span>.{{ shopPrice.split(".")[1] }}</span>
       </div>
-      <div class="sale-slogan">
-        <img
-          style="width: 2.04rem; height: 0.5rem"
-          src="https://img.ubo.vip/mp/selection/goods-detail/sale-slogan.png"
-        />
+      <div class="market-price">原价￥{{ marketPrice }}</div>
+    </div>
+    <div class="sale-slogan">
+      <img
+        style="width: 2.04rem; height: 0.5rem"
+        src="https://img.ubo.vip/mp/selection/goods-detail/sale-slogan.png"
+      />
+    </div>
+    <div class="count-down-wrap">
+      <div class="progress-bar">
+        <span>仅剩{{ progressInfo.stock }}件</span>
+        <div class="inner" :style="{ width: progressInfo.percent / 100 }">
+          <p class="tip">仅剩{{ progressInfo.stock }}件</p>
+        </div>
       </div>
-      <div class="count-down-wrap">
-        <div class="progress-bar">
-          <span>仅剩{{ progressInfo.stock }}件</span>
-          <div class="inner" :style="{ width: progressInfo.percent / 100 }">
-            <p class="tip">仅剩{{ progressInfo.stock }}件</p>
-          </div>
-        </div>
-        <div class="count-down">
-          {{
-            `${
-              unStart ? "距开始剩" : "距结束剩"
-            } ${hours}:${minutes}:${seconds}`
-          }}
-        </div>
+      <div class="count-down">
+        {{
+          `${unStart ? "距开始剩" : "距结束剩"} ${hours}:${minutes}:${seconds}`
+        }}
       </div>
     </div>
+  </div>
 
-    <div class="promotion-bar" v-if="goodsType === '2'">
-      <div class="price">
-        <div class="shop-price">
-          <span>￥</span>
-          <span style="font-size: 0.48rem">{{ shopPrice.split(".")[0] }}</span>
-          <span>.{{ shopPrice.split(".")[1] }}</span>
-        </div>
-        <div class="market-price">原价￥{{ marketPrice }}</div>
+  <div class="promotion-bar" v-if="goodsType === '2'">
+    <div class="price">
+      <div class="shop-price">
+        <span>￥</span>
+        <span style="font-size: 0.48rem">{{ shopPrice.split(".")[0] }}</span>
+        <span>.{{ shopPrice.split(".")[1] }}</span>
       </div>
-      <div class="stock">库存{{ stock }}件</div>
-      <div class="count-down-wrap">
-        <div class="tips">距离结束仅剩</div>
-        <div class="count-down">
-          <div class="time">{{ hours }}</div>
-          <div style="margin: 0 0.05rem">:</div>
-          <div class="time">{{ minutes }}</div>
-          <div style="margin: 0 0.05rem">:</div>
-          <div class="time">{{ seconds }}</div>
-        </div>
+      <div class="market-price">原价￥{{ marketPrice }}</div>
+    </div>
+    <div class="stock">库存{{ stock }}件</div>
+    <div class="count-down-wrap">
+      <div class="tips">距离结束仅剩</div>
+      <div class="count-down">
+        <div class="time">{{ hours }}</div>
+        <div style="margin: 0 0.05rem">:</div>
+        <div class="time">{{ minutes }}</div>
+        <div style="margin: 0 0.05rem">:</div>
+        <div class="time">{{ seconds }}</div>
       </div>
     </div>
+  </div>
 
-    <div class="spike-bar" v-if="goodsType === '6'">
-      <div class="price-wrap">
-        <div class="pirce">
-          <span class="shop-pirce">
-            <span>￥</span>
-            <span style="font-size: 0.56rem">{{
-              shopPrice.split(".")[0]
-            }}</span>
-            <span>.{{ shopPrice.split(".")[1] }}</span>
-          </span>
-          <span class="market-pirce">￥{{ marketPrice }}</span>
-        </div>
-        <div class="desc">
-          {{
-            unStart
-              ? "限量：" + spikeInfo?.sec_limit ||
-                spikeInfo?.all_order_number + "件"
-              : "已抢购：" + spikeInfo?.all_order_number + "件"
-          }}
-        </div>
+  <div class="spike-bar" v-if="goodsType === '6'">
+    <div class="price-wrap">
+      <div class="pirce">
+        <span class="shop-pirce">
+          <span>￥</span>
+          <span style="font-size: 0.56rem">{{ shopPrice.split(".")[0] }}</span>
+          <span>.{{ shopPrice.split(".")[1] }}</span>
+        </span>
+        <span class="market-pirce">￥{{ marketPrice }}</span>
       </div>
-      <div class="count-down-wrap">
-        <div class="tips">限时秒杀</div>
-        <div class="count-down">
-          <span v-if="unStart">即将开抢 </span>
-          <span>{{ hours }}:{{ minutes }}:{{ seconds }}</span>
-        </div>
+      <div class="desc">
+        {{
+          unStart
+            ? "限量：" + spikeInfo?.sec_limit ||
+              spikeInfo?.all_order_number + "件"
+            : "已抢购：" + spikeInfo?.all_order_number + "件"
+        }}
+      </div>
+    </div>
+    <div class="count-down-wrap">
+      <div class="tips">限时秒杀</div>
+      <div class="count-down">
+        <span v-if="unStart">即将开抢 </span>
+        <span>{{ hours }}:{{ minutes }}:{{ seconds }}</span>
       </div>
     </div>
   </div>

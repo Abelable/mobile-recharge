@@ -64,17 +64,17 @@
         :countDown="countDown"
         :unStart="unStart"
       />
-      <div class="bonus-bar" v-if="bonusLists.length">
+      <div class="bonus-bar" v-if="goodsInfo?.bonus_info.length">
         <ul class="bonus-tips">
           <li
             class="tip"
-            v-for="(item, index) in bonusLists.slice(0, 3)"
+            v-for="(item, index) in goodsInfo?.bonus_info.slice(0, 3)"
             :key="index"
           >
             {{ item.limit_tip }}
           </li>
         </ul>
-        <div class="btn" @click="showBonusModal">
+        <div class="btn" @click="bonusPopupVisible = true">
           <p>领券</p>
           <img
             style="width: 0.32rem; height: 0.32rem"
@@ -246,6 +246,16 @@
       <div class="direct-buy-btn" @click="showSpecPopup(2)">立即购买</div>
     </div>
 
+    <Popup v-model="bonusPopupVisible" position="bottom" closeable round>
+      <div class="bonus-list" :class="{ 'is-iphoneX': isIphoneX }">
+        <BonusItem
+          v-for="(item, index) in goodsInfo?.bonus_info"
+          :key="index"
+          :item="item"
+        />
+      </div>
+    </Popup>
+
     <Popup v-model="specPopupVisible" position="bottom" closeable round>
       <SpecPopup
         :actionType="actionType"
@@ -269,6 +279,7 @@ import SpecPopup from "@/components/SpecPopup.vue";
 import GoodsList from "@/components/GoodsList.vue";
 import PriceBar from "./components/PriceBar.vue";
 import GoodItem from "./components/GoodItem.vue";
+import BonusItem from "./components/BonusItem.vue";
 
 import { computed, onMounted, onUnmounted, ref } from "vue";
 import { isIphoneX } from "@/utils/envJudgment";
@@ -288,6 +299,9 @@ const goodsInfo = ref<GoodsDetailInfo>();
 const curBannerIdx = ref(0);
 const showNavBar = ref(false);
 const detailActive = ref(false);
+const countDown = ref(0);
+const unStart = ref(false);
+const bonusPopupVisible = ref(false);
 
 const shopPrice = computed(() =>
   goodsInfo.value?.seckill
@@ -307,7 +321,7 @@ const progressInfo = computed(() => {
 
 onMounted(async () => {
   goodsId.value = route.query.id as string;
-  goodsInfo.value = await getGoodsInfo(goodsId.value);
+  await setGoodsInfo();
   detailTop = detailRef.value.$el.getBoundingClientRect().top;
   window.addEventListener("scroll", handleScroll, true);
 });
@@ -316,6 +330,29 @@ onUnmounted(() => {
   if (countDownInterval) clearInterval(countDownInterval);
   window.removeEventListener("scroll", handleScroll);
 });
+
+const setGoodsInfo = async () => {
+  goodsInfo.value = await getGoodsInfo(goodsId.value);
+  if (
+    goodsInfo.value.special_buy_status &&
+    goodsInfo.value.special_buy_status.end_time
+  ) {
+    setCountDown(
+      Number(goodsInfo.value.special_buy_status.allow_buy_time),
+      Number(goodsInfo.value.special_buy_status.end_time)
+    );
+  }
+};
+
+const setCountDown = (startTime: number, endTime: number) => {
+  const nowTime = Date.now() / 1000;
+  unStart.value = startTime > nowTime;
+  let time = unStart.value ? startTime - nowTime : endTime - nowTime;
+  countDownInterval = setInterval(() => {
+    countDown.value = --time;
+    if (time <= 1) clearInterval(countDownInterval);
+  }, 1000);
+};
 
 const bannerChange = (index: number) => (curBannerIdx.value = index);
 const previewBanner = (startPosition: number) => {
@@ -473,26 +510,12 @@ const scrollToDetail = () =>
 //           stock: total_count - sale_count,
 //         };
 //       }
-//       if (special_buy_status && special_buy_status.end_time) {
-//         let { allow_buy_time, end_time } = special_buy_status;
-//         this.setCountDown(+allow_buy_time, +end_time);
-//       }
 
 //       this.spikeInfo = seckill;
 //       if (seckill) {
 //         let { begin_time_format, end_time_format } = seckill;
 //         this.setCountDown(+begin_time_format, +end_time_format);
 //       }
-//     },
-
-//     setCountDown(startTime, endTime) {
-//       const nowTime = Date.now() / 1000;
-//       this.unStart = startTime > nowTime;
-//       let time = this.unStart ? startTime - nowTime : endTime - nowTime;
-//       this.countDownInterval = setInterval(() => {
-//         this.countDown = --time;
-//         if (time <= 1) clearInterval(this.countDownInterval);
-//       }, 1000);
 //     },
 
 //     setSpecTips(tips) {
@@ -912,4 +935,8 @@ const scrollToDetail = () =>
     text-align center
     background linear-gradient(270deg, #FFD699 0%, #FFE5BD 100%)
     border-radius .12rem
+.bonus-list
+  padding .24px
+  &.is-iphoneX
+    padding-bottom .4rem
 </style>
