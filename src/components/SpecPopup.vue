@@ -64,6 +64,7 @@ import { useRouter } from "vue-router";
 import { isIphoneX } from "@/utils/envJudgment";
 import * as api from "@/api/common";
 import { SpecDetailInfo, SpecInfo } from "@/api/common";
+import { useStore } from "vuex";
 
 interface PropsType {
   actionType: number;
@@ -76,6 +77,7 @@ interface PropsType {
   specInfo: SpecInfo | undefined;
 }
 
+const store = useStore();
 const router = useRouter();
 
 const props = defineProps<PropsType>();
@@ -124,16 +126,15 @@ const finish = () => {
   }
 };
 
-// import { mapActions } from "vuex";
-//     ...mapActions(["updateCartCount"]),
 const addCart = async () => {
   if (check()) {
     await api.addCart(props.goodsId, specIdArr, count.value, 0);
-    // updateCartCount();
+    updateCartCount();
     emit("hideSpecPopup");
     Toast("添加成功");
   }
 };
+const updateCartCount = () => store.dispatch("updateCartCount");
 const directBuy = async () => {
   if (check()) {
     await api.addCart(props.goodsId, specIdArr, count.value);
