@@ -310,7 +310,7 @@ import BonusItem from "./components/BonusItem.vue";
 import PromotionItem from "./components/PromotionItem.vue";
 import ServiceItem from "./components/ServiceItem.vue";
 
-import { computed, onMounted, onUnmounted, ref } from "vue";
+import { computed, inject, onUnmounted, ref } from "vue";
 import { useStore } from "vuex";
 import { useRoute, useRouter } from "vue-router";
 import { isIphoneX } from "@/utils/envJudgment";
@@ -356,7 +356,7 @@ const progressInfo = computed(() => {
   };
 });
 
-onMounted(async () => {
+setTimeout(async () => {
   goodsId.value = route.query.id as string;
   await setGoodsInfo();
   detailTop = detailRef.value.$el.getBoundingClientRect().top;
@@ -407,7 +407,11 @@ const showSpecPopup = (type: number) => {
 };
 const setSpecTips = (tips: string) => (specTips.value = tips);
 
-const navBack = () => router.go(-1);
+const navBack = () => {
+  router.go(-1);
+  routerRefresh && routerRefresh();
+};
+const routerRefresh = inject<() => void>("routerRefresh");
 const navToCart = () => router.push("/mall/cart");
 const navToShop = () => router.push("/mall/goods/shop");
 

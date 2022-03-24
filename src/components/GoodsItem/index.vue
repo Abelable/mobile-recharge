@@ -25,25 +25,30 @@
 
 <script setup lang="ts">
 import { GoodsInfo } from "@/types";
-import { computed } from "vue";
-import { useRouter } from "vue-router";
+import { inject, computed } from "vue";
+import { useRouter, useRoute } from "vue-router";
 
 const props = defineProps<{ item: GoodsInfo }>();
 
 const router = useRouter();
+const route = useRoute();
 
 const salesCount = computed(() => {
   const count = props.item.sales_volume || props.item.ghost_count;
   return count > 100000 ? `${(Number(count) / 10000).toFixed(1)}w` : count;
 });
 
-const navToGoodsDetail = () =>
+const routerRefresh = inject<() => void>("routerRefresh");
+
+const navToGoodsDetail = () => {
   router.push({
     path: "/mall/goods",
     query: {
-      id: props.item.id,
+      id: props.item.id || props.item.goods_id,
     },
   });
+  if (route.path === "/mall/goods" && routerRefresh) routerRefresh();
+};
 </script>
 
 <style lang="stylus" scoped>

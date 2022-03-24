@@ -16,15 +16,17 @@
 </template>
 
 <script setup lang="ts">
-import { GoodsInfo } from "@/types/index";
+import { inject } from "vue";
 import { useRouter } from "vue-router";
+import { GoodsInfo } from "@/types/index";
+
 const router = useRouter();
 const props = defineProps<{ item: GoodsInfo }>();
 
-//   inject: ['routerRefresh'],
+const routerRefresh = inject<() => void>("routerRefresh");
 const navToGoods = () => {
   router.push({ path: "/mall/goods", query: { id: props.item.goods_id } });
-  // this.routerRefresh()
+  routerRefresh && routerRefresh();
 };
 </script>
 
