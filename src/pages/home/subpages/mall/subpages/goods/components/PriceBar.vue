@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="nomal-bar" v-if="goodsType === 0">
+    <div class="nomal-bar" v-if="goodsType === '0'">
       <div class="price">
         <div class="shop-price">
           <span>￥</span>
@@ -12,7 +12,7 @@
       <div class="sale-amount">{{ salesVolume }}件已买</div>
     </div>
 
-    <div class="sale-bar" v-if="goodsType === 1">
+    <div class="sale-bar" v-if="goodsType === '1'">
       <div class="price">
         <div class="shop-price">
           <span>￥</span>
@@ -44,7 +44,7 @@
       </div>
     </div>
 
-    <div class="promotion-bar" v-if="goodsType === 2">
+    <div class="promotion-bar" v-if="goodsType === '2'">
       <div class="price">
         <div class="shop-price">
           <span>￥</span>
@@ -66,7 +66,7 @@
       </div>
     </div>
 
-    <div class="spike-bar" v-if="goodsType === 6">
+    <div class="spike-bar" v-if="goodsType === '6'">
       <div class="price-wrap">
         <div class="pirce">
           <span class="shop-pirce">
@@ -81,9 +81,9 @@
         <div class="desc">
           {{
             unStart
-              ? "限量：" + spikeInfo.sec_limit ||
-                spikeInfo.all_order_number + "件"
-              : "已抢购：" + spikeInfo.all_order_number + "件"
+              ? "限量：" + spikeInfo?.sec_limit ||
+                spikeInfo?.all_order_number + "件"
+              : "已抢购：" + spikeInfo?.all_order_number + "件"
           }}
         </div>
       </div>
@@ -101,15 +101,16 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { formatNumber } from "@/utils";
+import { GoodsSpikeInfo } from "@/api/common";
 
 interface PropsType {
-  goodsType: number;
+  goodsType: string;
   shopPrice: string;
   marketPrice: string;
   salesVolume: number;
   stock: number;
   progressInfo: { stock: number; percent: number };
-  spikeInfo: { sec_limit: number; all_order_number: number };
+  spikeInfo: GoodsSpikeInfo | null;
   countDown: number;
   unStart: boolean;
 }

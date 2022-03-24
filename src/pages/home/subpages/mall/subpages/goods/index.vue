@@ -29,38 +29,38 @@
         @change="bannerChange"
       >
         <SwipeItem
-          v-for="(item, index) in banner"
+          v-for="(item, index) in goodsInfo?.img"
           :key="index"
           @click="previewBanner(index)"
         >
-          <img class="banner-img" :src="item" />
+          <img class="banner-img" :src="item.thumb_url" />
         </SwipeItem>
       </Swipe>
       <div class="dots">
         <span class="cur-idx">{{ curBannerIdx + 1 }}</span>
-        <span> / {{ banner.length }}</span>
+        <span> / {{ goodsInfo?.img.length }}</span>
       </div>
-      <div class="hot-tips" v-if="goodsType === 1">
+      <div class="hot-tips" v-if="goodsInfo?.goods_type === '1'">
         <img
           class="icon"
           src="https://img.ubo.vip/mp/selection/goods-detail/hot-icon.png"
         />
-        <div>热销{{ salesVolume }}件</div>
+        <div>热销{{ goodsInfo.ghost_count }}件</div>
       </div>
-      <div class="sale-amount-tips" v-if="goodsType === 2">
-        销售{{ salesVolume }}件
+      <div class="sale-amount-tips" v-if="goodsInfo?.goods_type === '2'">
+        销售{{ goodsInfo.ghost_count }}件
       </div>
     </div>
 
     <div class="goods-info-wrap">
       <PriceBar
-        :goodsType="goodsType"
-        :shopPrice="shopPrice"
-        :marketPrice="marketPrice"
-        :salesVolume="salesVolume"
-        :stock="stock"
+        :goodsType="goodsInfo?.goods_type || ''"
+        :shopPrice="shopPrice || '0'"
+        :marketPrice="goodsInfo?.market_price || '0'"
+        :salesVolume="goodsInfo?.ghost_count || 0"
+        :stock="goodsInfo?.goods_number || 0"
         :progressInfo="progressInfo"
-        :spikeInfo="spikeInfo"
+        :spikeInfo="goodsInfo?.seckill || null"
         :countDown="countDown"
         :unStart="unStart"
       />
@@ -270,7 +270,7 @@ import GoodsList from "@/components/GoodsList.vue";
 import PriceBar from "./components/PriceBar.vue";
 import GoodItem from "./components/GoodItem.vue";
 
-import { onMounted, onUnmounted, ref } from "vue";
+import { computed, onMounted, onUnmounted, ref } from "vue";
 import { isIphoneX } from "@/utils/envJudgment";
 import { useRoute, useRouter } from "vue-router";
 import { getGoodsInfo, GoodsDetailInfo } from "@/api/common";
@@ -285,8 +285,25 @@ let countDownInterval = 0;
 const detailRef = ref();
 const goodsId = ref("");
 const goodsInfo = ref<GoodsDetailInfo>();
+const curBannerIdx = ref(0);
 const showNavBar = ref(false);
 const detailActive = ref(false);
+
+const shopPrice = computed(() =>
+  goodsInfo.value?.seckill
+    ? goodsInfo.value?.seckill.sec_price
+    : goodsInfo.value?.promote_price !== "0"
+    ? goodsInfo.value?.promote_price
+    : goodsInfo.value?.shop_price
+);
+const progressInfo = computed(() => {
+  const saleCount = goodsInfo.value?.special_buy_status?.sale_count || 0;
+  const totalCount = goodsInfo.value?.special_buy_status?.total_count || 0;
+  return {
+    percent: saleCount / totalCount,
+    stock: totalCount - saleCount,
+  };
+});
 
 onMounted(async () => {
   goodsId.value = route.query.id as string;
@@ -299,6 +316,17 @@ onUnmounted(() => {
   if (countDownInterval) clearInterval(countDownInterval);
   window.removeEventListener("scroll", handleScroll);
 });
+
+const bannerChange = (index: number) => (curBannerIdx.value = index);
+const previewBanner = (startPosition: number) => {
+  const images = goodsInfo.value?.img.map((item) => item.thumb_url) || [];
+  ImagePreview({ images, startPosition });
+};
+const previewDetailImgs = (startPosition: number) => {
+  const images =
+    goodsInfo.value?.goods_desc_array.map((item) => item.url) || [];
+  ImagePreview({ images, startPosition });
+};
 
 const navBack = () => router.go(-1);
 const navToCart = () => router.push("/mall/cart");
@@ -465,18 +493,6 @@ const scrollToDetail = () =>
 //         this.countDown = --time;
 //         if (time <= 1) clearInterval(this.countDownInterval);
 //       }, 1000);
-//     },
-
-//     bannerChange(index) {
-//       this.curBannerIdx = index;
-//     },
-
-//     previewBanner(index) {
-//       ImagePreview({ images: this.banner, startPosition: index });
-//     },
-
-//     previewDetailImgs(index) {
-//       ImagePreview({ images: this.goodsDetailImgs, startPosition: index });
 //     },
 
 //     setSpecTips(tips) {
