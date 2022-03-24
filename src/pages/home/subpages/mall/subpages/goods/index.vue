@@ -117,7 +117,7 @@
       </ul>
       <img
         style="width: 0.44rem; height: 0.44rem"
-        @click="showPromotionModal"
+        @click="promotionPopupVisible = true"
         src="https://img.ubo.vip/mp/selection/goods-detail/i-menu-list/more-icon.png"
       />
     </div>
@@ -258,7 +258,7 @@
       </div>
     </Popup>
 
-    <Popup v-model="bonusPopupVisible" position="bottom" closeable round>
+    <Popup v-model="promotionPopupVisible" position="bottom" closeable round>
       <div class="promotion-list" :class="{ 'is-iphoneX': isIphoneX }">
         <PromotionItem
           v-for="(item, index) in goodsInfo?.bonus_info"
@@ -292,6 +292,7 @@ import GoodsList from "@/components/GoodsList.vue";
 import PriceBar from "./components/PriceBar.vue";
 import GoodItem from "./components/GoodItem.vue";
 import BonusItem from "./components/BonusItem.vue";
+import PromotionItem from "./components/PromotionItem.vue";
 
 import { computed, onMounted, onUnmounted, ref } from "vue";
 import { isIphoneX } from "@/utils/envJudgment";
@@ -314,6 +315,7 @@ const detailActive = ref(false);
 const countDown = ref(0);
 const unStart = ref(false);
 const bonusPopupVisible = ref(false);
+const promotionPopupVisible = ref(false);
 
 const shopPrice = computed(() =>
   goodsInfo.value?.seckill

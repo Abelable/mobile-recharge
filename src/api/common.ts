@@ -84,7 +84,7 @@ export interface PromotionInfo {
   show_name: string;
   limit_time: string;
   rules: string;
-  show_detail: 0 | 1;
+  show_detail: boolean;
 }
 export interface GoodsServiceInfo {
   name: string;

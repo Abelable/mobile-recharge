@@ -8,24 +8,19 @@
         </div>
         <div class="promotion-time">活动时间：{{ item.limit_time }}</div>
       </div>
-      <div
-        class="promotion-detail-btn"
-        wx:if="{{item.rules}}"
-        ontap="toggle"
-        data-promotion-index="{{index}}"
-      >
+      <div class="promotion-detail-btn" wx:if="{{item.rules}}" @click="toggle">
         <div>详情</div>
         <img
           class="icon"
-          :class="{ show: item.show_detail }"
+          :class="{ show: showDetail }"
           :src="`https://img.ubo.vip/mp/selection/goods-detail/i-promotion-list/${
-            item.show_detail ? 'opened' : 'open'
+            showDetail ? 'opened' : 'open'
           }-icon.png`"
           alt=""
         />
       </div>
     </div>
-    <div class="promotion-item-detail" wx:if="{{item.show_detail}}">
+    <div class="promotion-item-detail" wx:if="{{showDetail}}">
       <div class="detail-title">活动规则</div>
       <div class="detail-content">{{ item.rules }}</div>
     </div>
@@ -34,7 +29,12 @@
 
 <script setup lang="ts">
 import { PromotionInfo } from "@/api/common";
-defineProps<{ item: PromotionInfo }>();
+import { toRef } from "vue";
+
+const props = defineProps<{ item: PromotionInfo }>();
+const showDetail = toRef(props.item, "show_detail");
+
+const toggle = () => (showDetail.value = !showDetail.value);
 </script>
 
 <style lang="stylus" scoped>
