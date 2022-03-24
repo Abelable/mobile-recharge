@@ -1,7 +1,7 @@
 <template>
   <div class="container" :class="{ 'is-iphoneX': isIphoneX }">
     <div class="nav-bar" :class="{ show: showNavBar }">
-      <div class="back-icon" @click="navBack" />
+      <div class="back-icon" @click="navBack"></div>
       <div class="menu-wrap" :class="{ show: showNavBar }">
         <div
           class="menu-tips"
@@ -122,11 +122,11 @@
       />
     </div>
 
-    <div class="service-bar" v-if="serviceLists.length">
+    <div class="service-bar" v-if="goodsInfo?.goods_service.length">
       <ul class="tips">
         <li
           class="tip"
-          v-for="(item, index) in serviceLists.slice(0, 3)"
+          v-for="(item, index) in goodsInfo?.goods_service.slice(0, 3)"
           :key="index"
         >
           <img
@@ -138,7 +138,7 @@
       </ul>
       <img
         style="width: 0.44rem; height: 0.44rem"
-        @click="showServiceModal"
+        @click="servicePopupVisible = true"
         src="https://img.ubo.vip/mp/selection/goods-detail/i-menu-list/more-icon.png"
       />
     </div>
@@ -156,28 +156,32 @@
 
     <Swipe
       class="mid-banner"
-      v-if="midBanner.length"
+      v-if="goodsInfo?.mid_banner.length"
       :autoplay="3000"
       indicator-color="white"
     >
-      <SwipeItem v-for="(item, index) in midBanner" :key="index">
+      <SwipeItem v-for="(item, index) in goodsInfo?.mid_banner" :key="index">
         <img class="banner-img" :src="item.ad_code" />
       </SwipeItem>
     </Swipe>
 
-    <div class="shop-info-bar" v-if="supplierInfo">
+    <div class="shop-info-bar" v-if="goodsInfo?.supplier_info">
       <div class="shop-info">
         <div class="shop">
           <div class="img-wrap">
-            <img class="img" :src="supplierInfo.supplier_img" alt="" />
+            <img
+              class="img"
+              :src="goodsInfo?.supplier_info.supplier_img"
+              alt=""
+            />
             <img
               class="firm-icon"
-              v-if="supplierInfo.is_enterprise"
+              v-if="goodsInfo?.supplier_info.is_enterprise"
               src="https://img.ubo.vip/mp/selection/goods-detail/firm-icon.png"
               alt=""
             />
           </div>
-          <p class="name">{{ supplierInfo.supplier_name }}</p>
+          <p class="name">{{ goodsInfo?.supplier_info.supplier_name }}</p>
           <img
             style="width: 0.48rem; height: 0.48rem"
             src="./images/shop-icon.png"
@@ -194,7 +198,7 @@
       </div>
       <div class="show-case">
         <GoodItem
-          v-for="(item, index) in supplierInfo.top_goods"
+          v-for="(item, index) in goodsInfo?.supplier_info.top_goods"
           :key="index"
           :item="item"
         />
@@ -202,14 +206,18 @@
     </div>
 
     <SplitLine
-      v-show="goodsDetailImgs.length"
+      v-show="goodsInfo?.goods_desc_array.length"
       ref="detailRef"
       title="宝贝详情"
     />
-    <div class="goods-detail" v-if="goodsDetailImgs.length">
-      <div class="spec-info" v-if="goodsDetailSpec.length">
+    <div class="goods-detail" v-if="goodsInfo?.goods_desc_array.length">
+      <div class="spec-info" v-if="goodsInfo?.product_specification.length">
         <h3 class="title">产品规格</h3>
-        <ul class="lists" v-for="(item, index) in goodsDetailSpec" :key="index">
+        <ul
+          class="lists"
+          v-for="(item, index) in goodsInfo?.product_specification"
+          :key="index"
+        >
           <li class="list">
             <p class="label">{{ item.label }}</p>
             <p class="detail">{{ item.price }}</p>
@@ -218,18 +226,18 @@
       </div>
       <div class="imgs">
         <img
-          v-for="(item, index) in goodsDetailImgs"
+          v-for="(item, index) in goodsInfo?.goods_desc_array"
           :key="index"
           @click="previewDetailImgs(index)"
           style="width: 100%"
-          :src="item"
+          :src="item.url"
         />
       </div>
     </div>
 
-    <SplitLine title="为您推荐" v-if="recommendGoods.length" />
-    <div class="recommend-goods" v-if="recommendGoods.length">
-      <GoodsList :list="recommendGoods" />
+    <SplitLine title="为您推荐" v-if="goodsInfo?.recommend_goods.length" />
+    <div class="recommend-goods" v-if="goodsInfo?.recommend_goods.length">
+      <GoodsList :list="goodsInfo?.recommend_goods" />
     </div>
 
     <div class="nomore-tip">到底啦~</div>
@@ -248,6 +256,19 @@
       <div class="direct-buy-btn" @click="showSpecPopup(2)">立即购买</div>
     </div>
 
+    <Popup v-model="specPopupVisible" position="bottom" closeable round>
+      <SpecPopup
+        :actionType="actionType"
+        :goodsId="goodsId"
+        :goodsImg="goodsInfo?.default_attr_img || ''"
+        :goodsName="goodsInfo?.goods_name || ''"
+        :basePrice="shopPrice || ''"
+        :stock="goodsInfo?.goods_number || 0"
+        :specInfo="goodsInfo?.attr_goods_info"
+        @commitSelectedSpec="setSpecTips"
+        @hideSpecPopup="specPopupVisible = false"
+      />
+    </Popup>
     <Popup v-model="bonusPopupVisible" position="bottom" closeable round>
       <div class="bonus-list" :class="{ 'is-iphoneX': isIphoneX }">
         <BonusItem
@@ -257,29 +278,23 @@
         />
       </div>
     </Popup>
-
     <Popup v-model="promotionPopupVisible" position="bottom" closeable round>
       <div class="promotion-list" :class="{ 'is-iphoneX': isIphoneX }">
         <PromotionItem
-          v-for="(item, index) in goodsInfo?.bonus_info"
+          v-for="(item, index) in goodsInfo?.manjian"
           :key="index"
           :item="item"
         />
       </div>
     </Popup>
-
-    <Popup v-model="specPopupVisible" position="bottom" closeable round>
-      <SpecPopup
-        :actionType="actionType"
-        :goodsId="goodsId"
-        :goodsImg="goodsImg"
-        :goodsName="goodsInfo?.goods_name || ''"
-        :basePrice="shopPrice"
-        :stock="stock"
-        :specInfo="specInfo"
-        @commitSelectedSpec="setSpecTips"
-        @hideSpecPopup="hideSpecPopup"
-      />
+    <Popup v-model="servicePopupVisible" position="bottom" closeable round>
+      <div class="service-list" :class="{ 'is-iphoneX': isIphoneX }">
+        <ServiceItem
+          v-for="(item, index) in goodsInfo?.goods_service"
+          :key="index"
+          :item="item"
+        />
+      </div>
     </Popup>
   </div>
 </template>
@@ -293,6 +308,7 @@ import PriceBar from "./components/PriceBar.vue";
 import GoodItem from "./components/GoodItem.vue";
 import BonusItem from "./components/BonusItem.vue";
 import PromotionItem from "./components/PromotionItem.vue";
+import ServiceItem from "./components/ServiceItem.vue";
 
 import { computed, onMounted, onUnmounted, ref } from "vue";
 import { isIphoneX } from "@/utils/envJudgment";
@@ -314,8 +330,12 @@ const showNavBar = ref(false);
 const detailActive = ref(false);
 const countDown = ref(0);
 const unStart = ref(false);
+const specTips = ref("");
+const actionType = ref(0);
+const specPopupVisible = ref(false);
 const bonusPopupVisible = ref(false);
 const promotionPopupVisible = ref(false);
+const servicePopupVisible = ref(false);
 
 const shopPrice = computed(() =>
   goodsInfo.value?.seckill
@@ -378,6 +398,11 @@ const previewDetailImgs = (startPosition: number) => {
     goodsInfo.value?.goods_desc_array.map((item) => item.url) || [];
   ImagePreview({ images, startPosition });
 };
+const showSpecPopup = (type: number) => {
+  actionType.value = type;
+  specPopupVisible.value = true;
+};
+const setSpecTips = (tips: string) => (specTips.value = tips);
 
 const navBack = () => router.go(-1);
 const navToCart = () => router.push("/mall/cart");
@@ -400,155 +425,11 @@ const scrollToDetail = () =>
   window.scrollTo({ top: detailTop + 1, left: 0, behavior: "smooth" });
 
 // import { mapState } from "vuex";
-// import GoodsService from "./utils/goodsService";
-
-// let goodsService = new GoodsService();
-
-// export default {
-//   data() {
-//     return {
-//       goodsId: this.$route.query.id,
-//       goodsType: 0, // 商品类型：0-普通 1-特卖 2-促销 6-秒杀
-//       goodsName: "",
-//       goodsImg: "",
-//       keywords: "",
-//       noticeInfo: "",
-//       shopPrice: "",
-//       marketPrice: "",
-//       stock: 0,
-//       banner: [],
-//       midBanner: [],
-//       curBannerIdx: 0,
-//       salesVolume: 0,
-//       progressInfo: null,
-//       spikeInfo: null,
-//       countDown: 0,
-//       unStart: false,
-//       bonusLists: [],
-//       promotionLists: [],
-//       serviceLists: [],
-//       supplierInfo: null,
-//       goodsDetailSpec: [],
-//       goodsDetailImgs: [],
-//       recommendGoods: [],
-//       specInfo: null,
-//       specTips: "",
-//       actionType: 0,
-//       // 页面滚动
-//       showNavBar: false,
-//       detailActive: false,
-//       specPopupVisible: false,
-//     };
-//   },
-
 //   computed: {
 //     ...mapState({
 //       cartCount: (state) => state.cartCount,
 //     }),
 //   },
-
-//   created() {
-//     this.setGoodsInfo();
-//   },
-
-//   mounted() {
-//     window.addEventListener("scroll", this.handleScroll, true);
-//     this.detailTop = this.$refs.detail.$el.getBoundingClientRect().top;
-//   },
-
-//   unmounted() {
-//     if (this.countDownInterval) clearInterval(this.countDownInterval);
-//     window.removeEventListener("scroll", this.handleScroll);
-//   },
-
-//   methods: {
-//     async setGoodsInfo() {
-//       const {
-//         img,
-//         mid_banner,
-//         goods_type,
-//         goods_name,
-//         default_attr_img,
-//         seckill,
-//         promote_price,
-//         shop_price,
-//         market_price,
-//         ghost_count,
-//         goods_number,
-//         keywords,
-//         noti_info,
-//         special_buy_status,
-//         bonus_info,
-//         manjian,
-//         goods_service,
-//         supplier_info,
-//         product_specification,
-//         goods_desc_array,
-//         recommend_goods,
-//         attr_goods_info,
-//       } = await goodsService.getGoodsInfo(this.goodsId);
-
-//       this.goodsType = +goods_type;
-//       this.goodsName = goods_name;
-//       this.goodsImg = default_attr_img;
-//       this.shopPrice = seckill
-//         ? seckill.sec_price
-//         : Number(promote_price)
-//         ? promote_price
-//         : shop_price;
-//       this.marketPrice = market_price;
-//       this.salesVolume = ghost_count;
-//       this.stock = goods_number;
-//       this.keywords = keywords;
-//       this.noticeInfo = noti_info;
-//       (this.bonusLists = bonus_info), (this.promotionLists = manjian);
-//       this.serviceLists = goods_service;
-//       this.supplierInfo = supplier_info;
-//       this.goodsDetailSpec = product_specification;
-//       this.recommendGoods = recommend_goods;
-//       this.specInfo = attr_goods_info;
-
-//       img.forEach((item, index) => {
-//         this.$set(this.banner, index, item.thumb_url);
-//       });
-//       this.midBanner = mid_banner;
-
-//       goods_desc_array.forEach((item, index) => {
-//         this.$set(this.goodsDetailImgs, index, item.url);
-//       });
-
-//       if (special_buy_status && special_buy_status.total_count) {
-//         const { sale_count, total_count } = special_buy_status || {};
-//         this.progressInfo = {
-//           percent: sale_count / total_count,
-//           stock: total_count - sale_count,
-//         };
-//       }
-
-//       this.spikeInfo = seckill;
-//       if (seckill) {
-//         let { begin_time_format, end_time_format } = seckill;
-//         this.setCountDown(+begin_time_format, +end_time_format);
-//       }
-//     },
-
-//     setSpecTips(tips) {
-//       this.specTips = tips;
-//     },
-
-//     showBonusModal() {},
-//     showPromotionModal() {},
-//     showServiceModal() {},
-//     showSpecPopup(type) {
-//       this.actionType = type;
-//       this.specPopupVisible = true;
-//     },
-//     hideSpecPopup() {
-//       this.specPopupVisible = false;
-//     },
-
-//   },
-// };
 </script>
 
 <style lang="stylus" scoped>
@@ -949,7 +830,7 @@ const scrollToDetail = () =>
     text-align center
     background linear-gradient(270deg, #FFD699 0%, #FFE5BD 100%)
     border-radius .12rem
-.bonus-list, .promotion-list
+.bonus-list, .promotion-list, .service-list
   padding .24px
   &.is-iphoneX
     padding-bottom .4rem

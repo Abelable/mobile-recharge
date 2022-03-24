@@ -12,7 +12,7 @@
     <ul class="spec-lists">
       <li
         class="spec-list"
-        v-for="(item, index) in specInfo.specification"
+        v-for="(item, index) in specInfo?.specification"
         :key="index"
       >
         <div class="split-line">{{ item.name }}</div>
@@ -67,13 +67,13 @@ import { SpecDetailInfo, SpecInfo } from "@/api/common";
 
 interface PropsType {
   actionType: number;
-  recId: number;
+  recId?: number;
   goodsId: string;
   goodsImg: string;
   goodsName: string;
   basePrice: string;
   stock: number;
-  specInfo: SpecInfo;
+  specInfo: SpecInfo | undefined;
 }
 
 const router = useRouter();
@@ -97,7 +97,7 @@ const selectSpec = (info: SpecDetailInfo, index: number) => {
   specPriceArr[index] = format_price;
   specLabelArr[index] = label;
   if (
-    specIdArr.length === props.specInfo.specification.length &&
+    specIdArr.length === props.specInfo?.specification.length &&
     !specIdArr.includes(undefined)
   ) {
     // 计算价格
@@ -144,7 +144,7 @@ const directBuy = async () => {
 const editCartSpec = async () => {
   if (check()) {
     await api.updateCartGoods({
-      rec_id: props.recId,
+      rec_id: props.recId || 0,
       num: count.value,
       spec: specIdArr.join(),
     });
@@ -153,8 +153,8 @@ const editCartSpec = async () => {
 
 const check = () => {
   let showToastTitle = "";
-  const specification = props.specInfo.specification;
-  if (specification.length) {
+  const specification = props.specInfo?.specification;
+  if (specification?.length) {
     if (specIdArr.length < specification.length) {
       showToastTitle = `请选择${specification[specIdArr.length].name}`;
     } else {

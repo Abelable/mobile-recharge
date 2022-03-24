@@ -123,6 +123,10 @@ export interface GoodsSpikeInfo {
   end_time_format: string;
   sec_price: string;
 }
+export interface GoodsServiceInfo {
+  name: string;
+  explains: string;
+}
 
 export interface GoodsDetailInfo {
   goods_name: string;
@@ -140,7 +144,7 @@ export interface GoodsDetailInfo {
   goods_number: number;
   bonus_info: BonusInfo[];
   manjian: PromotionInfo[];
-  goods_service: [];
+  goods_service: GoodsServiceInfo[];
   supplier_info: SupplierInfo | null;
   product_specification: { label: string; price: string }[];
   recommend_goods: GoodsInfo[];
