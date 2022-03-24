@@ -1,6 +1,9 @@
 <template>
   <div class="goods-item" @click="navToGoodsDetail">
-    <img style="width: 3.42rem; height: 3.42rem" :src="item?.goods_thumb" />
+    <img
+      style="width: 3.42rem; height: 3.42rem"
+      :src="item?.goods_thumb || item.original_img"
+    />
     <img
       class="spike-icon"
       v-if="item?.is_seckill"
@@ -38,7 +41,7 @@ const navToGoodsDetail = () =>
   router.push({
     path: "/mall/goods",
     query: {
-      id: props.item.goods_id,
+      id: props.item.id,
     },
   });
 </script>

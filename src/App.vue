@@ -9,10 +9,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watchEffect } from "vue";
-import { useRoute } from "vue-router";
 import TabBar from "@/components/TabBar.vue";
 
+import { ref, watchEffect, onMounted } from "vue";
+import { useStore } from "vuex";
+import { useRoute } from "vue-router";
+
+const store = useStore();
 const route = useRoute();
 const tabBarVisible = ref(false);
 
@@ -21,6 +24,8 @@ watchEffect(() => {
     route.path
   );
 });
+
+onMounted(() => store.dispatch("updateCartCount"));
 </script>
 
 <style lang="stylus">

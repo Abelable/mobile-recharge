@@ -61,7 +61,7 @@ const toggle = () => (showDetail.value = !showDetail.value);
       font-size: .24rem
       font-weight: 500
       border: .02rem solid #F32D59
-      border-radius: .24rem .24rem. 4rem .24rem
+      border-radius: .24rem .24rem .04rem .24rem
   .promotion-time
     margin-top: .06rem
     font-size: .24rem

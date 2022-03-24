@@ -46,6 +46,9 @@ export const uploadFile = async (content: string): Promise<string[]> =>
     data: { "file[content]": content },
   });
 
+export const getCartCount = async (): Promise<{ cart_number: string }> =>
+  await http("/api/v4/cart/cartNum");
+
 export const addCart = async (
   goods_id: string,
   spec: (string | undefined)[],
@@ -157,7 +160,7 @@ export const getGoodsInfo = async (
   goods_id: string
 ): Promise<GoodsDetailInfo> =>
   await http("?r=tbb/goods-detail/index", {
-    method: " POST",
+    method: "POST",
     data: { goods_id },
   });
 

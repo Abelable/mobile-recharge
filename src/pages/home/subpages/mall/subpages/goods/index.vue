@@ -311,10 +311,12 @@ import PromotionItem from "./components/PromotionItem.vue";
 import ServiceItem from "./components/ServiceItem.vue";
 
 import { computed, onMounted, onUnmounted, ref } from "vue";
-import { isIphoneX } from "@/utils/envJudgment";
+import { useStore } from "vuex";
 import { useRoute, useRouter } from "vue-router";
+import { isIphoneX } from "@/utils/envJudgment";
 import { getGoodsInfo, GoodsDetailInfo } from "@/api/common";
 
+const stote = useStore();
 const route = useRoute();
 const router = useRouter();
 
@@ -337,6 +339,7 @@ const bonusPopupVisible = ref(false);
 const promotionPopupVisible = ref(false);
 const servicePopupVisible = ref(false);
 
+const cartCount = computed(() => stote.state.cartCount);
 const shopPrice = computed(() =>
   goodsInfo.value?.seckill
     ? goodsInfo.value?.seckill.sec_price
@@ -423,13 +426,6 @@ const scrollToTop = () =>
   window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
 const scrollToDetail = () =>
   window.scrollTo({ top: detailTop + 1, left: 0, behavior: "smooth" });
-
-// import { mapState } from "vuex";
-//   computed: {
-//     ...mapState({
-//       cartCount: (state) => state.cartCount,
-//     }),
-//   },
 </script>
 
 <style lang="stylus" scoped>
