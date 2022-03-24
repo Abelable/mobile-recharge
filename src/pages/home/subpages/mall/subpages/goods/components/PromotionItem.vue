@@ -16,14 +16,12 @@
       >
         <div>详情</div>
         <img
-          wx:if="{{!item.show_detail}}"
-          style="margin: 0 0.08rem; width: 0.12rem; height: 0.24rem"
-          src="https://img.ubo.vip/mp/selection/goods-detail/i-promotion-list/open-icon.png"
-        />
-        <img
-          wx:if="{{item.show_detail}}"
-          style="margin-left: 0.04rem; width: 0.24rem; height: 0.12rem"
-          src="https://img.ubo.vip/mp/selection/goods-detail/i-promotion-list/opened-icon.png"
+          class="icon"
+          :class="{ show: item.show_detail }"
+          :src="`https://img.ubo.vip/mp/selection/goods-detail/i-promotion-list/${
+            item.show_detail ? 'opened' : 'open'
+          }-icon.png`"
+          alt=""
         />
       </div>
     </div>
@@ -75,6 +73,14 @@ defineProps<{ item: PromotionInfo }>();
     font-size: .24rem
     font-weight: 500
     color: #999
+    .icon
+      margin: 0 0.08rem
+      width: 0.12rem
+      height: 0.24rem
+      &.show
+        margin-left: 0.04rem
+        width: 0.24rem
+        height: 0.12rem
   .promotion-item-detail
     font-weight: 500
     .detail-title
