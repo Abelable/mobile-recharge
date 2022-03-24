@@ -33,7 +33,6 @@ const receive = () => {
 </script>
 
 <style lang="stylus" scoped>
-
 .bonus-item
   position: relative
   display: flex

@@ -85,28 +85,30 @@
       </div>
       <div class="goods-name">
         <span
-          v-if="goodsType === 1 || goodsType === 1"
+          v-if="goodsInfo?.goods_type === '1' || goodsInfo?.goods_type === '2'"
           class="goods-tag"
-          :class="{ sale: goodsType === 1 }"
-          >{{ goodsType === 1 ? "特卖" : "品质优选" }}</span
+          :class="{ sale: goodsInfo?.goods_type === '1' }"
+          >{{ goodsInfo?.goods_type === "1" ? "特卖" : "品质优选" }}</span
         >
-        <span>{{ goodsName }}</span>
+        <span>{{ goodsInfo?.goods_name }}</span>
       </div>
-      <div class="labels" v-if="keywords">{{ keywords }}</div>
-      <div class="alarm-tip" v-if="noticeInfo">
+      <div class="labels" v-if="goodsInfo?.keywords">
+        {{ goodsInfo?.keywords }}
+      </div>
+      <div class="alarm-tip" v-if="goodsInfo?.noti_info">
         <img
           class="icon"
           src="https://img.ubo.vip/mp/selection/goods-detail/alarm-icon.png"
         />
-        <span>{{ noticeInfo }}</span>
+        <span>{{ goodsInfo?.noti_info }}</span>
       </div>
     </div>
 
-    <div class="promotion-bar" v-if="promotionLists.length">
+    <div class="promotion-bar" v-if="goodsInfo?.manjian.length">
       <ul class="tips">
         <li
           class="tip"
-          v-for="(item, index) in promotionLists.slice(0, 2)"
+          v-for="(item, index) in goodsInfo?.manjian.slice(0, 2)"
           :key="index"
         >
           <div class="icon">{{ item.tip_content }}</div>
@@ -141,7 +143,7 @@
       />
     </div>
 
-    <div class="spec-bar" v-if="goodsType !== 6">
+    <div class="spec-bar" v-if="goodsInfo?.goods_type !== '6'">
       <p class="name">规格</p>
       <div class="btn" @click="showSpecPopup(0)">
         <p class="desc">{{ specTips || "请选择" }}</p>
@@ -256,12 +258,22 @@
       </div>
     </Popup>
 
+    <Popup v-model="bonusPopupVisible" position="bottom" closeable round>
+      <div class="promotion-list" :class="{ 'is-iphoneX': isIphoneX }">
+        <PromotionItem
+          v-for="(item, index) in goodsInfo?.bonus_info"
+          :key="index"
+          :item="item"
+        />
+      </div>
+    </Popup>
+
     <Popup v-model="specPopupVisible" position="bottom" closeable round>
       <SpecPopup
         :actionType="actionType"
         :goodsId="goodsId"
         :goodsImg="goodsImg"
-        :goodsName="goodsName"
+        :goodsName="goodsInfo?.goods_name || ''"
         :basePrice="shopPrice"
         :stock="stock"
         :specInfo="specInfo"
@@ -935,7 +947,7 @@ const scrollToDetail = () =>
     text-align center
     background linear-gradient(270deg, #FFD699 0%, #FFE5BD 100%)
     border-radius .12rem
-.bonus-list
+.bonus-list, .promotion-list
   padding .24px
   &.is-iphoneX
     padding-bottom .4rem
