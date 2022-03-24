@@ -63,17 +63,8 @@ import { ref, reactive } from "vue";
 import { useRouter } from "vue-router";
 import { isIphoneX } from "@/utils/envJudgment";
 import * as api from "@/api/common";
+import { SpecDetailInfo, SpecInfo } from "@/api/common";
 
-interface SpecDetailInfo {
-  id: number;
-  label: string;
-  goods_attr_thumb: string;
-  format_price: string;
-}
-interface SpecInfo {
-  specification: { name: string; values: SpecDetailInfo[] }[];
-  attr_num: { [key in string]: number };
-}
 interface PropsType {
   actionType: number;
   recId: number;
@@ -96,7 +87,7 @@ const specPriceArr: string[] = [];
 const specImg = ref("");
 const specPrice = ref(0);
 const specStock = ref(0);
-const specIdArr = reactive<(number | undefined)[]>([]);
+const specIdArr = reactive<(string | undefined)[]>([]);
 const count = ref(1);
 
 const selectSpec = (info: SpecDetailInfo, index: number) => {
@@ -133,6 +124,8 @@ const finish = () => {
   }
 };
 
+// import { mapActions } from "vuex";
+//     ...mapActions(["updateCartCount"]),
 const addCart = async () => {
   if (check()) {
     await api.addCart(props.goodsId, specIdArr, count.value, 0);
@@ -174,9 +167,6 @@ const check = () => {
   if (showToastTitle) Toast(showToastTitle);
   return !showToastTitle;
 };
-
-// import { mapActions } from "vuex";
-//     ...mapActions(["updateCartCount"]),
 </script>
 
 <style lang="stylus" scoped>

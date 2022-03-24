@@ -48,7 +48,7 @@ export const uploadFile = async (content: string): Promise<string[]> =>
 
 export const addCart = async (
   goods_id: string,
-  spec: (number | undefined)[],
+  spec: (string | undefined)[],
   num: number,
   rec_type = 10
 ) =>
@@ -71,7 +71,87 @@ export const updateCartGoods = async ({
     data: { rec_id, num, spec },
   });
 
-export const getGoodsInfo = async (goods_id: string) =>
+export interface BonusInfo {
+  type_id: string;
+  type_name: string;
+  limit_tip: string;
+  limit_time: string;
+  type_money: string;
+  is_have: 0 | 1;
+}
+export interface PromotionInfo {
+  tip_content: string;
+  show_name: string;
+  limit_time: string;
+  rules: string;
+  show_detail: 0 | 1;
+}
+export interface GoodsServiceInfo {
+  name: string;
+  explains: string;
+}
+export interface SupplierInfo {
+  supplier_id: string;
+  supplier_name: string;
+  supplier_img: string;
+  is_enterprise: 0 | 1;
+  top_goods: GoodsInfo[];
+}
+
+export interface SpecDetailInfo {
+  id: string;
+  label: string;
+  goods_attr_thumb: string;
+  format_price: string;
+}
+export interface SpecInfo {
+  specification: { name: string; values: SpecDetailInfo[] }[];
+  attr_num: { [key in string]: number };
+}
+
+export interface GoodsSpecialInfo {
+  sale_count: number;
+  total_count: number;
+  allow_buy_time: string;
+  end_time: string;
+}
+export interface GoodsSpikeInfo {
+  is_remind: 0 | 1;
+  sec_limit: string;
+  all_order_number: string;
+  begin_time_format: string;
+  end_time_format: string;
+  sec_price: string;
+}
+
+export interface GoodsDetailInfo {
+  goods_name: string;
+  goods_type: string;
+  keywords: string;
+  noti_info: string;
+  img: { thumb_url: string }[];
+  default_attr_img: string;
+  mid_banner: { ad_code: string }[];
+  goods_desc_array: { url: string }[];
+  promote_price: string;
+  shop_price: string;
+  market_price: string;
+  ghost_count: number;
+  goods_number: number;
+  bonus_info: BonusInfo[];
+  manjian: PromotionInfo[];
+  goods_service: [];
+  supplier_info: SupplierInfo | null;
+  product_specification: { label: string; price: string }[];
+  recommend_goods: GoodsInfo[];
+  attr_goods_info: SpecInfo;
+  special_buy_status: GoodsSpecialInfo | null;
+  seckill: GoodsSpikeInfo | null;
+}
+
+export const getGoodsInfo = async (
+  goods_id: string
+): Promise<GoodsDetailInfo> =>
   await http("?r=tbb/goods-detail/index", {
     method: " POST",
     data: { goods_id },

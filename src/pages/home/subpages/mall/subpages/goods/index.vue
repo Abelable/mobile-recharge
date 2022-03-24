@@ -199,7 +199,11 @@
       </div>
     </div>
 
-    <SplitLine v-show="goodsDetailImgs.length" ref="detail" title="宝贝详情" />
+    <SplitLine
+      v-show="goodsDetailImgs.length"
+      ref="detailRef"
+      title="宝贝详情"
+    />
     <div class="goods-detail" v-if="goodsDetailImgs.length">
       <div class="spec-info" v-if="goodsDetailSpec.length">
         <h3 class="title">产品规格</h3>
@@ -266,7 +270,55 @@ import GoodsList from "@/components/GoodsList.vue";
 import PriceBar from "./components/PriceBar.vue";
 import GoodItem from "./components/GoodItem.vue";
 
+import { onMounted, onUnmounted, ref } from "vue";
 import { isIphoneX } from "@/utils/envJudgment";
+import { useRoute, useRouter } from "vue-router";
+import { getGoodsInfo, GoodsDetailInfo } from "@/api/common";
+
+const route = useRoute();
+const router = useRouter();
+
+let scrollTop = 0;
+let detailTop = 0;
+let countDownInterval = 0;
+
+const detailRef = ref();
+const goodsId = ref("");
+const goodsInfo = ref<GoodsDetailInfo>();
+const showNavBar = ref(false);
+const detailActive = ref(false);
+
+onMounted(async () => {
+  goodsId.value = route.query.id as string;
+  goodsInfo.value = await getGoodsInfo(goodsId.value);
+  detailTop = detailRef.value.$el.getBoundingClientRect().top;
+  window.addEventListener("scroll", handleScroll, true);
+});
+
+onUnmounted(() => {
+  if (countDownInterval) clearInterval(countDownInterval);
+  window.removeEventListener("scroll", handleScroll);
+});
+
+const navBack = () => router.go(-1);
+const navToCart = () => router.push("/mall/cart");
+const navToShop = () => router.push("/mall/goods/shop");
+
+const handleScroll = () => {
+  scrollTop =
+    window.pageYOffset ||
+    document.documentElement.scrollTop ||
+    document.body.scrollTop;
+  if (scrollTop >= 100 && !showNavBar.value) showNavBar.value = true;
+  else if (scrollTop < 100 && showNavBar.value) showNavBar.value = false;
+  if (scrollTop >= detailTop && !detailActive.value) detailActive.value = true;
+  else if (scrollTop < detailTop && detailActive.value)
+    detailActive.value = false;
+};
+const scrollToTop = () =>
+  window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+const scrollToDetail = () =>
+  window.scrollTo({ top: detailTop + 1, left: 0, behavior: "smooth" });
 
 // import { mapState } from "vuex";
 // import GoodsService from "./utils/goodsService";
@@ -442,31 +494,6 @@ import { isIphoneX } from "@/utils/envJudgment";
 //       this.specPopupVisible = false;
 //     },
 
-//     handleScroll() {
-//       this.scrollTop =
-//         window.pageYOffset ||
-//         document.documentElement.scrollTop ||
-//         document.body.scrollTop;
-//       if (this.scrollTop >= 100 && !this.showNavBar) this.showNavBar = true;
-//       else if (this.scrollTop < 100 && this.showNavBar) this.showNavBar = false;
-//       if (this.scrollTop >= this.detailTop && !this.detailActive)
-//         this.detailActive = true;
-//       else if (this.scrollTop < this.detailTop && this.detailActive)
-//         this.detailActive = false;
-//     },
-//     scrollToTop() {
-//       window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
-//     },
-//     scrollToDetail() {
-//       window.scrollTo({ top: this.detailTop + 1, left: 0, behavior: "smooth" });
-//     },
-//     navToCart() {
-//       this.$router.push("/mall/cart");
-//     },
-//     navToShop() {},
-//     navBack() {
-//       this.$router.go(-1);
-//     },
 //   },
 // };
 </script>
