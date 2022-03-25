@@ -4,55 +4,45 @@
 
     <div class="info-wrap">
       <div class="avatar-wrap">
-        <img class="avatar" :src="avatar">
-        <img class="firm-icon" v-if="isFirm" src="https://img.ubo.vip/mp/selection/goods-detail/firm-icon.png">
+        <img class="avatar" :src="supplierInfo?.supplier_img" />
+        <img
+          class="firm-icon"
+          v-if="supplierInfo?.is_enterprise"
+          src="https://img.ubo.vip/mp/selection/goods-detail/firm-icon.png"
+        />
       </div>
       <div class="name-wrap">
-        <div class="name">{{name}}</div>
-        <div class="firm-tips" v-if="isFirm">有播企业店铺认证</div>
+        <div class="name">{{ supplierInfo?.supplier_name }}</div>
+        <div class="firm-tips" v-if="supplierInfo?.is_enterprise">
+          有播企业店铺认证
+        </div>
       </div>
     </div>
 
     <SplitLine title="店铺商品" />
-    <div class="goods-lists" v-if="goodsLists.length">
-      <FallFlow :lists="goodsLists"/>
+    <div class="goods-lists" v-if="supplierInfo?.top_goods.length">
+      <GoodsLists :list="supplierInfo?.top_goods" />
     </div>
   </div>
 </template>
 
-<script>
-import NavBar from '@/components/NavBar'
-import SplitLine from '@/components/SplitLine'
-import FallFlow from '../../components/FallFlow'
+<script setup lang="ts">
+import NavBar from "@/components/NavBar.vue";
+import SplitLine from "@/components/SplitLine.vue";
+import GoodsLists from "@/components/GoodsList.vue";
 
-import ShopService from './utils/shopService'
+import { onMounted, ref } from "vue";
+import { useRoute } from "vue-router";
+import { getSupplierInfo, SupplierInfo } from "./utils/api";
 
-export default {
-  components: { NavBar, SplitLine, FallFlow },
+const route = useRoute();
 
-  data() {
-    return {
-      avatar: '',
-      name: '',
-      isFirm: false,
-      goodsLists: []
-    }
-  },
+const supplierInfo = ref<SupplierInfo>();
 
-  created() {
-    this.setSupplierInfo(this.$route.query.id)
-  },
-
-  methods: {
-    async setSupplierInfo(id) {
-      const { supplier_img, supplier_name, is_enterprise, top_goods } = await new ShopService().getSupplierInfo(id)
-      this.avatar = supplier_img
-      this.name = supplier_name
-      this.isFirm = is_enterprise
-      this.goodsLists = top_goods
-    }
-  }
-}
+onMounted(async () => {
+  const id = route.query.id as string;
+  supplierInfo.value = await getSupplierInfo(id);
+});
 </script>
 
 <style lang="stylus" scoped>
