@@ -63,7 +63,7 @@
 <script setup lang="ts">
 import { SwipeCell, Checkbox, Stepper } from "vant";
 
-import { toRefs, watchEffect } from "vue";
+import { toRefs, watch } from "vue";
 import { useRouter } from "vue-router";
 import _ from "lodash";
 import { CartGoodsInfo } from "../utils/api";
@@ -86,19 +86,25 @@ const emit = defineEmits([
 
 const { is_checked_goods, goods_number } = toRefs(props.item);
 
-watchEffect(() => {
+watch(is_checked_goods, () =>
   emit("toggleGoodsChecked", {
     val: is_checked_goods.value,
     cartIdx: props.cartIdx,
     goodsIdx: props.goodsIdx,
-  });
-  debouncedEditCount(goods_number.value);
-});
+  })
+);
+
+watch(goods_number, () => debouncedEditCount());
 
 const debouncedEditCount = _.debounce(
-  (count: number) => emit("editCount", { recId: props.item.rec_id, count }),
+  () =>
+    emit("editCount", {
+      recId: props.item.rec_id,
+      count: goods_number.value,
+    }),
   300
 );
+
 const editSpec = async () => {
   const goodsInfo = await getGoodsInfo(props.item.goods_id);
   emit("editSpec", {
