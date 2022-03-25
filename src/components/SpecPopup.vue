@@ -129,12 +129,11 @@ const finish = () => {
 const addCart = async () => {
   if (check()) {
     await api.addCart(props.goodsId, specIdArr, count.value, 0);
-    updateCartCount();
+    store.dispatch("updateCartCount");
     emit("hideSpecPopup");
     Toast("添加成功");
   }
 };
-const updateCartCount = () => store.dispatch("updateCartCount");
 const directBuy = async () => {
   if (check()) {
     await api.addCart(props.goodsId, specIdArr, count.value);

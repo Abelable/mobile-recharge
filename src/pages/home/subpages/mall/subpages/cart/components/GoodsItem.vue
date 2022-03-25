@@ -1,25 +1,45 @@
 <template>
-  <div class="goods-list">
+  <div class="goods-item">
     <SwipeCell right-width="80">
       <div class="inner">
-        <Checkbox v-model="item.is_checked_goods" :disabled="!deleteBtnVision && (item.is_seckill || !item.product_number)" checked-color="#ee0a24" />
-        <img class="goods-img" :src="item.goods_thumb" @click="navToGoods">
+        <Checkbox
+          v-model="is_checked_goods"
+          :disabled="
+            !deleteBtnVisible && (item.is_seckill || !item.product_number)
+          "
+          checked-color="#ee0a24"
+        />
+        <img class="goods-img" :src="item.goods_thumb" @click="navToGoods" />
         <div class="goods-content">
-          <div class="goods-name" :class="{ invalid: !item.product_number }">{{item.goods_name}}</div>
+          <div class="goods-name" :class="{ invalid: !item.product_number }">
+            {{ item.goods_name }}
+          </div>
           <template v-if="item.product_number && !item.is_seckill">
-            <div class="goods-sku-wrap" v-if="item.goods_attr" @click="editSpec">
-              <span class="goods-sku">{{item.goods_attr}}</span>
-              <img class="sku-edit-icon" src="https://img.ubo.vip/mp/to-icon.png">
+            <div
+              class="goods-sku-wrap"
+              v-if="item.goods_attr"
+              @click="editSpec"
+            >
+              <span class="goods-sku">{{ item.goods_attr }}</span>
+              <img
+                class="sku-edit-icon"
+                src="https://img.ubo.vip/mp/to-icon.png"
+              />
             </div>
             <div class="goods-price-wrap">
               <div class="goods-price">
                 <div class="price-shop">
                   <span>¥</span>
-                  <span style="font-size: .36rem;">{{item.goods_price}}</span>
+                  <span style="font-size: 0.36rem">{{ item.goods_price }}</span>
                 </div>
-                <div class="price-market">¥{{item.market_price}}</div>
+                <div class="price-market">¥{{ item.market_price }}</div>
               </div>
-              <Stepper v-model="item.goods_number" min="1" :max="item.product_number" integer />
+              <Stepper
+                v-model="goods_number"
+                min="1"
+                :max="item.product_number"
+                integer
+              />
             </div>
           </template>
           <div class="invalid-tips-wrap" v-if="!item.product_number">
@@ -27,7 +47,9 @@
             <div class="reset-spec-btn" @click="editSpec">重选</div>
           </div>
           <div class="invalid-tips-wrap" v-if="item.is_seckill">
-            <div class="invalid-tips" @click="navToGoods">秒杀中，请点击前往详情页下单></div>
+            <div class="invalid-tips" @click="navToGoods">
+              秒杀中，请点击前往详情页下单>
+            </div>
           </div>
         </div>
       </div>
@@ -38,57 +60,73 @@
   </div>
 </template>
 
-<script>
-import { SwipeCell, Checkbox, Stepper } from 'vant'
+<script setup lang="ts">
+import { SwipeCell, Checkbox, Stepper } from "vant";
 
-import _ from 'lodash'
-import CartService from '../utils/cartService'
+import { toRefs, watchEffect } from "vue";
+import { useRouter } from "vue-router";
+import _ from "lodash";
+import { CartGoodsInfo } from "../utils/api";
+import { getGoodsInfo } from "@/api/common";
 
-export default {
-  components: { SwipeCell, Checkbox, Stepper },
+const router = useRouter();
 
-  props: {
-    item: Object,
-    cartIdx: Number,
-    goodsIdx: Number,
-    deleteBtnVision: Boolean
-  },
+const props = defineProps<{
+  item: CartGoodsInfo;
+  cartIdx: number;
+  goodsIdx: number;
+  deleteBtnVisible: boolean;
+}>();
+const emit = defineEmits([
+  "toggleGoodsChecked",
+  "editCount",
+  "editSpec",
+  "deleteGoods",
+]);
 
-  watch: {
-    'item.is_checked_goods'(truthy) {
-      this.$emit('toggleGoodsChecked', { val: truthy, cartIdx: this.cartIdx, goodsIdx: this.goodsIdx })
-    },
-    'item.goods_number'(count) {
-      this.debouncedEditCount(count)
-    }
-  },
+const { is_checked_goods, goods_number } = toRefs(props.item);
 
-  methods: {
-    deleteGoods() {
-      this.$emit('deleteGoods', { id: this.item.rec_id, cartIdx: this.cartIdx, goodsIdx: this.goodsIdx })
-    },
+watchEffect(() => {
+  emit("toggleGoodsChecked", {
+    val: is_checked_goods.value,
+    cartIdx: props.cartIdx,
+    goodsIdx: props.goodsIdx,
+  });
+  debouncedEditCount(goods_number.value);
+});
 
-    navToGoods() {
-      this.$router.push({
-        path: '/mall/goods',
-        query: { id: this.item.item.goods_id }
-      })
-    },
-
-    async editSpec() {
-      const { goods_id: id, default_attr_img: img, goods_name: name, shop_price: basePrice, goods_number: stock, attr_goods_info: specInfo } = await new CartService().getGoodsInfo(this.item.goods_id)
-      this.$emit('editSpec', { actionType: 3, id, recId: this.item.rec_id, img, name, basePrice, stock, specInfo })
-    },
-
-    debouncedEditCount: _.debounce(function(count) {
-      this.$emit('editCount', { recId: this.item.rec_id, count })
-    }, 300)
-  }
-}
+const debouncedEditCount = _.debounce(
+  (count: number) => emit("editCount", { recId: props.item.rec_id, count }),
+  300
+);
+const editSpec = async () => {
+  const goodsInfo = await getGoodsInfo(props.item.goods_id);
+  emit("editSpec", {
+    actionType: 3,
+    id: props.item.goods_id,
+    recId: props.item.rec_id,
+    img: goodsInfo.default_attr_img,
+    name: goodsInfo.goods_name,
+    basePrice: goodsInfo.shop_price,
+    stock: goodsInfo.goods_number,
+    specInfo: goodsInfo.attr_goods_info,
+  });
+};
+const deleteGoods = () =>
+  emit("deleteGoods", {
+    id: props.item.rec_id,
+    cartIdx: props.cartIdx,
+    goodsIdx: props.goodsIdx,
+  });
+const navToGoods = () =>
+  router.push({
+    path: "/mall/goods",
+    query: { id: props.item.goods_id },
+  });
 </script>
 
 <style lang="stylus" scoped>
-.goods-list
+.goods-item
   margin-bottom .28rem
   &:last-child
     margin-bottom 0
@@ -107,9 +145,9 @@ export default {
     .goods-content
       display flex
       flex-direction column
-      justify-content space-between 
+      justify-content space-between
       padding-right .18rem
-      flex 1 
+      flex 1
       height 2rem
       .goods-name
         color #333

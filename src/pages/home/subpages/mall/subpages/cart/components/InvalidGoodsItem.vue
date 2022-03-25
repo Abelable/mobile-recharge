@@ -1,11 +1,15 @@
 <template>
-  <div class="invalid-goods-list">
+  <div class="invalid-goods-item">
     <SwipeCell right-width="80">
       <div class="inner">
-        <Checkbox v-model="item.is_checked" :disabled="!deleteBtnVision" checked-color="#ee0a24" />
-        <img class="goods-img" :src="item.goods_thumb">
+        <Checkbox
+          v-model="isChecked"
+          :disabled="!deleteBtnVisible"
+          checked-color="#ee0a24"
+        />
+        <img class="goods-img" :src="item.goods_thumb" />
         <div class="goods-content">
-          <div class="goods-name">{{item.goods_name}}</div>
+          <div class="goods-name">{{ item.goods_name }}</div>
           <div class="invalid-tips-wrap">
             <div class="invalid-tips">宝贝已不能购买，请联系商家</div>
           </div>
@@ -18,34 +22,28 @@
   </div>
 </template>
 
-<script>
-import { SwipeCell, Checkbox } from 'vant'
+<script setup lang="ts">
+import { SwipeCell, Checkbox } from "vant";
+import { InvalidCartGoodsInfo } from "../utils/api";
+import { toRef, watch } from "vue";
 
-export default {
-  components: { SwipeCell, Checkbox },
+const props = defineProps<{
+  item: InvalidCartGoodsInfo;
+  index: number;
+  deleteBtnVisible: boolean;
+}>();
+const emit = defineEmits(["toggleInvalidGoodsChecked", "deleteInvalidGoods"]);
 
-  props: {
-    item: Object,
-    index: Number,
-    deleteBtnVision: Boolean
-  },
+const isChecked = toRef(props.item, "is_checked");
 
-  watch: {
-    'item.is_checked'() {
-      this.$emit('toggleInvalidGoodsChecked')
-    }
-  },
+watch(isChecked, () => emit("toggleInvalidGoodsChecked"));
 
-  methods: {
-    deleteInvalidGoods() {
-      this.$emit('deleteInvalidGoods', { id: this.item.rec_id, index: this.index })
-    }
-  }
-}
+const deleteInvalidGoods = () =>
+  emit("deleteInvalidGoods", { id: props.item.rec_id, index: props.index });
 </script>
 
 <style lang="stylus" scoped>
-.invalid-goods-list
+.invalid-goods-item
   margin-bottom .28rem
   &:last-child
     margin-bottom 0
@@ -64,9 +62,9 @@ export default {
     .goods-content
       display flex
       flex-direction column
-      justify-content space-between 
+      justify-content space-between
       padding-right .18rem
-      flex 1 
+      flex 1
       height 2rem
       .goods-name
         color #999

@@ -2,31 +2,59 @@
   <div class="container">
     <NavBar title="购物车">
       <template v-slot:custom-btn>
-        <div class="edit-icon" v-if="cartList.length" @click="deleteBtnVision = !deleteBtnVision">{{deleteBtnVision ? '完成' : '管理'}}</div>
+        <div
+          class="edit-icon"
+          v-if="cartList.length"
+          @click="deleteBtnVisible = !deleteBtnVisible"
+        >
+          {{ deleteBtnVisible ? "完成" : "管理" }}
+        </div>
       </template>
     </NavBar>
 
-    <CartList v-for="(item, index) in cartList" :key="index" :item="item" :cartIndex="index" @toggleCartChecked="toggleCartChecked">
-      <GoodsList 
-        v-for="(goodsItem, goodsItemIndex) in item.goods" :key="goodsItemIndex" 
-        :item="goodsItem" :cartIdx="index" :goodsIdx="goodsItemIndex" :deleteBtnVision="deleteBtnVision" 
-        @toggleGoodsChecked="toggleGoodsChecked" @editCount="editCount" @editSpec="showSpecPopup" @deleteGoods="deleteGoods"/>
-    </CartList>
+    <CartItem
+      v-for="(item, index) in cartList"
+      :key="index"
+      :item="item"
+      :cartIndex="index"
+      @toggleCartChecked="toggleCartChecked"
+    >
+      <GoodsItem
+        v-for="(goodsItem, goodsItemIndex) in item.goods"
+        :key="goodsItemIndex"
+        :item="goodsItem"
+        :cartIdx="index"
+        :goodsIdx="goodsItemIndex"
+        :deleteBtnVisible="deleteBtnVisible"
+        @toggleGoodsChecked="toggleGoodsChecked"
+        @editCount="editCount"
+        @editSpec="showSpecPopup"
+        @deleteGoods="deleteGoods"
+      />
+    </CartItem>
 
     <div class="invalid-goods-lists-wrap" v-if="invalidGoodsList.length">
       <div class="header">
-        <div>失效宝贝{{invalidGoodsList.length}}件</div>
+        <div>失效宝贝{{ invalidGoodsList.length }}件</div>
         <div class="delete-btn" @click="emptyInvalidGoods">清空失效宝贝</div>
       </div>
       <div class="content">
-        <InvalidGoodsList 
-          v-for="(item, index) in invalidGoodsList" :key="index" 
-          :item="item" :index="index" :deleteBtnVision="deleteBtnVision" 
-          @deleteInvalidGoods="deleteInvalidGoods" @toggleInvalidGoodsChecked="acount"/>
+        <InvalidGoodsItem
+          v-for="(item, index) in invalidGoodsList"
+          :key="index"
+          :item="item"
+          :index="index"
+          :deleteBtnVisible="deleteBtnVisible"
+          @deleteInvalidGoods="deleteInvalidGoods"
+          @toggleInvalidGoodsChecked="acount"
+        />
       </div>
     </div>
 
-    <div class="empty-illus" v-if="!cartList.length && !invalidGoodsList.length">
+    <div
+      class="empty-illus"
+      v-if="!cartList.length && !invalidGoodsList.length"
+    >
       <div class="empty-desc">还没有宝贝哦，快去挑选喜欢的宝贝吧～</div>
       <div class="visit-btn" @click="navToMall">去逛逛</div>
     </div>
@@ -36,227 +64,281 @@
         <Checkbox v-model="isSelectAll" checked-color="#ee0a24" />
         <span class="tip">全选</span>
       </div>
-      <div class="bar-main" v-if="!deleteBtnVision">
+      <div class="bar-main" v-if="!deleteBtnVisible">
         <div class="total-price" v-if="!isCalculating">
-          <span style="color: #333; font-weight: 400;">合计：</span>
+          <span style="color: #333; font-weight: 400">合计：</span>
           <span>¥</span>
-          <span style="font-size: .36rem;">{{totalPrice}}</span>
+          <span style="font-size: 0.36rem">{{ totalPrice }}</span>
         </div>
-        <Loading v-if="isCalculating" size="20" color="#ee0a24">价格计算中...</Loading>
+        <Loading v-if="isCalculating" size="20" color="#ee0a24"
+          >价格计算中...</Loading
+        >
         <div class="submit" :class="{ active: selectedCount }" @click="submit">
           <span>结算</span>
-          <span v-if="selectedCount">({{selectedCount}})</span>
+          <span v-if="selectedCount">({{ selectedCount }})</span>
         </div>
       </div>
-      <div class="delete-btn" :class="{ active: selectedCount }" v-if="deleteBtnVision" @click="deleteGoodsList">删除</div>
+      <div
+        class="delete-btn"
+        :class="{ active: selectedCount }"
+        v-if="deleteBtnVisible"
+        @click="deleteGoodsList"
+      >
+        删除
+      </div>
     </div>
 
     <Popup v-model="specPopupVisible" position="bottom" closeable round>
-      <SpecPopup :actionType="goodsInfo.actionType" :recId="goodsInfo.recId" :goodsId="goodsInfo.id" :goodsImg="goodsInfo.img" :goodsName="goodsInfo.name" :basePrice="goodsInfo.basePrice" :stock="goodsInfo.stock" :specInfo="goodsInfo.specInfo" @hideSpecPopup="hideSpecPopup" />
+      <SpecPopup
+        :actionType="goodsInfo?.actionType || 0"
+        :recId="goodsInfo?.recId"
+        :goodsId="goodsInfo?.id || ''"
+        :goodsImg="goodsInfo?.img || ''"
+        :goodsName="goodsInfo?.name || ''"
+        :basePrice="goodsInfo?.basePrice || ''"
+        :stock="goodsInfo?.stock || 0"
+        :specInfo="goodsInfo?.specInfo"
+        @hideSpecPopup="hideSpecPopup"
+      />
     </Popup>
   </div>
 </template>
 
-<script>
-import { Popup, Checkbox, Loading, Dialog } from 'vant'
-import NavBar from '@/components/NavBar'
-import SpecPopup from '@/components/SpecPopup'
-import CartList from './components/CartList'
-import GoodsList from './components/GoodsList'
-import InvalidGoodsList from './components/InvalidGoodsList'
+<script setup lang="ts">
+import { Popup, Checkbox, Loading, Dialog } from "vant";
+import NavBar from "@/components/NavBar.vue";
+import SpecPopup from "@/components/SpecPopup.vue";
+import CartItem from "./components/CartItem.vue";
+import GoodsItem from "./components/GoodsItem.vue";
+import InvalidGoodsItem from "./components/InvalidGoodsItem.vue";
 
-import _ from 'lodash'
-import { mapActions } from 'vuex'
-import CartService from './utils/cartService'
+import { ref, onMounted, watch } from "vue";
+import { useStore } from "vuex";
+import { useRouter } from "vue-router";
+import _ from "lodash";
+import {
+  cartCheck,
+  CartInfo,
+  deleteCartList,
+  getCartList,
+  InvalidCartGoodsInfo,
+} from "./utils/api";
+import { SpecInfo, updateCartGoods } from "@/api/common";
 
-let cartService = new CartService()
-
-export default {
-  components: { Popup, Checkbox, Loading, NavBar, SpecPopup, CartList, GoodsList, InvalidGoodsList },
-
-  data() {
-    return {
-      deleteBtnVision: false,
-      cartList: [],
-      invalidGoodsList: [],
-      selectedCount: 0,
-      isSelectAll: false,
-      totalPrice: '0.00',
-      isCalculating: false,
-      specPopupVisible: false,
-      goodsInfo: {}
-    }
-  },
-
-  watch: {
-    deleteBtnVision() {
-      this.acount()
-    }
-  },
-
-  created() {
-    this.setCartList()
-  },
-
-  methods: {
-    ...mapActions(['updateCartCount']),
-
-    async setCartList() {
-      const { cart_list = [], not_on_sale = [] } = await cartService.getCartList() || []
-      this.cartList = cart_list
-      this.invalidGoodsList = not_on_sale
-      this.acount()
-    },
-
-    toggleCartChecked({ val, idx }) {
-      this.cartList[idx].check = val
-      let goodsLists = this.cartList[idx].goods
-      goodsLists.map(item => {
-        if (this.deleteBtnVision || (!this.deleteBtnVision && item.product_number)) item.is_checked_goods = val
-      })
-      this.cartList[idx].goods = goodsLists
-      this.debouncedAcount()
-    },
-
-    toggleGoodsChecked({ val, cartIdx, goodsIdx }) {
-      this.cartList[cartIdx].goods[goodsIdx].is_checked_goods = val
-      let unCheckedIndex = this.cartList[cartIdx].goods.findIndex(item => {
-        if (this.deleteBtnVision || (!this.deleteBtnVision && item.product_number)) return item.is_checked_goods === false
-      })
-      this.cartList[cartIdx].checked = unCheckedIndex === -1
-      this.debouncedAcount()
-    },
-
-    toggleAllChecked() {
-      this.isSelectAll = !this.isSelectAll
-      if (this.deleteBtnVision) {
-        this.cartList.map(item => {
-          item.checked = this.isSelectAll
-          item.goods.map(_item => {
-            _item.is_checked_goods = this.isSelectAll
-          })
-        })
-        this.invalidGoodsList.map(item => {
-          item.is_checked = this.isSelectAll
-        })
-        this.debouncedAcount()
-      } else {
-        this.cartList.map(item => {
-          item.checked = this.isSelectAll
-          item.goods.map(_item => {
-            if (_item.product_number) _item.is_checked_goods = this.isSelectAll
-          })
-        })
-        this.debouncedAcount()
-      }
-    },
-
-    debouncedAcount: _.debounce(function() {
-      this.acount()
-    }, 200),
-
-    async acount() {
-      this.totalCount = 0
-      let selectedCount = 0
-      this.selectedRecIdArr = []
-
-      if (this.deleteBtnVision) {
-        this.cartList.forEach(item => {
-          item.goods.forEach(_item => {
-            if (_item.is_checked_goods) {
-              this.selectedRecIdArr.push(_item.rec_id)
-              selectedCount += _item.goods_number
-            }
-            this.totalCount += _item.goods_number
-          })
-        })
-        this.invalidGoodsList.forEach(item => {
-          if (item.is_checked) {
-            this.selectedRecIdArr.push(item.rec_id)
-            selectedCount += 1
-          }
-          this.totalCount += 1
-        })
-        this.selectedCount = selectedCount
-        this.isSelectAll = (selectedCount && selectedCount === this.totalCount) ? true : false
-      } else {
-        this.cartList.forEach(item => {
-          item.goods.forEach(_item => {
-            if (_item.product_number && _item.is_checked_goods) {
-              this.selectedRecIdArr.push(_item.rec_id)
-              selectedCount += _item.goods_number
-            }
-            this.totalCount += _item.goods_number
-          })
-        })
-
-        this.selectedCount = selectedCount
-        this.isSelectAll = (selectedCount && selectedCount === this.totalCount) ? true : false
-
-        this.isCalculating = true
-        const { goods_amount_formated } = await cartService.getCartAmount(this.selectedRecIdArr.join()) || {}
-        this.totalPrice = goods_amount_formated.slice(1)
-        this.isCalculating = false
-        this.updateCartCount()
-      }
-    },
-
-    async editCount({ recId, count }) {
-      this.isCalculating = true
-      const { goods_amount_formated, cart_number } = await cartService.updateCartGoods({ recId, count })
-      this.totalPrice = goods_amount_formated
-      this.selectedCount = cart_number
-      this.isCalculating = false
-      this.updateCartCount()
-    },
-
-    deleteGoodsList() {
-      this.selectedCount && Dialog.confirm({ title: '提示', message: '确定删除商品吗？' }).then(async () => {
-        await cartService.deleteCartList(this.selectedRecIdArr.join())
-        this.setCartList()
-      })
-    },
-
-    deleteGoods({ id, cartIdx, goodsIdx }) {
-      this.cartList[cartIdx].goods.splice(goodsIdx, 1)
-      if (!this.cartList[cartIdx].goods.length) this.cartList.splice(cartIdx, 1)
-      cartService.deleteCartList(id)
-    },
-
-    emptyInvalidGoods() {
-      const recIdArr = this.invalidGoodsList.map(item => item.rec_id)
-      cartService.deleteCartList(recIdArr.join())
-      this.invalidGoodsList = []
-    },
-
-    deleteInvalidGoods({ id, index }) {
-      this.invalidGoodsList.splice(index, 1)
-      cartService.deleteCartList(id)
-    },
-
-    showSpecPopup(goodsInfo) {
-      this.specPopupVisible = true
-      this.goodsInfo = goodsInfo
-    },
-
-    hideSpecPopup() {
-      this.specPopupVisible = false
-      this.setCartList()
-    },
-
-    async submit() {
-      await cartService.cartCheck(this.selectedRecIdArr.join())
-      this.$router.push({
-        path: '/mall/goods/create-order',
-        query: { isFromCart: true }
-      })
-    },
-
-    navToMall() {
-      this.$router.push('/mall')
-    }
-  }
+interface GoodsInfo {
+  actionType: number;
+  recId: number;
+  id: string;
+  img: string;
+  name: string;
+  basePrice: string;
+  stock: number;
+  specInfo: SpecInfo;
 }
+
+const store = useStore();
+const router = useRouter();
+
+let totalCount = 0;
+let selectedRecIdArr: number[] = [];
+const cartList = ref<CartInfo[]>([]);
+const invalidGoodsList = ref<InvalidCartGoodsInfo[]>([]);
+const deleteBtnVisible = ref(false);
+const selectedCount = ref(0);
+const isSelectAll = ref(false);
+const isCalculating = ref(false);
+const totalPrice = ref("0.00");
+const specPopupVisible = ref(false);
+const goodsInfo = ref<GoodsInfo>();
+
+onMounted(() => setCartList());
+
+watch(deleteBtnVisible, () => acount());
+
+const updateCartCount = () => store.dispatch("updateCartCount");
+
+const setCartList = async () => {
+  const { cart_list = [], not_on_sale = [] } = (await getCartList()) || {};
+  cartList.value = cart_list;
+  invalidGoodsList.value = not_on_sale;
+  acount();
+};
+
+const editCount = async ({
+  recId,
+  count,
+}: {
+  recId: number;
+  count: number;
+}) => {
+  isCalculating.value = true;
+  const { goods_amount_formated, cart_number } = await updateCartGoods({
+    rec_id: recId,
+    num: count,
+  });
+  totalPrice.value = goods_amount_formated;
+  selectedCount.value = cart_number;
+  isCalculating.value = false;
+  updateCartCount();
+};
+
+const deleteGoodsList = () => {
+  if (selectedCount.value) {
+    Dialog.confirm({ title: "提示", message: "确定删除商品吗？" }).then(
+      async () => {
+        await deleteCartList(selectedRecIdArr.join());
+        setCartList();
+      }
+    );
+  }
+};
+
+const deleteGoods = ({
+  id,
+  cartIdx,
+  goodsIdx,
+}: {
+  id: string;
+  cartIdx: number;
+  goodsIdx: number;
+}) => {
+  cartList.value[cartIdx].goods.splice(goodsIdx, 1);
+  if (!cartList.value[cartIdx].goods.length) cartList.value.splice(cartIdx, 1);
+  deleteCartList(id);
+};
+
+const emptyInvalidGoods = () => {
+  const recIdArr = invalidGoodsList.value.map((item) => item.rec_id);
+  deleteCartList(recIdArr.join());
+  invalidGoodsList.value = [];
+};
+
+const deleteInvalidGoods = ({ id, index }: { id: string; index: number }) => {
+  invalidGoodsList.value.splice(index, 1);
+  deleteCartList(id);
+};
+
+const showSpecPopup = (info: GoodsInfo) => {
+  specPopupVisible.value = true;
+  goodsInfo.value = info;
+};
+
+const hideSpecPopup = () => {
+  specPopupVisible.value = false;
+  setCartList();
+};
+
+const toggleCartChecked = ({ val, idx }: { val: boolean; idx: number }) => {
+  cartList.value[idx].checked = val;
+  cartList.value[idx].goods.map((item) => {
+    if (
+      deleteBtnVisible.value ||
+      (!deleteBtnVisible.value && item.product_number)
+    )
+      item.is_checked_goods = val;
+  });
+  debouncedAcount();
+};
+
+const toggleGoodsChecked = ({
+  val,
+  cartIdx,
+  goodsIdx,
+}: {
+  val: boolean;
+  cartIdx: number;
+  goodsIdx: number;
+}) => {
+  cartList.value[cartIdx].goods[goodsIdx].is_checked_goods = val;
+  const unCheckedIndex = cartList.value[cartIdx].goods.findIndex((item) => {
+    if (
+      deleteBtnVisible.value ||
+      (!deleteBtnVisible.value && item.product_number)
+    )
+      return item.is_checked_goods === false;
+  });
+  cartList.value[cartIdx].checked = unCheckedIndex === -1;
+  debouncedAcount();
+};
+
+const toggleAllChecked = () => {
+  isSelectAll.value = !isSelectAll.value;
+  if (deleteBtnVisible.value) {
+    cartList.value.map((item) => {
+      item.checked = isSelectAll.value;
+      item.goods.map((_item) => (_item.is_checked_goods = isSelectAll.value));
+    });
+    invalidGoodsList.value.map((item) => {
+      item.is_checked = isSelectAll.value ? 1 : 0;
+    });
+  } else {
+    cartList.value.map((item) => {
+      item.checked = isSelectAll.value;
+      item.goods.map((_item) => {
+        if (_item.product_number) _item.is_checked_goods = isSelectAll.value;
+      });
+    });
+  }
+  debouncedAcount();
+};
+
+const debouncedAcount = _.debounce(() => acount(), 200);
+
+const acount = async () => {
+  totalCount = 0;
+  selectedRecIdArr = [];
+  let _selectedCount = 0;
+  if (deleteBtnVisible.value) {
+    cartList.value.forEach((item) => {
+      item.goods.forEach((_item) => {
+        if (_item.is_checked_goods) {
+          selectedRecIdArr.push(_item.rec_id);
+          _selectedCount += _item.goods_number;
+        }
+        totalCount += _item.goods_number;
+      });
+    });
+    invalidGoodsList.value.forEach((item) => {
+      if (item.is_checked) {
+        selectedRecIdArr.push(item.rec_id);
+        _selectedCount += 1;
+      }
+      totalCount += 1;
+    });
+    selectedCount.value = _selectedCount;
+    isSelectAll.value =
+      _selectedCount && _selectedCount === totalCount ? true : false;
+  } else {
+    cartList.value.forEach((item) => {
+      item.goods.forEach((_item) => {
+        if (_item.product_number && _item.is_checked_goods) {
+          selectedRecIdArr.push(_item.rec_id);
+          _selectedCount += _item.goods_number;
+        }
+        totalCount += _item.goods_number;
+      });
+    });
+
+    selectedCount.value = _selectedCount;
+    isSelectAll.value =
+      _selectedCount && _selectedCount === totalCount ? true : false;
+
+    isCalculating.value = true;
+    const { goods_amount_formated } = await cartCheck(selectedRecIdArr.join());
+    totalPrice.value = goods_amount_formated.slice(1);
+    isCalculating.value = false;
+    updateCartCount();
+  }
+};
+
+const submit = async () => {
+  await cartCheck(selectedRecIdArr.join());
+  router.push({
+    path: "/mall/goods/create-order",
+    query: { isFromCart: "true" },
+  });
+};
+const navToMall = () => router.push("/mall");
 </script>
 
 <style lang="stylus" scoped>

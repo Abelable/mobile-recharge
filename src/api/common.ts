@@ -63,12 +63,12 @@ export const addCart = async (
 export const updateCartGoods = async ({
   rec_id,
   num,
-  spec,
+  spec = "",
 }: {
   rec_id: number;
   num: number;
-  spec: string;
-}) =>
+  spec?: string;
+}): Promise<{ goods_amount_formated: string; cart_number: number }> =>
   await http("/api/v4/cart/update", {
     method: "POST",
     data: { rec_id, num, spec },
