@@ -6,6 +6,7 @@ export interface OrderGoodsInfo extends GoodsInfo {
   market_price_format: string;
   goods_number: number;
   shipping_enable: 0 | 1;
+  rec_id: number;
 }
 
 export interface OrderInfo {
@@ -34,6 +35,7 @@ export interface OrderDetailInfo {
   goods_list: OrderInfo[];
   user_money: string;
   total: AmountStructure;
+  payment_list: { pay_id: number }[];
 }
 
 export const getOrderInfo = async (
@@ -55,15 +57,27 @@ export const useBalance = async (
     data: { is_balance, rec_type, total },
   });
 
-// async cartCheck(rec_id, type = 1) {
-//   await this.post({ url: `${this.mmsUrl}/api/v4/cart/checked`, data: { rec_id, type } })
-// }
-
-// async generateOrder(flow_type, cart_value, pay_id, is_balance, remarkArr) {
-//   let postscriptObj = {}
-//   for (let i in remarkArr) postscriptObj[`postscript[${i}]`] = remarkArr[i]
-//   return await this.post({ url: `${this.mmsUrl}/api/v4/trade/done`, data: { flow_type, cart_value, pay_id, is_balance, referer: 'Applets', ...postscriptObj } })
-// }
+export const generateOrder = async (
+  flow_type: 0 | 10,
+  cart_value: string,
+  pay_id: number,
+  is_balance: 0 | 1,
+  remarkArr: string[]
+): Promise<string> => {
+  const postscriptObj: { [key in string]: string } = {};
+  for (const i in remarkArr) postscriptObj[`postscript[${i}]`] = remarkArr[i];
+  return await http("/api/v4/trade/done", {
+    method: "POST",
+    data: {
+      flow_type,
+      cart_value,
+      pay_id,
+      is_balance,
+      referer: "Applets",
+      ...postscriptObj,
+    },
+  });
+};
 
 // async getRedirectUrl() {
 //   return await this.get({ url: `${this.mmsUrl}/api/v4/wechat/getRedirectUrl?current_url=${encodeURIComponent(window.location.href)}` })

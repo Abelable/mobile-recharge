@@ -127,7 +127,7 @@
     </div>
 
     <Popup v-model="paymentPopupVisible" position="bottom" closeable round>
-      <PaymentPopup @pay="generateOrder" />
+      <PaymentPopup @pay="generate" />
     </Popup>
   </div>
 </template>
@@ -139,20 +139,26 @@ import PaymentPopup from "@/components/PaymentPopup/index.vue";
 import GoodsItem from "./components/GoodsItem.vue";
 
 import { ref, onMounted, reactive, watchEffect } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import { isInWechatEnv } from "@/utils/envJudgment";
+import { usePayment } from "@/utils/payment";
+import { PayType } from "@/api/common";
 import {
   AmountStructure,
   ConsigneeInfo,
+  generateOrder,
   getOrderInfo,
   OrderInfo,
   useBalance,
 } from "./utils/api";
-import { useRoute, useRouter } from "vue-router";
 
 const route = useRoute();
 const router = useRouter();
+const { pay } = usePayment();
 
 let type: 0 | 10;
 let addressId: string;
+let payId: number;
 
 const consigneeInfo = ref<ConsigneeInfo | null>();
 const orderList = ref<OrderInfo[]>([]);
@@ -160,6 +166,8 @@ const remarkArr = reactive<string[]>([]);
 const balance = ref("");
 const amountStructure = ref<AmountStructure>();
 const isUsingBalance = ref(false);
+const paymentPopupVisible = ref(false);
+const alipayPromptVisible = ref(false);
 
 watchEffect(() => toggleUseBalanceStatus(isUsingBalance.value));
 
@@ -170,12 +178,13 @@ onMounted(() => {
 });
 
 const setOrderInfo = async () => {
-  const { consignee, goods_list, user_money, total } =
+  const { consignee, goods_list, user_money, total, payment_list } =
     (await getOrderInfo(type, addressId)) || {};
   consigneeInfo.value = consignee;
   orderList.value = goods_list;
   balance.value = user_money;
   amountStructure.value = total;
+  payId = payment_list[0].pay_id;
 };
 
 const chooseAddress = () =>
@@ -184,85 +193,40 @@ const chooseAddress = () =>
 const toggleUseBalanceStatus = (truthy: boolean) =>
   useBalance(truthy ? 1 : 0, type, JSON.stringify(amountStructure.value));
 
-// import payment from "@/mixins/payment";
-// mixins: [payment],
+const submit = () => {
+  if (!consigneeInfo.value) {
+    Toast("请先填写收货地址");
+    return;
+  }
 
-//   data() {
-//     return {
-//       amountStructure: null, // 金额结构
-//       balance: 0,
-//       isUsingBalance: false,
-//       orderSn: "",
-//       paymentPopupVisible: false,
-//       alipayPromptVisible: false,
-//     };
-//   },
+  if (!isUsingBalance.value) paymentPopupVisible.value = true;
+  else generate();
+};
 
-//   created() {
-//     this.setOrderInfo();
-//   },
-
-//   methods: {
-//     async setOrderInfo() {
-//       const res =
-//         (await orderService.getOrderInfo(this.type, this.addressId, () => {
-//           this.$router.push("/mall");
-//         })) || null;
-//       if (res) {
-//         const {
-//           consignee,
-//           goods_list,
-//           bonus_list,
-//           user_money,
-//           total,
-//           payment_list,
-//         } = res;
-//         this.userInfo = consignee;
-//         this.orderLists = goods_list;
-//         this.balance = user_money;
-//         this.amountStructure = total;
-
-//         this.ruIdArr = [];
-//         goods_list.forEach((item) => {
-//           item.goods.forEach((_item) => {
-//             this.ruIdArr.push(_item.rec_id);
-//           });
-//         });
-//         this.payId = payment_list[0].pay_id;
-//       }
-//     },
-
-//     submit() {
-//       if (!this.userInfo) {
-//         Toast("请先填写收货地址");
-//         return;
-//       }
-
-//       if (!this.isUsingBalance) this.paymentPopupVisible = true;
-//       else this.generateOrder();
-//     },
-
-//     async generateOrder(payType) {
-//       if (payType) this.paymentPopupVisible = false;
-//       if (payType === "alipay" && this.isInWechatEnv) {
-//         this.alipayPromptVisible = true;
-//         return;
-//       }
-//       const orderSn = await orderService.generateOrder(
-//         this.type,
-//         this.ruIdArr.join(),
-//         this.payId,
-//         this.isUsingBalance ? 1 : 0,
-//         this.remarkArr
-//       );
-//       if (orderSn && typeof orderSn === "string") {
-//         if (this.isUsingBalance) this.$router.push("/mine/order");
-//         else this.pay(orderSn, payType);
-//       }
-//     },
-
-//   },
-// };
+const generate = async (payType?: PayType) => {
+  if (payType) paymentPopupVisible.value = false;
+  if (payType === PayType.alipay && isInWechatEnv) {
+    alipayPromptVisible.value = true;
+    return;
+  }
+  const ruIdArr: number[] = [];
+  orderList.value.forEach((item) => {
+    item.goods.forEach((_item) => {
+      ruIdArr.push(_item.rec_id);
+    });
+  });
+  const orderSn = await generateOrder(
+    type,
+    ruIdArr.join(),
+    payId,
+    isUsingBalance.value ? 1 : 0,
+    remarkArr
+  );
+  if (orderSn && typeof orderSn === "string") {
+    if (isUsingBalance.value) router.push("/mine/order");
+    else payType && pay(orderSn, payType);
+  }
+};
 </script>
 
 <style lang="stylus" scoped>
