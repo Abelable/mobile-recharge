@@ -137,7 +137,7 @@ const addCart = async () => {
 const directBuy = async () => {
   if (check()) {
     await api.addCart(props.goodsId, specIdArr, count.value);
-    router.push("/mall/goods/create-order");
+    router.push("/mall/goods/create_order");
     emit("hideSpecPopup");
   }
 };

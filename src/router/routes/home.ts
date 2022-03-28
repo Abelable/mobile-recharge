@@ -14,12 +14,6 @@ const home: Array<RouteRecordRaw> = [
     component: () => import("@/pages/home/subpages/mall/index.vue"),
   },
   {
-    path: "/mall/goods",
-    name: "goods",
-    component: () =>
-      import("@/pages/home/subpages/mall/subpages/goods/index.vue"),
-  },
-  {
     path: "/mall/cart",
     name: "cart",
     component: () =>
@@ -30,6 +24,20 @@ const home: Array<RouteRecordRaw> = [
     name: "category_detail",
     component: () =>
       import("@/pages/home/subpages/mall/subpages/category-detail.vue"),
+  },
+  {
+    path: "/mall/goods",
+    name: "goods",
+    component: () =>
+      import("@/pages/home/subpages/mall/subpages/goods/index.vue"),
+  },
+  {
+    path: "/mall/goods/create_order",
+    name: "goods",
+    component: () =>
+      import(
+        "@/pages/home/subpages/mall/subpages/goods/subpages/create-order/index.vue"
+      ),
   },
 ];
 
