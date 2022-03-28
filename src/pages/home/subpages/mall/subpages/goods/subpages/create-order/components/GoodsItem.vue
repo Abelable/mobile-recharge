@@ -1,38 +1,36 @@
 <template>
-  <div class="list" @click="navToGoods">
-    <img class="cover" :src="item.goods_thumb">
+  <div class="item" @click="navToGoods">
+    <img class="cover" :src="item.goods_thumb" />
     <div class="info">
-      <p class="name">{{item.goods_name}}</p>
+      <p class="name">{{ item.goods_name }}</p>
       <div class="price-wrap">
         <div class="price">
-          <span class="shop-price">{{item.goods_price_format}}</span>
-          <span class="market-price">{{item.market_price_format}}</span>
+          <span class="shop-price">{{ item.goods_price_format }}</span>
+          <span class="market-price">{{ item.market_price_format }}</span>
         </div>
-        <div class="count">x {{item.goods_number}}</div>
+        <div class="count">x {{ item.goods_number }}</div>
       </div>
     </div>
   </div>
 </template>
 
-<script>
-export default {
-  props: {
-    item: Object
-  },
+<script setup lang="ts">
+import { useRouter } from "vue-router";
+import { OrderGoodsInfo } from "../utils/api";
 
-  methods: {
-    navToGoods() {
-      this.$router.push({
-        path: '/mall/goods',
-        query: { id: this.item.goods_id }
-      })
-    }
-  }
-}
+const router = useRouter();
+
+const props = defineProps<{ item: OrderGoodsInfo }>();
+
+const navToGoods = () =>
+  router.push({
+    path: "/mall/goods",
+    query: { id: props.item.goods_id },
+  });
 </script>
 
 <style lang="stylus" scoped>
-.list
+.item
   display flex
   .cover
     width 1.60rem
