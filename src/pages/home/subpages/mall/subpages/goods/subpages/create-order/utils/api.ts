@@ -1,5 +1,5 @@
 import { GoodsInfo } from "@/types";
-import { http } from "../../../../../../../../../utils/http";
+import { http } from "@/utils/http";
 
 export interface OrderGoodsInfo extends GoodsInfo {
   goods_price_format: string;
@@ -78,19 +78,3 @@ export const generateOrder = async (
     },
   });
 };
-
-// async getRedirectUrl() {
-//   return await this.get({ url: `${this.mmsUrl}/api/v4/wechat/getRedirectUrl?current_url=${encodeURIComponent(window.location.href)}` })
-// }
-
-// async getOpenid(code) {
-//   return await this.get({ url: `${this.mmsUrl}/api/v4/wechat/getWechatUserOpenid?code=${code}` })
-// }
-
-// async useBonus(total, bonus_id) {
-//   return await this.post({ url: `${this.mmsUrl}/api/v4/trade/changebon`, data: { total, bonus_id } })
-// }
-
-// async recordCount(room_id, order_id, goods_ids) {
-//   return await this.post({ url: `${this.liveUrl}lv/goods/live-product-order-save`, data: { room_id, order_id, goods_ids } })
-// }
