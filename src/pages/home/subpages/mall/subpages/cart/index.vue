@@ -88,7 +88,7 @@
       </div>
     </div>
 
-    <Popup v-model="specPopupVisible" position="bottom" closeable round>
+    <Popup v-model:show="specPopupVisible" position="bottom" closeable round>
       <SpecPopup
         :actionType="goodsInfo?.actionType || 0"
         :recId="goodsInfo?.recId"

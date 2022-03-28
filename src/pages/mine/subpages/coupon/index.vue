@@ -83,7 +83,7 @@
     </List>
   </PullRefresh>
 
-  <Popup v-model="rulePopupVisible" position="bottom" closeable round>
+  <Popup v-model:show="rulePopupVisible" position="bottom" closeable round>
     <RulePop />
   </Popup>
 </template>

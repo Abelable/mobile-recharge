@@ -256,7 +256,7 @@
       <div class="direct-buy-btn" @click="showSpecPopup(2)">立即购买</div>
     </div>
 
-    <Popup v-model="specPopupVisible" position="bottom" closeable round>
+    <Popup v-model:show="specPopupVisible" position="bottom" closeable round>
       <SpecPopup
         :actionType="actionType"
         :goodsId="goodsId"
@@ -269,7 +269,7 @@
         @hideSpecPopup="specPopupVisible = false"
       />
     </Popup>
-    <Popup v-model="bonusPopupVisible" position="bottom" closeable round>
+    <Popup v-model:show="bonusPopupVisible" position="bottom" closeable round>
       <div class="bonus-list" :class="{ 'is-iphoneX': isIphoneX }">
         <BonusItem
           v-for="(item, index) in goodsInfo?.bonus_info"
@@ -278,7 +278,12 @@
         />
       </div>
     </Popup>
-    <Popup v-model="promotionPopupVisible" position="bottom" closeable round>
+    <Popup
+      v-model:show="promotionPopupVisible"
+      position="bottom"
+      closeable
+      round
+    >
       <div class="promotion-list" :class="{ 'is-iphoneX': isIphoneX }">
         <PromotionItem
           v-for="(item, index) in goodsInfo?.manjian"
@@ -287,7 +292,7 @@
         />
       </div>
     </Popup>
-    <Popup v-model="servicePopupVisible" position="bottom" closeable round>
+    <Popup v-model:show="servicePopupVisible" position="bottom" closeable round>
       <div class="service-list" :class="{ 'is-iphoneX': isIphoneX }">
         <ServiceItem
           v-for="(item, index) in goodsInfo?.goods_service"

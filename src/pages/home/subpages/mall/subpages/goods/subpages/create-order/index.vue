@@ -126,7 +126,7 @@
       </div>
     </div>
 
-    <Popup v-model="paymentPopupVisible" position="bottom" closeable round>
+    <Popup v-model:show="paymentPopupVisible" position="bottom" closeable round>
       <PaymentPopup @pay="generate" />
     </Popup>
   </div>

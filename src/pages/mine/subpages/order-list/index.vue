@@ -33,7 +33,7 @@
     </List>
   </PullRefresh>
 
-  <Popup v-model="paymentPopupVisible" position="bottom" closeable round>
+  <Popup v-model:show="paymentPopupVisible" position="bottom" closeable round>
     <PaymentPopup @pay="prepay" />
   </Popup>
 </template>
