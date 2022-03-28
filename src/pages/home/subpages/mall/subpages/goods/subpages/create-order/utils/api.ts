@@ -51,7 +51,7 @@ export const useBalance = async (
   is_balance: 0 | 1,
   rec_type: 0 | 10,
   total: string
-) =>
+): Promise<AmountStructure> =>
   await http("/api/v4/trade/changesurplus", {
     method: "POST",
     data: { is_balance, rec_type, total },

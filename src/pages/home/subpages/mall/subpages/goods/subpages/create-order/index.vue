@@ -138,7 +138,7 @@ import NavBar from "@/components/NavBar.vue";
 import PaymentPopup from "@/components/PaymentPopup/index.vue";
 import GoodsItem from "./components/GoodsItem.vue";
 
-import { ref, onMounted, reactive, watchEffect } from "vue";
+import { ref, onMounted, reactive, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { isInWechatEnv } from "@/utils/envJudgment";
 import { usePayment } from "@/utils/payment";
@@ -169,9 +169,13 @@ const isUsingBalance = ref(false);
 const paymentPopupVisible = ref(false);
 const alipayPromptVisible = ref(false);
 
-watchEffect(
-  () => toggleUseBalanceStatus && toggleUseBalanceStatus(isUsingBalance.value)
-);
+watch(isUsingBalance, async (truthy) => {
+  amountStructure.value = await useBalance(
+    truthy ? 1 : 0,
+    type,
+    JSON.stringify(amountStructure.value)
+  );
+});
 
 onMounted(() => {
   type = route.query.isFromCart === "true" ? 0 : 10;
@@ -191,9 +195,6 @@ const setOrderInfo = async () => {
 
 const chooseAddress = () =>
   router.push({ path: "/mine/address", query: { isSelectAddress: "true" } });
-
-const toggleUseBalanceStatus = (truthy: boolean) =>
-  useBalance(truthy ? 1 : 0, type, JSON.stringify(amountStructure.value));
 
 const submit = () => {
   if (!consigneeInfo.value) {
