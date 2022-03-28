@@ -33,7 +33,7 @@ const home: Array<RouteRecordRaw> = [
   },
   {
     path: "/mall/goods/create_order",
-    name: "goods",
+    name: "create_order",
     component: () =>
       import(
         "@/pages/home/subpages/mall/subpages/goods/subpages/create-order/index.vue"

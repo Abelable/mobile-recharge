@@ -54,7 +54,7 @@ onActivated(() => {
 const chooseAddress = (id: number) => {
   if (isSelectAddress.value) {
     router.push({
-      path: "/mall/goods/create-order",
+      path: "/mall/goods/create_order",
       query: {
         addressId: id,
       },

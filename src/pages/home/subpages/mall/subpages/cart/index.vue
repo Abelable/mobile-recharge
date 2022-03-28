@@ -334,7 +334,7 @@ const acount = async () => {
 const submit = async () => {
   await cartCheck(selectedRecIdArr.join());
   router.push({
-    path: "/mall/goods/create-order",
+    path: "/mall/goods/create_order",
     query: { isFromCart: "true" },
   });
 };

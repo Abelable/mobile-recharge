@@ -169,7 +169,9 @@ const isUsingBalance = ref(false);
 const paymentPopupVisible = ref(false);
 const alipayPromptVisible = ref(false);
 
-watchEffect(() => toggleUseBalanceStatus(isUsingBalance.value));
+watchEffect(
+  () => toggleUseBalanceStatus && toggleUseBalanceStatus(isUsingBalance.value)
+);
 
 onMounted(() => {
   type = route.query.isFromCart === "true" ? 0 : 10;
