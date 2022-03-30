@@ -32,6 +32,12 @@ const mine: Array<RouteRecordRaw> = [
     component: () => import("@/pages/mine/subpages/refund/index.vue"),
   },
   {
+    path: "/mine/coin",
+    name: "coin",
+    meta: { requireAuth: true },
+    component: () => import("@/pages/mine/subpages/coin/index.vue"),
+  },
+  {
     path: "/mine/address",
     name: "address",
     meta: { keepAlive: true, requireAuth: true },
