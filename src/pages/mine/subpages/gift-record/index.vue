@@ -15,66 +15,97 @@
     </template>
   </NavBar>
 
-  <PullRefresh class="content" v-model="refreshing" @refresh="onRefresh">
+  <div class="diamont-balance-wrap">
+    <div class="diamont-balance">当前剩余钻石：{{ diamondBalance }}</div>
+    <div class="time-picker" @click="datePickerVisible = true">
+      <!-- <span>{{ yearArr[pickerValue[0]] }}-{{ monthArr[pickerValue[1]] }}</span> -->
+      <span>{{ currentDate }}</span>
+      <img
+        class="time-picker-icon"
+        src="https://img.ubo.vip/mp/mine/gift-record/down-arrow-icon.png"
+      />
+    </div>
+  </div>
+
+  <PullRefresh v-model="refreshing" @refresh="onRefresh">
     <List
-      class="coupon-lists-wrap"
+      class="record-list-wrap"
       v-model="loading"
       :finished="finished"
       finished-text="没有更多了"
       @load="onLoadMore"
     >
-      <div v-if="selectedIdx === 0">
-        <CoinItem
-          v-for="(item, index) in effectiveCoinList"
-          :key="index"
-          :item="item"
-        />
-      </div>
-      <div v-if="selectedIdx === 1">
-        <CoinItem
-          v-for="(item, index) in overdueCoinList"
-          :key="index"
-          :item="item"
-          overdue
-        />
-      </div>
+      <RecordItem
+        v-for="(item, index) in recordList"
+        :key="index"
+        :item="item"
+      />
     </List>
   </PullRefresh>
+
+  <DatetimePicker
+    v-model="currentDate"
+    type="year-month"
+    title="选择年月"
+    :min-date="minDate"
+    :max-date="maxDate"
+    :formatter="formatter"
+  />
 </template>
 
 <script setup lang="ts">
-import { PullRefresh, List } from "vant";
+import { PullRefresh, List, DatetimePicker } from "vant";
 import NavBar from "@/components/NavBar.vue";
-import CoinItem from "./components/CoinItem.vue";
+import RecordItem from "./components/RecordItem.vue";
 
 import { ref } from "vue";
-import { CoinInfo, getCoinList } from "./utils/api";
+import { GiftRecordInfo, getGiftRecordList } from "./utils/api";
+
+let page = 0;
+const minDate = new Date(2020, 0, 1);
+const maxDate = new Date(2025, 10, 1);
 
 const loading = ref(false);
 const finished = ref(false);
 const refreshing = ref(false);
 const selectedIdx = ref(0);
-const effectiveCoinList = ref<CoinInfo[]>([]);
-const overdueCoinList = ref<CoinInfo[]>([]);
+const diamondBalance = ref(0);
+const recordList = ref<GiftRecordInfo[]>([]);
+const datePickerVisible = ref(false);
+const currentDate = ref(new Date());
 
-const onLoadMore = () => setCoinList();
-const onRefresh = () => setCoinList();
+const onLoadMore = () => setRecordList();
+const onRefresh = () => setRecordList(true);
 
 const selectMenu = (index: number) => {
   if (index !== selectedIdx.value) {
     selectedIdx.value = index;
-    if (
-      (index === 0 && !effectiveCoinList.value.length) ||
-      (index === 1 && !overdueCoinList.value.length)
-    )
-      setCoinList();
+    setRecordList(true);
   }
 };
 
-const setCoinList = async () => {
-  const list = await getCoinList(selectedIdx.value === 0 ? 1 : -1);
-  if (selectedIdx.value === 0) effectiveCoinList.value = list;
-  else overdueCoinList.value = list;
+const formatter = (type: string, val: number) => {
+  if (type === "year") {
+    return `${val}年`;
+  }
+  if (type === "month") {
+    return `${val}月`;
+  }
+  return val;
+};
+
+const setRecordList = async (init = false) => {
+  if (init) page = 0;
+  const { list, diamond } = await getGiftRecordList(
+    selectedIdx.value,
+    "",
+    ++page
+  );
+  if (init) diamondBalance.value = diamond;
+  if (list.length)
+    recordList.value = init ? list : [...recordList.value, ...list];
+  else finished.value = true;
+  loading.value = false;
   refreshing.value = false;
 };
 </script>
@@ -82,31 +113,47 @@ const setCoinList = async () => {
 <style lang="stylus" scoped>
 .menu-tabs
   display: flex
-  justify-content: center
   align-items: center
   width: 100%
-  height: .80rem
-  background: #000
+  background: #fff
+  box-shadow: 0 .02rem .10rem 0 rgba(231,231,235,0.5)
   .menu-tab
-    width: 3rem
+    flex: 1
+    height: .89rem
     text-align: center
-    font-size: .30rem
-    color: #fff
+    line-height: .89rem
+    font-size: .28rem
     &.active
       position: relative
-      font-size: .34rem
-      font-weight: 500
+      font-weight: 600
+      color: #333
       &::after
         position: absolute
         left: 50%
-        bottom: -0.02rem
+        bottom: 0
         transform: translateX(-50%)
         content: ''
-        width: 1.00rem
-        height: .06rem
-        background-color: #fff
-        border-radius: .05rem
-.content
-  padding: 2rem .24rem 0
-  min-height: 100vh
+        width: .56rem
+        height: .08rem
+        background-color: #FAD07D
+.diamont-balance-wrap
+  position: relative
+  padding: .20rem .32rem
+  background-color: #f4f4f4
+  .diamont-balance
+    color: #999
+    font-size: .26rem
+  .time-picker
+    color: #333
+    font-size: .30rem
+    font-weight: bold
+    .time-picker-icon
+      margin-top: .32rem
+      margin-left: .10rem
+      width: .16rem
+      height: .16rem
+.record-list-wrap
+  margin-top: 2.20rem
+  padding: 0 .32rem
+  background: #fff
 </style>

@@ -1,10 +1,23 @@
 import { http } from "@/utils/http";
 
-export interface CoinInfo {
+export interface GiftRecordInfo {
   id: number;
-  tb_money: string;
-  end_time: string;
+  type: string;
+  title: string;
+  cover: string;
+  anchor_name: string;
+  price: string;
+  num: string;
+  amount: string;
+  created_at: string;
 }
 
-export const getCoinList = async (tb_state: number): Promise<CoinInfo[]> =>
-  await http("/api/v4/user/my-yb", { data: { tb_state } });
+export const getGiftRecordList = async (
+  type: number,
+  date: string,
+  page: number
+): Promise<{ list: GiftRecordInfo[]; diamond: number }> =>
+  await http("?r=lv/reward/diamond-record", {
+    method: "POST",
+    data: { type, date, page },
+  });
