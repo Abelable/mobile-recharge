@@ -18,8 +18,7 @@
   <div class="diamont-balance-wrap">
     <div class="diamont-balance">当前剩余钻石：{{ diamondBalance }}</div>
     <div class="time-picker" @click="datePickerVisible = true">
-      <!-- <span>{{ yearArr[pickerValue[0]] }}-{{ monthArr[pickerValue[1]] }}</span> -->
-      <span>{{ currentDate }}</span>
+      <span>{{ dayjs(currentDate).format("YYYY-MM") }}</span>
       <img
         class="time-picker-icon"
         src="https://img.ubo.vip/mp/mine/gift-record/down-arrow-icon.png"
@@ -53,7 +52,6 @@
       title="选择年月"
       :min-date="minDate"
       :max-date="maxDate"
-      :formatter="formatter"
     />
   </Popup>
 </template>
@@ -65,11 +63,12 @@ import EmptyIllus from "@/components/EmptyIllus.vue";
 import RecordItem from "./components/RecordItem.vue";
 
 import { ref } from "vue";
+import dayjs from "dayjs";
 import { GiftRecordInfo, getGiftRecordList } from "./utils/api";
 
 let page = 0;
-const minDate = new Date(2020, 0, 1);
-const maxDate = new Date(2025, 10, 1);
+const minDate = new Date(2019, 9, 1);
+const maxDate = new Date();
 
 const loading = ref(false);
 const finished = ref(false);
@@ -82,7 +81,6 @@ const currentDate = ref(new Date());
 
 const onLoadMore = () => setRecordList();
 const onRefresh = () => setRecordList(true);
-
 const selectMenu = (index: number) => {
   if (index !== selectedIdx.value) {
     selectedIdx.value = index;
@@ -90,21 +88,11 @@ const selectMenu = (index: number) => {
   }
 };
 
-const formatter = (type: string, val: number) => {
-  if (type === "year") {
-    return `${val}年`;
-  }
-  if (type === "month") {
-    return `${val}月`;
-  }
-  return val;
-};
-
 const setRecordList = async (init = false) => {
   if (init) page = 0;
   const { list, diamond } = await getGiftRecordList(
     selectedIdx.value,
-    "",
+    dayjs(currentDate.value).format("YYYY-MM"),
     ++page
   );
   if (init) diamondBalance.value = diamond;
@@ -146,7 +134,6 @@ const setRecordList = async (init = false) => {
   position: relative
   margin-top: 1.76rem
   padding: .20rem .32rem
-  background-color: #f4f4f4
   .diamont-balance
     color: #999
     font-size: .26rem
