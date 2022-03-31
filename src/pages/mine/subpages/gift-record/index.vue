@@ -29,33 +29,39 @@
 
   <PullRefresh v-model="refreshing" @refresh="onRefresh">
     <List
-      class="record-list-wrap"
       v-model="loading"
       :finished="finished"
       finished-text="没有更多了"
       @load="onLoadMore"
     >
-      <RecordItem
-        v-for="(item, index) in recordList"
-        :key="index"
-        :item="item"
-      />
+      <div class="record-list">
+        <RecordItem
+          v-for="(item, index) in recordList"
+          :key="index"
+          :item="item"
+        />
+      </div>
     </List>
   </PullRefresh>
 
-  <DatetimePicker
-    v-model="currentDate"
-    type="year-month"
-    title="选择年月"
-    :min-date="minDate"
-    :max-date="maxDate"
-    :formatter="formatter"
-  />
+  <EmptyIllus v-if="!recordList.length" desc="暂无记录" />
+
+  <Popup v-model:show="datePickerVisible" position="bottom" closeable round>
+    <DatetimePicker
+      v-model="currentDate"
+      type="year-month"
+      title="选择年月"
+      :min-date="minDate"
+      :max-date="maxDate"
+      :formatter="formatter"
+    />
+  </Popup>
 </template>
 
 <script setup lang="ts">
-import { PullRefresh, List, DatetimePicker } from "vant";
+import { PullRefresh, List, Popup, DatetimePicker } from "vant";
 import NavBar from "@/components/NavBar.vue";
+import EmptyIllus from "@/components/EmptyIllus.vue";
 import RecordItem from "./components/RecordItem.vue";
 
 import { ref } from "vue";
@@ -104,7 +110,7 @@ const setRecordList = async (init = false) => {
   if (init) diamondBalance.value = diamond;
   if (list.length)
     recordList.value = init ? list : [...recordList.value, ...list];
-  else finished.value = true;
+  else if (!init) finished.value = true;
   loading.value = false;
   refreshing.value = false;
 };
@@ -121,7 +127,7 @@ const setRecordList = async (init = false) => {
     flex: 1
     height: .89rem
     text-align: center
-    line-height: .89rem
+    line-height: .88rem
     font-size: .28rem
     &.active
       position: relative
@@ -138,6 +144,7 @@ const setRecordList = async (init = false) => {
         background-color: #FAD07D
 .diamont-balance-wrap
   position: relative
+  margin-top: 1.76rem
   padding: .20rem .32rem
   background-color: #f4f4f4
   .diamont-balance
@@ -152,7 +159,7 @@ const setRecordList = async (init = false) => {
       margin-left: .10rem
       width: .16rem
       height: .16rem
-.record-list-wrap
+.record-list
   margin-top: 2.20rem
   padding: 0 .32rem
   background: #fff

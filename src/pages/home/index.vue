@@ -57,7 +57,7 @@ import { useAnchorList } from "./utils";
             />
           </div>
         </div>
-        <EmptyIllus
+        <FollowEmptyIllus
           style="margin-top: 1rem"
           v-if="emptyIllusVisible"
           :isInLogin="isInLogin"
@@ -106,7 +106,7 @@ import { useAnchorList } from "./utils";
 <script setup lang="ts">
 // 引入组件
 import { PullRefresh, List, Swipe, SwipeItem } from "vant";
-import EmptyIllus from "@/components/EmptyIllus.vue";
+import FollowEmptyIllus from "@/components/FollowEmptyIllus.vue";
 import SplitLine from "@/components/SplitLine.vue";
 import GoodsList from "@/components/GoodsList.vue";
 import FallFlow from "./components/FallFlow.vue";

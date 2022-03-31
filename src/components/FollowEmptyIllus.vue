@@ -1,12 +1,17 @@
 <template>
   <div class="empty-illus">
-    <img class="img" src="https://img.ubo.vip/mp/mine/gift-record/empty.png" />
-    <p class="desc">{{ desc || "暂无数据" }}</p>
+    <img class="img" src="https://img.ubo.vip/mp/index/not-logged-in.png" />
+    <div class="btn" v-if="!isInLogin" @click="login">立即登录</div>
+    <p class="desc" v-else>哎呀~关注列表空空如也</p>
   </div>
 </template>
 
 <script setup lang="ts">
-defineProps<{ desc?: string }>();
+import { useRouter } from "vue-router";
+
+defineProps<{ isInLogin: boolean }>();
+const router = useRouter();
+const login = () => router.push("/login");
 </script>
 
 <style lang="stylus" scoped>

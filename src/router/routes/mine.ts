@@ -38,6 +38,18 @@ const mine: Array<RouteRecordRaw> = [
     component: () => import("@/pages/mine/subpages/coin/index.vue"),
   },
   {
+    name: "coupon",
+    path: "/mine/coupon",
+    meta: { requireAuth: true },
+    component: () => import("@/pages/mine/subpages/coupon/index.vue"),
+  },
+  {
+    name: "gift",
+    path: "/mine/gift",
+    meta: { requireAuth: true },
+    component: () => import("@/pages/mine/subpages/gift-record/index.vue"),
+  },
+  {
     path: "/mine/address",
     name: "address",
     meta: { keepAlive: true, requireAuth: true },
@@ -48,12 +60,6 @@ const mine: Array<RouteRecordRaw> = [
     name: "address_editor",
     component: () =>
       import("@/pages/mine/subpages/address/subpages/address-editor/index.vue"),
-  },
-  {
-    name: "coupon",
-    path: "/mine/coupon",
-    meta: { requireAuth: true },
-    component: () => import("@/pages/mine/subpages/coupon/index.vue"),
   },
   {
     name: "track",

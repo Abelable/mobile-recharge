@@ -28,7 +28,7 @@
     <PullRefresh class="lists-wrap" v-model="refreshing" @refresh="onRefresh">
       <List v-model="loading" :finished="finished" @load="onLoadMore">
         <div class="focus-lists" v-show="activeMenuIdx === 0">
-          <EmptyIllus
+          <FollowEmptyIllus
             v-if="!isInLogin || (isInLogin && !followedList.length)"
             :isInLogin="isInLogin"
             :noFocusLists="!followedList.length"
@@ -51,7 +51,7 @@
 
 <script setup lang="ts">
 import { PullRefresh, List } from "vant";
-import EmptyIllus from "@/components/EmptyIllus.vue";
+import FollowEmptyIllus from "@/components/FollowEmptyIllus.vue";
 import FallFlow from "./components/FallFlow.vue";
 
 import { ref, reactive, watchEffect } from "vue";
