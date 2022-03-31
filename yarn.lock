@@ -5115,10 +5115,10 @@ validate-npm-package-license@^3.0.1:
     spdx-correct "^3.0.0"
     spdx-expression-parse "^3.0.0"
 
-vant@^3.4.6:
-  version "3.4.6"
-  resolved "https://registry.yarnpkg.com/vant/-/vant-3.4.6.tgz#57bab8b7f5d06701039a08e543e45c55e878c3f1"
-  integrity sha512-Ol1xhEXn2wjBAWqCyr4/0EKTCQEYbAzKyOP+bKYIWl+fbJXme8Aza5soeKvWA2KD9ZBU0qS7yBVGpr+76xUEXQ==
+vant@^3.4.7:
+  version "3.4.7"
+  resolved "https://registry.yarnpkg.com/vant/-/vant-3.4.7.tgz#d6dbc0945899e811de62ad45f968363b4f602909"
+  integrity sha512-/iafbNF3VPcDevIun8DMj84V9sGMcBZ2LW8j20uqthW6NpFmkMpDFJxMINQFIZ0myEogqVSDVhS6XFAwlx3nkQ==
   dependencies:
     "@vant/icons" "^1.7.1"
     "@vant/popperjs" "^1.1.0"

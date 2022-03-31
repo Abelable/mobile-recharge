@@ -52,6 +52,8 @@
       title="选择年月"
       :min-date="minDate"
       :max-date="maxDate"
+      @cancel="datePickerVisible = false"
+      @confirm="onRefresh"
     />
   </Popup>
 </template>
