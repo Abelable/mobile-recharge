@@ -78,6 +78,13 @@
     <div class="tools-wrap">
       <div class="title">我的工具</div>
       <ul class="tool-lists">
+        <li class="tool-list" @click="openCustomerService">
+          <img
+            style="width: 0.48rem; height: 0.48rem"
+            :src="`https://img.ubo.vip/mp/mine/new-icon/customer-icon.png`"
+          />
+          <p class="desc">联系客服</p>
+        </li>
         <li
           class="tool-list"
           v-for="(item, index) in otherToolList"
@@ -119,7 +126,6 @@ const wealthToolList = [
   { name: "gift", desc: "打赏" },
 ];
 const otherToolList = [
-  { name: "customer", desc: "联系客服" },
   { name: "identify", desc: "实名认证" },
   { name: "address", desc: "收货地址" },
   { name: "track", desc: "浏览足迹" },
@@ -136,6 +142,7 @@ const formatMobile = (mobile: string) =>
   mobile.slice(0, 3) + "****" + mobile.slice(-4);
 
 const login = () => router.push("/login");
+const openCustomerService = () => window.ysf("open", { templateId: 6604956 });
 const navToOrderList = (status: number) => {
   if (status === 6) router.push("/mine/refund");
   else router.push({ path: "/mine/order_list", query: { status } });

@@ -2,6 +2,7 @@ declare global {
   interface Window {
     qq: any;
     WeixinJSBridge: any;
+    ysf: any;
   }
   interface Document {
     attachEvent: any;
