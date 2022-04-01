@@ -414,7 +414,7 @@ const showSpecPopup = (type: number) => {
 const setSpecTips = (tips: string) => (specTips.value = tips);
 
 const navBack = () => {
-  router.go(-1);
+  router.back();
   routerRefresh && routerRefresh();
 };
 const routerRefresh = inject<() => void>("routerRefresh");

@@ -237,12 +237,12 @@ const save = async () => {
   if (addressId.value)
     await editAddress({ address_id: addressId.value, ...addressInfo });
   else await addAddress(addressInfo);
-  router.go(-1);
+  router.back();
 };
 
 const deleteCurAddress = async () => {
   await deleteAddress(addressId.value);
-  router.go(-1);
+  router.back();
 };
 </script>
 

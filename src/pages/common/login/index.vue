@@ -61,7 +61,7 @@ const login = async () => {
       localStorage.setItem("token", token);
       route.query.redirect
         ? router.push(`${route.query.redirect}`)
-        : router.go(-1);
+        : router.back();
     }
   }
 };

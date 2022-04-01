@@ -225,7 +225,7 @@ const setSecCateLists = async (init = false) => {
   refreshing.value = false;
 };
 
-const navBack = () => router.go(-1);
+const navBack = () => router.back();
 const navToSearch = () => router.push("/search");
 const navToCart = () => router.push("/mall/cart");
 const navToCate = (id: number, name: string) =>

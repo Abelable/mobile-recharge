@@ -137,14 +137,14 @@ const submit = async () => {
   if (cardId.value) await editIdentity({ id: cardId.value, ...params });
   else await addIdentity(params);
 
-  router.go(-1);
+  router.back();
 };
 
 const deleteIdentity = () =>
   Dialog.confirm({ title: "提示", message: "确定删除商品吗？" }).then(
     async () => {
       await deleteIdentityItem(cardId.value);
-      router.go(-1);
+      router.back();
     }
   );
 </script>
