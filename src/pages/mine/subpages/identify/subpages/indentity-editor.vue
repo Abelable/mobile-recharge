@@ -108,10 +108,12 @@ const submit = async () => {
     return;
   }
 
-  const [idCardFront = ""] =
-    (await uploadFile(idCardFrontList.value[0].content || "")) || [];
-  const [idCardBehind = ""] =
-    (await uploadFile(idCardBehindList.value[0].content || "")) || [];
+  const [idCardFront] = await uploadFile(
+    idCardFrontList.value[0].content || ""
+  );
+  const [idCardBehind] = await uploadFile(
+    idCardBehindList.value[0].content || ""
+  );
 
   const params: AddIdentityParams = {
     card_zm: idCardFront,
