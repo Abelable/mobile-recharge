@@ -229,13 +229,13 @@ const allSortClassify = () => {};
     display: flex
     align-items: center
     box-sizing: initial
-  .back-wrap
-    padding: .15rem
-    display: flex
-    align-items: center
-  .back-icon
-    width: .34rem
-    height: .34rem
+    .back-wrap
+      padding: .15rem
+      display: flex
+      align-items: center
+      .back-icon
+        width: .34rem
+        height: .34rem
   .search-content
     width: 4.60rem
     display: flex
@@ -247,70 +247,66 @@ const allSortClassify = () => {};
     border: .03rem solid #2B323F
     padding-left: .20rem
     position: relative
-  .search-icon
-    width: .30rem
-    height: .30rem
-  .search-input
-    width: 2.42rem
-    overflow: hidden
-    span-overflow: ellipsis
-    padding-left: .10rem
-    height: 100%
-    color: #333
-    font-size: .28rem
-  .cancel-btn
-    display: flex
-    align-items: center
-    justify-content: center
-    width: .60rem
-    height: .60rem
-  .search-btn
-    position: absolute
-    top: -0.01rem
-    right: -0.01rem
-    width: 1.00rem
-    height: .58rem
-    font-size: .28rem
-    color: #FFE5BD
-    line-height: .58rem
-    span-align: center
-    border-radius: .30rem
-    background: linear-gradient(90deg, #434D5E 0%, #0F131A 100%)
-  .hot-keywords-wrap, .history-keywords-wrap
-    padding: .10rem .30rem
-  .title-wrap
-    display: flex
-    align-items: center
-  .title-icon
-    width: .32rem
-    height: .32rem
-    margin-right: .16rem
-  .title
-    flex: 1
-    color: #111111
-    font-size: .28rem
-    font-weight: 600
-    margin-bottom: .20rem
-  .delete-icon
-    width: .30rem
-    height: .30rem
-  .keywords-list
-    display: inline-block
-    margin: 0 .20rem .20rem 0
-    padding: 0 .32rem
-    height: auto
-    color: #666
-    font-size: .26rem
-    font-weight: 600
-    line-height: .60rem
-    border-radius: .30rem
-    background: #EFEFEF
+    .search-icon
+      width: .30rem
+      height: .30rem
+    .search-input
+      width: 2.42rem
+      overflow: hidden
+      span-overflow: ellipsis
+      padding-left: .10rem
+      height: 100%
+      color: #333
+      font-size: .28rem
+    .cancel-btn
+      display: flex
+      align-items: center
+      justify-content: center
+      width: .60rem
+      height: .60rem
+    .search-btn
+      position: absolute
+      top: -0.01rem
+      right: -0.01rem
+      width: 1.00rem
+      height: .58rem
+      font-size: .28rem
+      color: #FFE5BD
+      line-height: .58rem
+      span-align: center
+      border-radius: .30rem
+      background: linear-gradient(90deg, #434D5E 0%, #0F131A 100%)
   .banner
     height 3.6rem
     .banner-img
       width 100%
       height 100%
       fit-content cover
+.hot-keywords-wrap, .history-keywords-wrap
+  padding: .10rem .30rem
+  .title-wrap
+    display: flex
+    align-items: center
+    .title
+      flex: 1
+      color: #111111
+      font-size: .28rem
+      font-weight: 600
+      margin-bottom: .20rem
+    .delete-icon
+      width: .30rem
+      height: .30rem
+.keywords-list
+  display: inline-block
+  margin: 0 .20rem .20rem 0
+  padding: 0 .32rem
+  height: auto
+  color: #666
+  font-size: .26rem
+  font-weight: 600
+  line-height: .60rem
+  border-radius: .30rem
+  background: #EFEFEF
 .tabs-wrap
   display: flex
   justify-content: space-between
@@ -318,19 +314,19 @@ const allSortClassify = () => {};
   font-size: .32rem
   background-color: #fff
   z-index: 2
-.tabs-list
-  color:#999999
-.tabs-list.active
-  color: #111111
-  display: flex
-  flex-direction: column
-  align-items: center
-.tabs-line-active
-  margin-top:. 7rem
-  width: .24rem
-  height: .08rem
-  background: #DAB174
-  border-radius: .04rem
+  .tabs-list
+    color:#999999
+    .active
+      color: #111111
+      display: flex
+      flex-direction: column
+      align-items: center
+  .tabs-line-active
+    margin-top:. 7rem
+    width: .24rem
+    height: .08rem
+    background: #DAB174
+    border-radius: .04rem
 .classify-wrap
   display: flex
   justify-content: space-between
