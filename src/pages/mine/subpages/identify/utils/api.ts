@@ -9,9 +9,8 @@ export interface IdentityInfo {
   is_set: 1 | 2;
 }
 
-export const getIdentityList = async (): Promise<
-  Pick<IdentityInfo, "card_id" | "name" | "id_number">[]
-> => await http("/api/v4/user/card", { data: { page: 1 } });
+export const getIdentityList = async (): Promise<IdentityInfo[]> =>
+  await http("/api/v4/user/card", { data: { page: 1 } });
 
 export const getIdentityInfo = async (
   id: string

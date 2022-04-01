@@ -1,18 +1,28 @@
 <template>
+  <NavBar :title="cardId ? '编辑实名认证' : '添加实名认证'" />
+
   <div class="auth-card">
     <div class="title">请上传清晰有效的身份证正反面照片</div>
     <div class="remind">请确保身份证真实有效，请勿剪裁涂改，保证清晰显示。</div>
     <div class="card-pic-wrap">
       <Uploader v-model="idCardFrontList" :preview-image="false">
         <img
-          style="width: 3.08rem; height: 2.08rem"
-          src="https://img.ubo.vip/mp/mine/auth/add-auth/front.png"
+          class="card-pic"
+          :class="{ shadow: idCardFrontList.length }"
+          :src="
+            idCardFrontList[idCardFrontList.length - 1]?.content ||
+            'https://img.ubo.vip/mp/mine/auth/add-auth/front.png'
+          "
         />
       </Uploader>
       <Uploader v-model="idCardBehindList" :preview-image="false">
         <img
-          style="width: 3.08rem; height: 2.08rem"
-          src="https://img.ubo.vip/mp/mine/auth/add-auth/behind.png"
+          class="card-pic"
+          :class="{ shadow: idCardBehindList.length }"
+          :src="
+            idCardBehindList[idCardBehindList.length - 1]?.content ||
+            'https://img.ubo.vip/mp/mine/auth/add-auth/behind.png'
+          "
         />
       </Uploader>
     </div>
@@ -45,17 +55,18 @@
   </div>
 
   <div class="btn-wrap">
-    <button class="btn" :class="{ add: cardId }" @click="submit">保存</button>
+    <button class="btn" :class="{ add: !cardId }" @click="submit">保存</button>
     <button class="btn" v-if="cardId" @click="deleteIdentity">删除</button>
   </div>
 </template>
 
 <script setup lang="ts">
-import { uploadFile } from "@/api/common";
 import { Uploader, Switch, Dialog, UploaderFileListItem, Toast } from "vant";
+import NavBar from "@/components/NavBar.vue";
 
 import { ref, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import { uploadFile } from "@/api/common";
 import { addIdentity } from "../utils/api";
 import {
   deleteIdentityItem,
@@ -68,8 +79,8 @@ const route = useRoute();
 const router = useRouter();
 
 const cardId = ref("");
-const idCardFrontList = ref<UploaderFileListItem[]>();
-const idCardBehindList = ref<UploaderFileListItem[]>();
+const idCardFrontList = ref<UploaderFileListItem[]>([]);
+const idCardBehindList = ref<UploaderFileListItem[]>([]);
 const userName = ref("");
 const idNumber = ref("");
 const checked = ref(false);
@@ -83,8 +94,8 @@ const setIdentityInfo = async () => {
   const { card_zm, card_fm, name, id_number, is_set } = await getIdentityInfo(
     cardId.value
   );
-  idCardFrontList.value = [{ url: card_zm }];
-  idCardBehindList.value = [{ url: card_fm }];
+  idCardFrontList.value = [{ content: card_zm }];
+  idCardBehindList.value = [{ content: card_fm }];
   userName.value = name;
   idNumber.value = id_number;
   checked.value = is_set === 2;
@@ -109,10 +120,10 @@ const submit = async () => {
   }
 
   const [idCardFront] = await uploadFile(
-    idCardFrontList.value[0].content || ""
+    idCardFrontList.value[idCardFrontList.value.length - 1].content || ""
   );
   const [idCardBehind] = await uploadFile(
-    idCardBehindList.value[0].content || ""
+    idCardBehindList.value[idCardBehindList.value.length - 1].content || ""
   );
 
   const params: AddIdentityParams = {
@@ -140,7 +151,7 @@ const deleteIdentity = () =>
 
 <style lang="stylus" scoped>
 .auth-card
-  margin: .30rem
+  margin: 1.18rem .3rem .3rem
   padding: .18rem .30rem
   background-color: #fff
   border-radius: .12rem
@@ -156,6 +167,14 @@ const deleteIdentity = () =>
     display: flex
     justify-content: space-between
     margin: .50rem 0
+    .card-pic
+      width: 3.08rem
+      height: 2.08rem
+      &.shadow
+        width: 3.03rem
+        height: 2.03rem
+        border-radius: .14rem
+        box-shadow 0 .04rem .04rem 0 rgba(0, 0, 0, 0.1)
   .info-detail
     display: flex
     align-items: center
@@ -163,7 +182,7 @@ const deleteIdentity = () =>
     line-height: .88rem
     text-indent: .10rem
     font-size: .30rem
-    border-bottom:. 2rem solid #f0f0f0
+    border-bottom: .02rem solid #f0f0f0
     &:last-child
       border-bottom: none
     .input-title
@@ -189,7 +208,7 @@ const deleteIdentity = () =>
     display: flex
     align-items: center
     .instructions-icon
-      margin-right:. 6rem
+      margin-right: .06rem
       width: .24rem
       height: .24rem
   .instructions-content
@@ -203,15 +222,16 @@ const deleteIdentity = () =>
   padding: 0 .30rem
   width: 100%
   .btn
+    display flex
+    align-items center
+    justify-content center
     width: 3.30rem
     height: .88rem
-    border-radius: .44rem
-    background-color: #000000
     color: #F7CC9C
     font-size: .34rem
     font-weight: bold
-    text-align: center
-    line-height: .88rem
+    border-radius: .44rem
+    background-color: #000
     &.add
       width: 100%
 </style>

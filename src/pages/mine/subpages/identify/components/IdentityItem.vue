@@ -6,7 +6,7 @@
         <span style="margin-left: 0.3rem">{{ idNumber }}</span>
       </div>
       <div class="edit-btn">
-        <div v-if="item.is_set === '1'">默认</div>
+        <div v-if="item.is_set === 1">默认</div>
         <img
           class="arrow-icon"
           src="https://img.ubo.vip/mp/mine/auth/arrow.png"

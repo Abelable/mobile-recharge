@@ -56,6 +56,12 @@ const mine: Array<RouteRecordRaw> = [
     component: () => import("@/pages/mine/subpages/identify/index.vue"),
   },
   {
+    name: "indentity_editor",
+    path: "/mine/identify/identity_editor",
+    component: () =>
+      import("@/pages/mine/subpages/identify/subpages/identity-editor.vue"),
+  },
+  {
     path: "/mine/address",
     name: "address",
     meta: { keepAlive: true, requireAuth: true },
