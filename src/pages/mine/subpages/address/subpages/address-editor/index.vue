@@ -89,7 +89,13 @@
 </template>
 
 <script setup lang="ts">
-import { Switch as VantSwitch, Toast, Uploader, Popup } from "vant";
+import {
+  Switch as VantSwitch,
+  Toast,
+  Uploader,
+  Popup,
+  UploaderFileListItem,
+} from "vant";
 import NavBar from "@/components/NavBar.vue";
 import RegionPicker from "./components/RegionPicker.vue";
 
@@ -114,7 +120,7 @@ let regionIdArr: number[] = [];
 
 const addressId = ref("");
 const intelligentAddress = ref("");
-const picList = ref<any[]>([]);
+const picList = ref<UploaderFileListItem[]>([]);
 const consignee = ref("");
 const mobile = ref("");
 const addressDetail = ref("");
@@ -123,7 +129,8 @@ const isDefault = ref(false);
 const regionPickerVisible = ref(false);
 
 watchEffect(() => {
-  if (picList.value.length) recognizePic(picList.value[0].content);
+  if (picList.value.length && picList.value[0].content)
+    recognizePic(picList.value[0].content);
 });
 
 onMounted(() => {

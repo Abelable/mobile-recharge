@@ -38,7 +38,7 @@ const idNumber = computed(() => {
 
 const editIdentity = () =>
   router.push({
-    path: "/mine/identity/identity_edit",
+    path: "/mine/identify/identity_editor",
     query: { id: props.item.card_id },
   });
 const deleteIdentity = async () => {

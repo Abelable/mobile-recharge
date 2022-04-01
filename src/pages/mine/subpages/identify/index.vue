@@ -20,6 +20,7 @@
   <div
     class="add-auth"
     :class="{ icon: identityList.length, btn: !identityList.length }"
+    @click="addIdentity"
   >
     <img
       v-if="identityList.length"
@@ -35,7 +36,10 @@ import NavBar from "@/components/NavBar.vue";
 import IdentityItem from "./components/IdentityItem.vue";
 
 import { ref, onMounted } from "vue";
+import { useRouter } from "vue-router";
 import { getIdentityList, IdentityInfo } from "./utils/api";
+
+const router = useRouter();
 
 const identityList = ref<IdentityInfo[]>([]);
 
@@ -43,6 +47,7 @@ onMounted(() => setIdentityList());
 
 const setIdentityList = async () =>
   (identityList.value = await getIdentityList());
+const addIdentity = () => router.push("/mine/identify/identity_editor");
 </script>
 
 <style lang="stylus" scoped>
