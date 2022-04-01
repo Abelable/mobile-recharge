@@ -38,7 +38,7 @@ export const usePayment = () => {
     window.WeixinJSBridge.invoke(
       "getBrandWCPayRequest",
       wxPayment.value,
-      (res: any) => {
+      (res: { err_msg: string }) => {
         if (res.err_msg == "get_brand_wcpay_request:ok")
           router.push("/mine/order");
       }
