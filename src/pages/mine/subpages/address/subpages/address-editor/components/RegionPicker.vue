@@ -105,7 +105,7 @@ const onChange = async (value: { [x: string]: string }, index: number) => {
   }
 };
 
-const onConfirm = (value: any) => {
+const onConfirm = (value: string[]) => {
   const regionIdArr = [
     provinceArr[provinceIdx].id,
     cityArr[cityIdx].id,
