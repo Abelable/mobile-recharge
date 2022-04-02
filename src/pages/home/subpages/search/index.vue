@@ -92,7 +92,12 @@
     v-model="refreshing"
     @refresh="onRefresh"
   >
-    <List v-model="loading" :finished="finished" @load="onLoadMore">
+    <List
+      v-model="loading"
+      :finished="finished"
+      finished-text="没有更多了"
+      @load="onLoadMore"
+    >
       <LiveList v-show="searchType === 0" :list="liveList" />
       <GoodsList v-show="searchType === 1" :list="goodsList" />
       <VideoList v-show="searchType === 2" :list="videoList" />
@@ -108,6 +113,7 @@ import GoodsList from "@/components/GoodsList.vue";
 
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
+import _ from "lodash";
 import {
   deleteHistoryKeywords,
   getHistoryKeywords,
@@ -115,10 +121,10 @@ import {
   KeywordItem,
   FilterOption,
   getfilterOptions,
+  getSearchResult,
   recordKeyword,
 } from "./utils/api";
 import { GoodsInfo, LiveInfo, VideoInfo } from "@/types";
-import { getSearchResult } from "./utils/api";
 
 const router = useRouter();
 
@@ -167,7 +173,7 @@ onMounted(() => {
   setfilterOptionsList();
 });
 
-const onLoadMore = () => setSearchResult();
+const onLoadMore = _.debounce(() => setSearchResult(), 200);
 const onRefresh = () => setSearchResult(true);
 
 const setKeywords = async () => {
@@ -233,9 +239,10 @@ const setSearchResult = async (init = false) => {
           : [...videoList.value, ...(list as VideoInfo[])];
         break;
     }
+    if (finished.value) finished.value = false;
   } else finished.value = true;
   loading.value = false;
-  finished.value = false;
+  refreshing.value = false;
 };
 
 const navBack = () => router.back();
@@ -310,7 +317,7 @@ const navBack = () => router.back();
         color: #111111
         &::after
           position: absolute
-          bottom: 0
+          bottom: .1rem
           left: 50%
           transform: translateX(-50%)
           width: .24rem
@@ -347,6 +354,13 @@ const navBack = () => router.back();
         border-radius: .30rem
         background: #EFEFEF
 .list-wrap
-  margin-top: 1.20rem
+  margin-top: 2.68rem
   padding: .30rem .24rem 0
+  min-height: calc(100vh - 2.68rem)
+</style>
+<style lang="stylus">
+.van-dropdown-menu__bar
+  height: .8rem
+  .van-ellipsis
+    font-size: .3rem
 </style>
