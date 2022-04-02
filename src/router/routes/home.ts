@@ -16,6 +16,7 @@ const home: Array<RouteRecordRaw> = [
   {
     path: "/search",
     name: "search",
+    meta: { requireAuth: true },
     component: () => import("@/pages/home/subpages/search/index.vue"),
   },
   {

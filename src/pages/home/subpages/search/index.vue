@@ -1,19 +1,21 @@
 <template>
   <div class="search-bar-wrap">
     <div class="search-bar">
-      <div class="back-wrap">
-        <img
-          class="back-icon"
-          src="https://img.ubo.vip/mp/search/back.png"
-          @click="navBack"
-        />
-      </div>
+      <img
+        class="back-icon"
+        src="https://img.ubo.vip/mp/search/back.png"
+        @click="navBack"
+      />
       <div class="search-content">
         <img
           class="search-icon"
           src="https://img.ubo.vip/mp/index/search/index-search.png"
         />
-        <input class="search-input" v-model="keyword" />
+        <input
+          class="search-input"
+          v-model="keyword"
+          placeholder="搜索直播间、商品、短视频"
+        />
         <div class="cancel-btn" v-if="keyword" @click="cancelSearch">
           <img
             style="width: 0.32rem; height: 0.32rem"
@@ -23,7 +25,7 @@
         <div class="search-btn" @click="search">搜索</div>
       </div>
     </div>
-    <div v-if="!showHistory">
+    <div v-show="!showHistory">
       <div class="tab-list">
         <div
           class="tab-item"
@@ -37,7 +39,7 @@
       </div>
       <DropdownMenu>
         <DropdownItem
-          v-modal="sortValue"
+          v-model="sortValue"
           :options="sortOptionsList[searchType]"
         />
         <DropdownItem
@@ -48,8 +50,8 @@
     </div>
   </div>
 
-  <div v-show="showHistory">
-    <div class="keywords-wrap">
+  <div class="keywords-wrap" v-show="showHistory">
+    <div class="keywords-list">
       <div class="title" v-if="historyKeywords.length">
         <div>最近搜索</div>
         <img
@@ -58,18 +60,18 @@
           @click="clearHistoryKeywords"
         />
       </div>
-      <div class="keywords">
-        <div
+      <ul class="keywords">
+        <li
           class="keyword"
           v-for="(item, index) in historyKeywords"
           :key="index"
           @click="keywordSelect(item.word)"
         >
           {{ item.word }}
-        </div>
-      </div>
+        </li>
+      </ul>
     </div>
-    <div class="keywords-wrap">
+    <div class="keywords-list">
       <div class="title">热搜</div>
       <ul class="keywords">
         <li
@@ -91,25 +93,17 @@
     @refresh="onRefresh"
   >
     <List v-model="loading" :finished="finished" @load="onLoadMore">
-      <div v-show="searchType === 0">
-        <LiveItem v-for="(item, index) in liveList" :key="index" :item="item" />
-      </div>
+      <LiveList v-show="searchType === 0" :list="liveList" />
       <GoodsList v-show="searchType === 1" :list="goodsList" />
-      <div v-show="searchType === 2">
-        <VideoItem
-          v-for="(item, index) in videoList"
-          :key="index"
-          :item="item"
-        />
-      </div>
+      <VideoList v-show="searchType === 2" :list="videoList" />
     </List>
   </PullRefresh>
 </template>
 
 <script setup lang="ts">
 import { DropdownMenu, DropdownItem, PullRefresh, List } from "vant";
-import LiveItem from "@/components/LiveItem.vue";
-import VideoItem from "@/components/VideoItem.vue";
+import LiveList from "@/components/LiveList.vue";
+import VideoList from "@/components/VideoList.vue";
 import GoodsList from "@/components/GoodsList.vue";
 
 import { onMounted, ref } from "vue";
@@ -121,6 +115,7 @@ import {
   KeywordItem,
   FilterOption,
   getfilterOptions,
+  recordKeyword,
 } from "./utils/api";
 import { GoodsInfo, LiveInfo, VideoInfo } from "@/types";
 import { getSearchResult } from "./utils/api";
@@ -161,7 +156,7 @@ const searchType = ref(0);
 const sortValue = ref(0);
 const filterOptionsList = ref<FilterOption[][]>([]);
 const filterValue = ref("");
-const showHistory = ref(false);
+const showHistory = ref(true);
 const keyword = ref("");
 const liveList = ref<LiveInfo[]>([]);
 const goodsList = ref<GoodsInfo[]>([]);
@@ -176,8 +171,10 @@ const onLoadMore = () => setSearchResult();
 const onRefresh = () => setSearchResult(true);
 
 const setKeywords = async () => {
-  historyKeywords.value = await getHistoryKeywords();
-  hotKeywords.value = await getHotKeywords();
+  const { recent_record_list } = await getHistoryKeywords();
+  historyKeywords.value = recent_record_list;
+  const { hot_search_list } = await getHotKeywords();
+  hotKeywords.value = hot_search_list;
 };
 const setfilterOptionsList = async () =>
   (filterOptionsList.value = await getfilterOptions());
@@ -197,9 +194,13 @@ const changeTab = (index: number) => {
   searchType.value = index;
   setSearchResult(true);
 };
-const search = () => setSearchResult(true);
+const search = () => {
+  setSearchResult(true);
+  recordKeyword(keyword.value);
+};
 const keywordSelect = (word: string) => {
   keyword.value = word;
+  showHistory.value = false;
   setSearchResult(true);
 };
 
@@ -249,38 +250,32 @@ const navBack = () => router.back();
   background: #fff
   z-index: 10
   .search-bar
-    padding: 0 .10rem
-    height: 44px
     display: flex
     align-items: center
-    box-sizing: initial
-    .back-wrap
-      padding: .15rem
-      display: flex
-      align-items: center
-      .back-icon
-        width: .34rem
-        height: .34rem
+    padding: 0 .10rem
+    height: .88rem
+    .back-icon
+      padding: 0 .15rem
+      width: .34rem
+      height: .34rem
+      box-sizing: initial
     .search-content
-      width: 4.60rem
+      position: relative
       display: flex
       align-items: center
-      margin-right: .30rem
+      margin-right: .16rem
+      flex: 1
       height: .60rem
       background: #fff
       border-radius: .30rem
       border: .03rem solid #2B323F
-      padding-left: .20rem
-      position: relative
       .search-icon
+        margin-left: .20rem
+        margin-right: .10rem
         width: .30rem
         height: .30rem
       .search-input
-        width: 2.42rem
-        overflow: hidden
-        span-overflow: ellipsis
-        padding-left: .10rem
-        height: 100%
+        flex: 1
         color: #333
         font-size: .28rem
       .cancel-btn
@@ -290,15 +285,12 @@ const navBack = () => router.back();
         width: .60rem
         height: .60rem
       .search-btn
-        position: absolute
-        top: -0.01rem
-        right: -0.01rem
         width: 1.00rem
         height: .58rem
         font-size: .28rem
         color: #FFE5BD
         line-height: .58rem
-        span-align: center
+        text-align: center
         border-radius: .30rem
         background: linear-gradient(90deg, #434D5E 0%, #0F131A 100%)
   .tab-list
@@ -308,15 +300,15 @@ const navBack = () => router.back();
     .tab-item
       display: flex
       align-items: center
-      justify-content: centr
+      justify-content: center
       flex: 1
-      height: .5rem
+      height: 1rem
       color: #999999
       font-size: .32rem
       &.active
         position relative
         color: #111111
-        ::after
+        &::after
           position: absolute
           bottom: 0
           left: 50%
@@ -327,29 +319,33 @@ const navBack = () => router.back();
           background: #DAB174
           border-radius: .04rem
 .keywords-wrap
-  padding: .10rem .30rem
-  .title
-    display: flex
-    align-items: center
-    justify-content space-between
-    margin-bottom: .20rem
-    color: #111111
-    font-size: .28rem
-    font-weight: 600
-    .delete-icon
-      width: .30rem
-      height: .30rem
-  .keyword
-    display: inline-block
-    margin: 0 .20rem .20rem 0
-    padding: 0 .32rem
-    height: auto
-    color: #666
-    font-size: .26rem
-    font-weight: 600
-    line-height: .60rem
-    border-radius: .30rem
-    background: #EFEFEF
+  margin-top: 1.2rem
+  .keywords-list
+    padding: .10rem .30rem
+    .title
+      display: flex
+      align-items: center
+      justify-content space-between
+      margin-bottom: .20rem
+      color: #111111
+      font-size: .28rem
+      font-weight: 600
+      .delete-icon
+        width: .30rem
+        height: .30rem
+    .keywords
+      display: flex
+      flex-wrap: wrap
+      .keyword
+        margin: 0 .20rem .20rem 0
+        padding: 0 .32rem
+        height: .6rem
+        color: #666
+        font-size: .26rem
+        font-weight: 600
+        line-height: .60rem
+        border-radius: .30rem
+        background: #EFEFEF
 .list-wrap
   margin-top: 1.20rem
   padding: .30rem .24rem 0

@@ -6,11 +6,13 @@ export interface KeywordItem {
   word: string;
 }
 
-export const getHistoryKeywords = async (): Promise<KeywordItem[]> =>
-  await http("?r=lv/search-all/recent-record", { method: "POST" });
+export const getHistoryKeywords = async (): Promise<{
+  recent_record_list: KeywordItem[];
+}> => await http("?r=lv/search-all/recent-record", { method: "POST" });
 
-export const getHotKeywords = async (): Promise<KeywordItem[]> =>
-  await http("?r=lv/search-all/hot-list", { method: "POST" });
+export const getHotKeywords = async (): Promise<{
+  hot_search_list: KeywordItem[];
+}> => await http("?r=lv/search-all/hot-list", { method: "POST" });
 
 export const deleteHistoryKeywords = async () =>
   await http("?=lv/search-all/delete-record", { method: "POST" });
