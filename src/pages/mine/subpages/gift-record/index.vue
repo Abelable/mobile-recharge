@@ -66,6 +66,7 @@ import RecordItem from "./components/RecordItem.vue";
 
 import { ref } from "vue";
 import dayjs from "dayjs";
+import _ from "lodash";
 import { GiftRecordInfo, getGiftRecordList } from "./utils/api";
 
 let page = 0;
@@ -81,7 +82,7 @@ const recordList = ref<GiftRecordInfo[]>([]);
 const datePickerVisible = ref(false);
 const currentDate = ref(new Date());
 
-const onLoadMore = () => setRecordList();
+const onLoadMore = _.debounce(() => setRecordList(), 200);
 const onRefresh = () => setRecordList(true);
 const selectMenu = (index: number) => {
   if (index !== selectedIdx.value) {
