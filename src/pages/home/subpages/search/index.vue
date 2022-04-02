@@ -28,74 +28,39 @@
         <div
           class="tab-item"
           :class="{ active: searchType === index }"
-          v-for="(item, index) in tabList"
+          v-for="(item, index) in ['直播', '商品', '短视频']"
           :key="index"
           @click="changeTab(index)"
         >
           {{ item }}
         </div>
       </div>
-
-      <div class="classify-tabs">
-        <div
-          class="classify-tab"
-          :class="{ active: sortIndex === index }"
-          v-for="(item, index) in [allSortText, typeSortText]"
-          :key="index"
-          @click="allSortClassify(index)"
-        >
-          <div>{{ item }}</div>
-          <img
-            class="sort-icon"
-            :src="`https://img.ubo.vip/mp/search/${
-              isAllSort ? 'sort-down' : 'sort-up'
-            }.png`"
-          />
-        </div>
-      </div>
-
-      <div class="all-down-wrap" v-if="!isAllSort">
-        <div
-          class="all-down-list"
-          :class="{ 'select-down-active': selectAllIndex === index }"
-          v-for="(item, index) in allMenuList"
-          :key="index"
-          @click="selectAllItem(item, index)"
-        >
-          {{ item }}
-        </div>
-      </div>
-
-      <div class="all-down-wrap type-down-wrap" v-if="!isTypeSort">
-        <div
-          class="type-down-list"
-          :class="{ 'select-down-active': selectTypeIndex === index }"
-          v-for="(item, index) in typeMenuList"
-          :key="index"
-          wx:for="{{typeMenuList}}"
-          wx:key="index"
-          item="item"
-          @click="selectTypeItem(item, index)"
-        >
-          {{ item.name || item.cate_name || item.tag_name }}
-        </div>
-      </div>
+      <DropdownMenu>
+        <DropdownItem
+          v-modal="sortValue"
+          :options="sortOptionsList[searchType]"
+        />
+        <DropdownItem
+          v-model="filterValue"
+          :options="filterOptionsList[searchType]"
+        />
+      </DropdownMenu>
     </div>
   </div>
 
-  <div class="keywords-wrap" v-if="showHistory">
-    <div class="history-keywords-wrap">
-      <div class="title-wrap" v-if="historyKeywords.length">
-        <span class="title">最近搜索</span>
+  <div v-show="showHistory">
+    <div class="keywords-wrap">
+      <div class="title" v-if="historyKeywords.length">
+        <div>最近搜索</div>
         <img
           class="delete-icon"
           src="https://img.ubo.vip/mp/selection/search/del-history.png"
-          @click="deleteHistory"
+          @click="clearHistoryKeywords"
         />
       </div>
-      <div class="keywords-list-wrap">
+      <div class="keywords">
         <div
-          class="keywords-list"
+          class="keyword"
           v-for="(item, index) in historyKeywords"
           :key="index"
           @click="keywordSelect(item.word)"
@@ -104,110 +69,175 @@
         </div>
       </div>
     </div>
-    <Swipe class="banner" :autoplay="3000" indicator-color="white">
-      <SwipeItem v-for="(item, index) in banner" :key="index">
-        <img
-          class="banner-img"
-          @click="adLink(item.is_belong, item.ad_link)"
-          :src="item.ad_code"
-        />
-      </SwipeItem>
-    </Swipe>
-    <div class="hot-keywords-wrap">
-      <div class="title-wrap">
-        <span class="title">热搜</span>
-      </div>
-      <div class="keywords-list-wrap">
-        <div
-          class="keywords-list"
+    <div class="keywords-wrap">
+      <div class="title">热搜</div>
+      <ul class="keywords">
+        <li
+          class="keyword"
           v-for="(item, index) in hotKeywords"
           :key="index"
           @click="keywordSelect(item.word)"
         >
           {{ item.word }}
-        </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <PullRefresh
+    class="list-wrap"
+    v-show="!showHistory"
+    v-model="refreshing"
+    @refresh="onRefresh"
+  >
+    <List v-model="loading" :finished="finished" @load="onLoadMore">
+      <div v-show="searchType === 0">
+        <LiveItem v-for="(item, index) in liveList" :key="index" :item="item" />
       </div>
-    </div>
-  </div>
-  <div>
-    <div class="media-list-wrap" v-if="!showHistory && searchType === 0">
-      <LiveItem
-        v-for="(item, index) in liveList"
-        :key="index"
-        item="{{item}}"
-      />
-      <div class="no-data" v-if="!liveList.length">没有找到相关直播</div>
-    </div>
-
-    <div class="goods-list-wrap" v-if="!showHistory && searchType === 1">
-      <GoodsList list="goodsList" />
-      <div class="no-data" v-if="!goodsList.length">没有找到相关的商品</div>
-    </div>
-
-    <div class="media-list-wrap" v-if="!showHistory && searchType === 2">
-      <VideoItem v-for="(item, index) in videoList" :key="index" :item="item" />
-      <div class="no-data" v-if="!videoList.length">没有找到相关的短视频</div>
-    </div>
-
-    <div class="shadow" v-if="!isAllSort || !isTypeSort"></div>
-  </div>
+      <GoodsList v-show="searchType === 1" :list="goodsList" />
+      <div v-show="searchType === 2">
+        <VideoItem
+          v-for="(item, index) in videoList"
+          :key="index"
+          :item="item"
+        />
+      </div>
+    </List>
+  </PullRefresh>
 </template>
 
 <script setup lang="ts">
-import { Swipe, SwipeItem } from "vant";
+import { DropdownMenu, DropdownItem, PullRefresh, List } from "vant";
 import LiveItem from "@/components/LiveItem.vue";
 import VideoItem from "@/components/VideoItem.vue";
 import GoodsList from "@/components/GoodsList.vue";
 
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
-import { useAdLink } from "@/utils/index";
-import { getHistoryKeywords, getHotKeywords, KeywordItem } from "./utils/api";
+import {
+  deleteHistoryKeywords,
+  getHistoryKeywords,
+  getHotKeywords,
+  KeywordItem,
+  FilterOption,
+  getfilterOptions,
+} from "./utils/api";
+import { GoodsInfo, LiveInfo, VideoInfo } from "@/types";
+import { getSearchResult } from "./utils/api";
 
 const router = useRouter();
-const adLink = useAdLink();
 
-const tabList = ["直播", "商品", "短视频"];
+interface SortOption {
+  text: string;
+  value: number | string;
+}
+const sortOptionsList: SortOption[][] = [
+  [
+    { text: "综合排序", value: 0 },
+    { text: "最新发布", value: 1 },
+    { text: "最多点赞", value: 2 },
+  ],
+  [
+    { text: "综合排序", value: 0 },
+    { text: "销量", value: 1 },
+    { text: "价格降序", value: 2 },
+    { text: "价格升序", value: 3 },
+  ],
+  [
+    { text: "综合排序", value: 0 },
+    { text: "最新发布", value: 1 },
+    { text: "最多点赞", value: 2 },
+  ],
+];
+
 let page = 0;
-let categoryId = "";
 
+const loading = ref(false);
+const finished = ref(false);
+const refreshing = ref(false);
 const hotKeywords = ref<KeywordItem[]>([]);
 const historyKeywords = ref<KeywordItem[]>([]);
 const searchType = ref(0);
-const banner = ref([]);
-const allMenuList = ref([]);
-const typeMenuList = ref([]);
-const selectAllIndex = ref(0);
-const selectTypeIndex = ref(0);
-const allSortText = ref("综合");
-const typeSortText = ref("分类");
+const sortValue = ref(0);
+const filterOptionsList = ref<FilterOption[][]>([]);
+const filterValue = ref("");
 const showHistory = ref(false);
 const keyword = ref("");
-const liveList = ref([]);
-const goodsList = ref([]);
-const videoList = ref([]);
-const isAllSort = ref(false);
-const isTypeSort = ref(false);
-const sortIndex = ref(0);
+const liveList = ref<LiveInfo[]>([]);
+const goodsList = ref<GoodsInfo[]>([]);
+const videoList = ref<VideoInfo[]>([]);
 
 onMounted(() => {
   setKeywords();
+  setfilterOptionsList();
 });
+
+const onLoadMore = () => setSearchResult();
+const onRefresh = () => setSearchResult(true);
 
 const setKeywords = async () => {
   historyKeywords.value = await getHistoryKeywords();
   hotKeywords.value = await getHotKeywords();
 };
+const setfilterOptionsList = async () =>
+  (filterOptionsList.value = await getfilterOptions());
+
+const clearHistoryKeywords = () => {
+  deleteHistoryKeywords();
+  historyKeywords.value = [];
+};
+
+const cancelSearch = () => {
+  keyword.value = "";
+  showHistory.value = true;
+  setKeywords();
+};
+
+const changeTab = (index: number) => {
+  searchType.value = index;
+  setSearchResult(true);
+};
+const search = () => setSearchResult(true);
+const keywordSelect = (word: string) => {
+  keyword.value = word;
+  setSearchResult(true);
+};
+
+const setSearchResult = async (init = false) => {
+  if (init) page = 0;
+  const { list } = await getSearchResult(
+    keyword.value,
+    searchType.value + 1,
+    sortValue.value + 1,
+    filterValue.value,
+    ++page
+  );
+  if (list.length) {
+    switch (searchType.value) {
+      case 0:
+        liveList.value = init
+          ? (list as LiveInfo[])
+          : [...liveList.value, ...(list as LiveInfo[])];
+        break;
+
+      case 1:
+        goodsList.value = init
+          ? (list as GoodsInfo[])
+          : [...goodsList.value, ...(list as GoodsInfo[])];
+        break;
+
+      case 2:
+        videoList.value = init
+          ? (list as VideoInfo[])
+          : [...videoList.value, ...(list as VideoInfo[])];
+        break;
+    }
+  } else finished.value = true;
+  loading.value = false;
+  finished.value = false;
+};
 
 const navBack = () => router.back();
-const cancelSearch = () => {};
-const search = () => {};
-const changeTab = (index: number) => {};
-const selectAllItem = (item: any, index: number) => {};
-const selectTypeItem = (item: any, index: number) => {};
-const keywordSelect = (work: string) => {};
-const allSortClassify = (index: number) => {};
-const deleteHistory = () => {};
 </script>
 
 <style lang="stylus" scoped>
@@ -296,64 +326,20 @@ const deleteHistory = () => {};
           content: ''
           background: #DAB174
           border-radius: .04rem
-  .classify-tabs
-    display: flex
-    font-size: .28rem
-    background-color: #fff
-    z-index: 2
-    .classify-tab
-      display: flex
-      align-items: center
-      justify-content: center
-      flex: 1
-      height: .3rem
-      color: #999999
-      &.active
-        color: #111111
-      .sort-icon
-        margin-left: .05rem
-        width: .32rem
-        height: .32rem
-  .all-down-wrap
-    border-top: 1px solid #F5F5F5
-    .all-down-list
-      line-height: .78rem
-      font-size: .28rem
-      color: #666666
-      padding-left: .32rem
-      &.select-down-active
-        background: #F5F5F5
-        color: #111111
-  .type-down-wrap
-    display: flex
-    flex-wrap: wrap
-    max-height: 4.80rem
-    overflow-y: scroll
-    .type-down-list
-      width: 50%
-      padding-left: .32rem
-      line-height: .78rem
-      font-size: .28rem
-      color: #666666
-      box-sizing: border-box
-      &.select-down-active
-        background: #F5F5F5
-        color: #111111
-.hot-keywords-wrap, .history-keywords-wrap
+.keywords-wrap
   padding: .10rem .30rem
-  .title-wrap
+  .title
     display: flex
     align-items: center
-    .title
-      flex: 1
-      color: #111111
-      font-size: .28rem
-      font-weight: 600
-      margin-bottom: .20rem
+    justify-content space-between
+    margin-bottom: .20rem
+    color: #111111
+    font-size: .28rem
+    font-weight: 600
     .delete-icon
       width: .30rem
       height: .30rem
-  .keywords-list
+  .keyword
     display: inline-block
     margin: 0 .20rem .20rem 0
     padding: 0 .32rem
@@ -364,29 +350,7 @@ const deleteHistory = () => {};
     line-height: .60rem
     border-radius: .30rem
     background: #EFEFEF
-.banner
-  height 3.6rem
-  .banner-img
-    width 100%
-    height 100%
-    fit-content cover
-.media-list-wrap
-  margin-top: 1.20rem
-  padding-top: .30rem
-  padding-left: .24rem
-.goods-list-wrap
+.list-wrap
   margin-top: 1.20rem
   padding: .30rem .24rem 0
-.no-data
-  margin-top: 4.00rem
-  color: #666
-  font-size: .28rem
-  span-align: center
-.shadow
-  position: fixed
-  top: 0
-  right: 0
-  left: 0
-  bottom: 0
-  background-color:rgba(0, 0, 0, 0.4)
 </style>
