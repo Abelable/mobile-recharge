@@ -9,10 +9,21 @@
     </template>
   </NavBar>
   <div class="container">
-    <div class="cover-wrap">
-      <img class="cover" src="" alt="" />
-      <div class="toggle-bar">
-        <img class="arrow" src="./images/arrow.png" alt="" />
+    <div class="cover-wrap" :class="{ open }">
+      <img
+        class="cover"
+        src="https://static.91haoka.cn/1649173147Sw5.jpg"
+        alt=""
+      />
+      <div class="toggle-bar" @click="open = !open">
+        <img
+          class="arrow"
+          :class="{ open }"
+          :src="
+            open ? require('./images/up.png') : require('./images/down.png')
+          "
+          alt=""
+        />
       </div>
     </div>
   </div>
@@ -20,9 +31,12 @@
 
 <script setup lang="ts">
 import NavBar from "@/components/NavBar/index.vue";
-
+import { ref } from "vue";
 import { useRouter } from "vue-router";
+
 const router = useRouter();
+
+const open = ref(false);
 
 const navToOrderQuery = () => router.push("/order_query");
 </script>
@@ -35,6 +49,8 @@ const navToOrderQuery = () => router.push("/order_query");
     font-size 0
     height 100vw
     overflow hidden
+    &.open
+      height: fit-content
     .cover
       width 100%
     .toggle-bar
@@ -47,9 +63,12 @@ const navToOrderQuery = () => router.push("/order_query");
       height 1.1rem
       background linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.4))
       .arrow
-        width .5rem
-        height .5rem
+        width .4rem
+        height .4rem
         animation shake 1.5s infinite
+        transform: rotate(45deg)
+        &.open
+          transform: rotate(90deg)
 @keyframes shake
   0%
     transform translateY(0.06rem)
