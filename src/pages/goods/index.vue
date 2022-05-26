@@ -65,7 +65,7 @@
           {{
             regionArr
               ? regionArr[0] + " " + regionArr[1] + " " + regionArr[2]
-              : "请选择地区"
+              : "请点击选择地区"
           }}
         </div>
       </div>
