@@ -36,7 +36,7 @@
         <div class="label">姓名</div>
         <input class="content" type="text" placeholder="请输入姓名（已加密）" />
       </div>
-      <div class="info">
+      <div class="info" v-if="goodsInfo?.product.is_required_idcard">
         <div class="label">身份证号</div>
         <input
           class="content"
