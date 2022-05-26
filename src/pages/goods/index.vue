@@ -30,6 +30,26 @@
     </div>
     <div class="info-wrap">
       <div class="tag">实名信息</div>
+      <div class="info">
+        <div class="label">姓名</div>
+        <input class="content" type="text" placeholder="请输入姓名（已加密）" />
+      </div>
+      <div class="info">
+        <div class="label">身份证号</div>
+        <input
+          class="content"
+          type="text"
+          placeholder="请输入身份证号（已加密）"
+        />
+      </div>
+      <div class="info">
+        <div class="label">联系电话</div>
+        <input
+          class="content"
+          type="text"
+          placeholder="请输入联系电话，并保持畅通"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -92,11 +112,11 @@ const navToOrderQuery = () => router.push("/order_query");
     border-bottom 1px solid #f3f3f3
     .tag
       position relative
-      margin .24rem
+      margin-top .24rem
+      margin-left .24rem
       color #3976ff
-      font-size .28rem
+      font-size .3rem
       font-weight bold
-      line-height 1
       &::before
         position absolute
         top 50%
@@ -111,11 +131,12 @@ const navToOrderQuery = () => router.push("/order_query");
       align-items center
       height .88rem
       .label
-        width 2rem
+        width 1.8rem
         color #333
         font-size .28rem
         font-weight bold
       .content
+        width 5rem
         color #333
         font-size .28rem
 @keyframes shake
