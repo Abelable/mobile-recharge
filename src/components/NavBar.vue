@@ -18,7 +18,9 @@
 </template>
 
 <script setup lang="ts">
-defineProps<{ title: string }>();
+withDefaults(defineProps<{ backIconVisible: boolean; title: string }>(), {
+  backIconVisible: true,
+});
 const navBack = () => history.back();
 </script>
 
