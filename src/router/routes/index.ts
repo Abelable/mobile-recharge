@@ -1,16 +1,6 @@
 import { RouteRecordRaw } from "vue-router";
-import home from "./home";
-import social from "./social";
-import message from "./message";
-import mine from "./mine";
-import common from "./common";
+import home from "./goods";
 
-const routes: Array<RouteRecordRaw> = [
-  ...home,
-  ...social,
-  ...message,
-  ...mine,
-  ...common,
-];
+const routes: Array<RouteRecordRaw> = [...home];
 
 export default routes;
