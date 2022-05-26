@@ -3,9 +3,10 @@
     <div class="nav-bar">
       <div class="back-arrow">
         <img
+          v-if="backIconVisible"
           style="width: 20px; height: 20px"
           @click="navBack"
-          src="https://img.ubo.vip/mp/i-back-icon/back-icon.png"
+          src="./images/back.png"
         />
       </div>
       <h3 class="title" v-if="title">{{ title }}</h3>
@@ -36,7 +37,7 @@ const navBack = () => history.back();
     align-items center
     padding 0 .2rem
     height .88rem
-    background #000
+    background #fff
     .back-arrow
       display flex
       align-items center
@@ -44,7 +45,7 @@ const navBack = () => history.back();
       height .88rem
     .title
       width fit-content
-      color #fff
+      color #333
       font-size .3rem
       font-weight 500
     .custom-btn-wrap
