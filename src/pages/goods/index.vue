@@ -16,7 +16,7 @@ import NavBar from "@/components/NavBar/index.vue";
 import { useRouter } from "vue-router";
 const router = useRouter();
 
-const navToOrderQuery = () => router.push("/goods/order_query");
+const navToOrderQuery = () => router.push("/order_query");
 </script>
 
 <style lang="stylus" scoped></style>
