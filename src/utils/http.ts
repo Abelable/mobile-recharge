@@ -10,11 +10,9 @@ export const http = async (
   endpoint: string,
   { data, headers, ...customConfig }: Config = {}
 ) => {
-  const token = localStorage.getItem("token") || "";
   const config = {
     method: "GET",
     headers: {
-      Authorization: token ? `Bearer ${token}` : "",
       "Content-Type": data ? "application/json" : "",
       timestamp: initTimestamp(),
       nonce: initNonce(),
