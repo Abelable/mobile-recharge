@@ -57,8 +57,16 @@
       <div class="tag">填写配送地址</div>
       <div class="info">
         <div class="label">所在城市</div>
-        <div class="content" @click="regionPickerVisible = true">
-          请选择地区
+        <div
+          class="content"
+          :class="{ placeholder: !regionArr }"
+          @click="regionPickerVisible = true"
+        >
+          {{
+            regionArr
+              ? regionArr[0] + " " + regionArr[1] + " " + regionArr[2]
+              : "请选择地区"
+          }}
         </div>
       </div>
       <div class="info">
@@ -72,9 +80,8 @@
     </div>
   </div>
   <Popup v-model:show="regionPickerVisible" position="bottom" round>
-    <Area
-      :area-list="areaList"
-      :value="regionArr.length ? regionArr[2].code : ''"
+    <RegionPicker
+      :regionArr="regionArr"
       @confirm="onRegionPickerComfirm"
       @cancel="regionPickerVisible = false"
     />
@@ -82,20 +89,22 @@
 </template>
 
 <script setup lang="ts">
-import { Toast, Popup, Area } from "vant";
-import { areaList } from "@vant/area-data";
+import { Toast, Popup } from "vant";
 import NavBar from "@/components/NavBar/index.vue";
+import RegionPicker from "@/components/RegionPicker.vue";
 import { onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { getGoodsInfo } from "./utils/api";
 import type { GoodsInfo } from "@/types";
+
+let regionIdArr: number[] = [];
 
 const router = useRouter();
 const route = useRoute();
 const open = ref(false);
 const goodsInfo = ref<GoodsInfo>();
 const agentId = ref<number>();
-const regionArr = ref<{ code: string }[]>([]);
+const regionArr = ref<string[] | undefined>(undefined);
 const regionPickerVisible = ref(false);
 
 onMounted(async () => {
@@ -106,9 +115,12 @@ onMounted(async () => {
   Toast.clear();
 });
 
-const onRegionPickerComfirm = (result: { code: string }[]) => {
-  console.log(result);
-  regionArr.value = result;
+const onRegionPickerComfirm = (
+  regionList: string[],
+  regionIdList: number[]
+) => {
+  regionArr.value = regionList;
+  regionIdArr = regionIdList;
   regionPickerVisible.value = false;
 };
 const navToOrderQuery = () => router.push("/order_query");
@@ -174,6 +186,8 @@ const navToOrderQuery = () => router.push("/order_query");
         width 5.2rem
         color #333
         font-size .28rem
+        &.placeholder
+          color #888
 @keyframes shake
   0%
     transform translateY(0.06rem)
