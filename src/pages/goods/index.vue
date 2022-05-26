@@ -25,7 +25,9 @@
     <div class="info-wrap">
       <div class="info">
         <div class="label">套餐类型</div>
-        <div class="content">{{ goodsInfo?.name }}</div>
+        <div class="content" style="padding-left: 0.16rem">
+          {{ goodsInfo?.name }}
+        </div>
       </div>
     </div>
     <div class="info-wrap">
@@ -46,8 +48,23 @@
         <div class="label">联系电话</div>
         <input
           class="content"
-          type="text"
+          type="number"
           placeholder="请输入联系电话，并保持畅通"
+        />
+      </div>
+    </div>
+    <div class="info-wrap">
+      <div class="tag">填写配送地址</div>
+      <div class="info">
+        <div class="label">所在城市</div>
+        <input class="content" type="text" placeholder="请选择地区" />
+      </div>
+      <div class="info">
+        <div class="label">详细地址</div>
+        <input
+          class="content"
+          type="text"
+          placeholder="如街道、道路、小区、门牌号"
         />
       </div>
     </div>
@@ -81,7 +98,7 @@ const navToOrderQuery = () => router.push("/order_query");
 
 <style lang="stylus" scoped>
 .container
-  padding-top .88rem
+  padding .88rem 0
   .cover-wrap
     position relative
     font-size 0
@@ -131,12 +148,12 @@ const navToOrderQuery = () => router.push("/order_query");
       align-items center
       height .88rem
       .label
-        width 1.8rem
+        width 1.6rem
         color #333
         font-size .28rem
         font-weight bold
       .content
-        width 5rem
+        width 5.2rem
         color #333
         font-size .28rem
 @keyframes shake
