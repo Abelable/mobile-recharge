@@ -1,4 +1,3 @@
-import { getCartCount } from "@/api/common";
 import { createStore } from "vuex";
 
 export default createStore({
@@ -6,16 +5,7 @@ export default createStore({
     cartCount: 0,
   },
   getters: {},
-  mutations: {
-    setCartCount(state, count) {
-      state.cartCount = count;
-    },
-  },
-  actions: {
-    async updateCartCount(context) {
-      const { cart_number } = await getCartCount();
-      context.commit("setCartCount", Number(cart_number));
-    },
-  },
+  mutations: {},
+  actions: {},
   modules: {},
 });

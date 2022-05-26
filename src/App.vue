@@ -11,16 +11,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, nextTick, provide } from "vue";
-import { useStore } from "vuex";
+import { ref, nextTick, provide } from "vue";
 import { useRoute } from "vue-router";
 
-const store = useStore();
 const route = useRoute();
 
 const routerAlive = ref(true);
-
-onMounted(() => store.dispatch("updateCartCount"));
 
 const routerRefresh = () => {
   routerAlive.value = false;
