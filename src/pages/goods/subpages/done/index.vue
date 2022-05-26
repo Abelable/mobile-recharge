@@ -1,6 +1,5 @@
 <template>
-  <NavBar title="商品" />
-  <div></div>
+  <NavBar title="订单提交成功" />
 </template>
 
 <script setup lang="ts">
