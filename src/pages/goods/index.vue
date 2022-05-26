@@ -1,5 +1,5 @@
 <template>
-  <NavBar :backIconVisible="false" title="商品">
+  <NavBar :backIconVisible="false" :title="(goodsInfo?.name as string)">
     <template v-slot:custom-btn>
       <img
         style="width: 20px; height: 20px"
@@ -10,11 +10,7 @@
   </NavBar>
   <div class="container">
     <div class="cover-wrap" :class="{ open }">
-      <img
-        class="cover"
-        src="https://static.91haoka.cn/1649173147Sw5.jpg"
-        alt=""
-      />
+      <img class="cover" :src="goodsInfo?.main_picture" alt="" />
       <div class="toggle-bar" @click="open = !open">
         <img
           class="arrow"
@@ -31,12 +27,22 @@
 
 <script setup lang="ts">
 import NavBar from "@/components/NavBar/index.vue";
-import { ref } from "vue";
-import { useRouter } from "vue-router";
+import { GoodsInfo } from "@/types";
+import { onMounted, ref } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import { getGoodsInfo } from "./utils/api";
 
 const router = useRouter();
-
+const route = useRoute();
 const open = ref(false);
+const goodsInfo = ref<GoodsInfo>();
+const agentId = ref<number>();
+
+onMounted(async () => {
+  const { goods_id, agent_id } = route.query;
+  goodsInfo.value = await getGoodsInfo(goods_id as string);
+  agentId.value = Number(agent_id);
+});
 
 const navToOrderQuery = () => router.push("/order_query");
 </script>
