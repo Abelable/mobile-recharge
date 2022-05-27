@@ -4,27 +4,32 @@ const apiUrl = process.env.VUE_APP_API_URL;
 
 interface Config extends RequestInit {
   data?: object;
+  formData?: FormData;
 }
 
 export const http = async (
   endpoint: string,
-  { data, headers, ...customConfig }: Config = {}
+  { data, formData, headers, ...customConfig }: Config = {}
 ) => {
   const config = {
     method: "GET",
     headers: {
-      "Content-Type": data ? "application/json" : "",
       timestamp: initTimestamp(),
       nonce: initNonce(),
       ...headers,
-    },
+    } as any,
     ...customConfig,
   };
 
   if (config.method.toUpperCase() === "GET") {
     endpoint += `?${qs.stringify(data)}`;
   } else {
-    config.body = qs.stringify(data || {});
+    if (formData) {
+      config.body = formData;
+    } else {
+      config.headers["Content-Type"] = "application/json";
+      config.body = qs.stringify(data || {});
+    }
   }
 
   return window.fetch(`${apiUrl}${endpoint}`, config).then(async (response) => {

@@ -8,3 +8,13 @@ export const getRegion = async (id = 0): Promise<reginInfo[]> => {
     name: res[key],
   }));
 };
+
+export const uploadImg = async (file: File) => {
+  const formData = new FormData();
+  formData.append("image", file);
+  const res = await http("/api/v1/h5/upload/image", {
+    method: "POST",
+    formData,
+  });
+  console.log(res);
+};

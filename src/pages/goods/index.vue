@@ -99,8 +99,7 @@
         </div>
         <div class="content">
           <Uploader
-            v-model="fileList"
-            :after-read="afterRead"
+            v-model="frontPicList"
             max-count="1"
             :preview-size="['3.4rem', '2.2rem']"
           />
@@ -120,7 +119,11 @@
           </span>
         </div>
         <div class="content">
-          <Uploader max-count="1" :preview-size="['3.4rem', '2.2rem']" />
+          <Uploader
+            v-model="behindPicList"
+            max-count="1"
+            :preview-size="['3.4rem', '2.2rem']"
+          />
           <img class="example-pic" src="./images/back.png" alt="" />
         </div>
       </div>
@@ -137,7 +140,11 @@
           </span>
         </div>
         <div class="content">
-          <Uploader max-count="1" :preview-size="['3.4rem', '2.2rem']" />
+          <Uploader
+            v-model="facePicList"
+            max-count="1"
+            :preview-size="['3.4rem', '2.2rem']"
+          />
           <img class="example-pic" src="./images/head.png" alt="" />
         </div>
       </div>
@@ -154,7 +161,7 @@
 </template>
 
 <script setup lang="ts">
-import { Toast, Popup, Uploader } from "vant";
+import { Toast, Popup, Uploader, UploaderFileListItem } from "vant";
 import NavBar from "@/components/NavBar/index.vue";
 import RegionPicker from "@/components/RegionPicker.vue";
 import { onMounted, ref } from "vue";
@@ -173,7 +180,9 @@ const goodsInfo = ref<GoodsInfo>();
 
 const regionArr = ref<string[] | undefined>(undefined);
 const regionPickerVisible = ref(false);
-const fileList = ref([]);
+const frontPicList = ref<UploaderFileListItem[]>([]);
+const behindPicList = ref<UploaderFileListItem[]>([]);
+const facePicList = ref<UploaderFileListItem[]>([]);
 
 onMounted(() => {
   const { goods_id, agent_id } = route.query;
@@ -196,10 +205,7 @@ const onRegionPickerComfirm = (
   regionIdArr = regionIdList;
   regionPickerVisible.value = false;
 };
-const afterRead = (file: any) => {
-  console.log(file);
-  console.log("fileList", fileList.value);
-};
+
 const navToOrderQuery = () => router.push("/order_query");
 </script>
 
