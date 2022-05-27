@@ -1,5 +1,5 @@
 <template>
-  <NavBar title="订单详情" />
+  <NavBar title="订单查询详情" />
 </template>
 
 <script setup lang="ts">
