@@ -46,13 +46,16 @@ import { onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
 import { getOrderInfo } from "../../../../utils/api";
 import type { OrderInfo } from "@/types";
+import { Toast } from "vant";
 
 const route = useRoute();
 
 const orderList = ref<OrderInfo[]>([]);
 
 onMounted(async () => {
+  Toast.loading("加载中...");
   orderList.value = await getOrderInfo(route.query.phone as string);
+  Toast.clear();
 });
 </script>
 
@@ -71,7 +74,7 @@ onMounted(async () => {
       padding 0 .24rem
       height .8rem
       color #333
-      font-size .3rem
+      font-size .28rem
       font-weight bold
       border-bottom 1px solid #f5f5f5
     .content
@@ -84,12 +87,11 @@ onMounted(async () => {
         .label
           width 1.4rem
           color #3976ff
-          font-size .28rem
+          font-size .26rem
           text-align right
           font-weight 500
         .detail
-          margin-left .1rem
           flex 1
           color #333
-          font-size .28rem
+          font-size .26rem
 </style>
