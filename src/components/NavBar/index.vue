@@ -32,6 +32,7 @@ const navBack = () => history.back();
   left 0
   width 100%
   z-index 100
+  box-shadow 0 0 .02rem 0 rgba(0, 0, 0, 0.1)
   .nav-bar
     display flex
     align-items center

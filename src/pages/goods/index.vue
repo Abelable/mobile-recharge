@@ -98,7 +98,7 @@
           </span>
         </div>
         <div class="content">
-          <Uploader max-count="1" :preview-size="['3.2rem', '2rem']" />
+          <Uploader max-count="1" :preview-size="['3.4rem', '2.2rem']" />
           <img class="example-pic" src="./images/face.png" alt="" />
         </div>
       </div>
@@ -115,7 +115,7 @@
           </span>
         </div>
         <div class="content">
-          <Uploader max-count="1" :preview-size="['3.2rem', '2rem']" />
+          <Uploader max-count="1" :preview-size="['3.4rem', '2.2rem']" />
           <img class="example-pic" src="./images/back.png" alt="" />
         </div>
       </div>
@@ -132,11 +132,12 @@
           </span>
         </div>
         <div class="content">
-          <Uploader max-count="1" :preview-size="['3.2rem', '2rem']" />
+          <Uploader max-count="1" :preview-size="['3.4rem', '2.2rem']" />
           <img class="example-pic" src="./images/head.png" alt="" />
         </div>
       </div>
     </div>
+    <div class="submit-btn">提交信息</div>
   </div>
   <Popup v-model:show="regionPickerVisible" position="bottom" round>
     <RegionPicker
@@ -273,9 +274,20 @@ const navToOrderQuery = () => router.push("/order_query");
         justify-content space-between
         margin-top .24rem
         .example-pic
-          width 3.2rem
-          height 2rem
+          width 3.4rem
+          height 2.2rem
           border 1px solid #f9f9f9
+  .submit-btn
+    display flex
+    align-items center
+    justify-content center
+    margin .5rem .24rem 0
+    height .88rem
+    color #fff
+    font-size .3rem
+    font-weight bold
+    background #3976ff
+    border-radius .1rem
 @keyframes shake
   0%
     transform translateY(0.06rem)
