@@ -9,12 +9,11 @@ export const getRegion = async (id = 0): Promise<reginInfo[]> => {
   }));
 };
 
-export const uploadImg = async (file: File) => {
+export const uploadImg = async (file: Blob): Promise<{ url: string }> => {
   const formData = new FormData();
   formData.append("image", file);
-  const res = await http("/api/v1/h5/upload/image", {
+  return await http("/api/v1/h5/upload/image", {
     method: "POST",
     formData,
   });
-  console.log(res);
 };

@@ -34,12 +34,18 @@
       <div class="tag">实名信息</div>
       <div class="info">
         <div class="label">姓名</div>
-        <input class="content" type="text" placeholder="请输入姓名（已加密）" />
+        <input
+          class="content"
+          v-model="name"
+          type="text"
+          placeholder="请输入姓名（已加密）"
+        />
       </div>
       <div class="info" v-if="goodsInfo?.product.is_required_idcard">
         <div class="label">身份证号</div>
         <input
           class="content"
+          v-model="idCode"
           type="text"
           placeholder="请输入身份证号（已加密）"
         />
@@ -48,6 +54,7 @@
         <div class="label">联系电话</div>
         <input
           class="content"
+          v-model="phone"
           type="number"
           placeholder="请输入联系电话，并保持畅通"
         />
@@ -73,6 +80,7 @@
         <div class="label">详细地址</div>
         <input
           class="content"
+          v-model="addressDetail"
           type="text"
           placeholder="如街道、道路、小区、门牌号"
         />
@@ -149,7 +157,7 @@
         </div>
       </div>
     </div>
-    <div class="submit-btn">提交信息</div>
+    <div class="submit-btn" @click="submit">提交信息</div>
   </div>
   <Popup v-model:show="regionPickerVisible" position="bottom" round>
     <RegionPicker
@@ -164,36 +172,63 @@
 import { Toast, Popup, Uploader, UploaderFileListItem } from "vant";
 import NavBar from "@/components/NavBar/index.vue";
 import RegionPicker from "@/components/RegionPicker.vue";
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { getGoodsInfo } from "./utils/api";
+import { getGoodsInfo, submitInfo } from "./utils/api";
 import type { GoodsInfo } from "@/types";
-
-let regionIdArr: number[] = [];
+import { uploadImg } from "@/api/common";
 
 const router = useRouter();
 const route = useRoute();
-const open = ref(false);
-const goodsId = ref<number>();
-const agentId = ref<number>();
-const goodsInfo = ref<GoodsInfo>();
 
+let regionIdArr: number[] = [];
+let goodsId: number;
+let agentId: number;
+let frontPic = "";
+let behindPic = "";
+let facePic = "";
+
+const open = ref(false);
+const goodsInfo = ref<GoodsInfo>();
+const name = ref("");
+const idCode = ref("");
+const phone = ref("");
+const addressDetail = ref("");
 const regionArr = ref<string[] | undefined>(undefined);
 const regionPickerVisible = ref(false);
 const frontPicList = ref<UploaderFileListItem[]>([]);
 const behindPicList = ref<UploaderFileListItem[]>([]);
 const facePicList = ref<UploaderFileListItem[]>([]);
 
+watch(frontPicList, async (fileList: UploaderFileListItem[]) => {
+  if (fileList.length) {
+    const { url } = await uploadImg(fileList[0].file as Blob);
+    frontPic = url;
+  }
+});
+watch(behindPicList, async (fileList: UploaderFileListItem[]) => {
+  if (fileList.length) {
+    const { url } = await uploadImg(fileList[0].file as Blob);
+    behindPic = url;
+  }
+});
+watch(facePicList, async (fileList: UploaderFileListItem[]) => {
+  if (fileList.length) {
+    const { url } = await uploadImg(fileList[0].file as Blob);
+    facePic = url;
+  }
+});
+
 onMounted(() => {
   const { goods_id, agent_id } = route.query;
-  goodsId.value = Number(goods_id);
-  agentId.value = Number(agent_id);
+  goodsId = Number(goods_id);
+  agentId = Number(agent_id);
   setGoodsInfo();
 });
 
 const setGoodsInfo = async () => {
   Toast.loading({ message: "加载中..." });
-  goodsInfo.value = await getGoodsInfo(goodsId.value as number);
+  goodsInfo.value = await getGoodsInfo(goodsId);
   Toast.clear();
 };
 
@@ -204,6 +239,57 @@ const onRegionPickerComfirm = (
   regionArr.value = regionList;
   regionIdArr = regionIdList;
   regionPickerVisible.value = false;
+};
+
+const submit = () => {
+  if (!name.value) {
+    Toast("请输入姓名");
+    return;
+  }
+  if (goodsInfo.value?.product.is_required_idcard && !idCode.value) {
+    Toast("请输入身份证号");
+    return;
+  }
+  if (!phone.value) {
+    Toast("请输入联系电话");
+    return;
+  }
+  if (!regionIdArr.length) {
+    Toast("请选择所在城市");
+    return;
+  }
+  if (!addressDetail.value) {
+    Toast("请输入详细地址");
+    return;
+  }
+  if (goodsInfo.value?.product.is_required_idphoto) {
+    if (!frontPic) {
+      Toast("请上传身份证正面照片");
+      return;
+    }
+    if (!behindPic) {
+      Toast("请上传身份证反面照片");
+      return;
+    }
+    if (!facePic) {
+      Toast("请上传人像照片");
+      return;
+    }
+  }
+  submitInfo(
+    goodsId,
+    agentId,
+    name.value,
+    idCode.value,
+    phone.value,
+    regionIdArr[0],
+    regionIdArr[1],
+    regionIdArr[2],
+    addressDetail.value,
+    frontPic,
+    behindPic,
+    facePic
+  ).then(() => router.push("/done"));
 };
 
 const navToOrderQuery = () => router.push("/order_query");
