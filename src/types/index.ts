@@ -10,5 +10,12 @@ export interface reginInfo {
 
 export interface OrderInfo {
   id: number;
-  name: string;
+  order_no: string;
+  buyer: string;
+  goods_name: string;
+  status: number;
+  status_desc: string;
+  remark: string;
+  express_no: string;
+  express_name: string;
 }

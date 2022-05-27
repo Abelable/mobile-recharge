@@ -36,7 +36,7 @@ export const submitInfo = async (
     },
   });
 
-export const getOrderInfo = async (phone: string): Promise<OrderInfo> =>
+export const getOrderInfo = async (phone: string): Promise<OrderInfo[]> =>
   await http("/api/v1/h5/order/index", {
     data: {
       "filter[phone]": phone,
