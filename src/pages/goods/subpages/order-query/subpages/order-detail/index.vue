@@ -14,7 +14,12 @@
         </div>
         <div class="info">
           <div class="label">订单状态：</div>
-          <div class="detail">{{ item.status_desc }}</div>
+          <div
+            class="detail"
+            :style="{ color: item.status === 3 ? 'red' : 'green' }"
+          >
+            {{ item.status_desc }}
+          </div>
         </div>
         <div class="info">
           <div class="label">商家备注：</div>
