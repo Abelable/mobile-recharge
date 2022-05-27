@@ -78,6 +78,68 @@
         />
       </div>
     </div>
+    <div class="info-wrap" v-if="goodsInfo?.product.is_required_idphoto">
+      <div class="tag">上传身份证、人像照片</div>
+      <div class="tips">
+        <p style="font-weight: bold">特别说明</p>
+        <p>
+          <span>1. 根据有关部门要求，必须上传真实身份证照片。</span>
+          <span style="color: #fe3552">未上传照片，订单无效</span>
+        </p>
+        <p>2. 请填写真实身份信息，未满16周岁、一证五号、信息错误将无法发货</p>
+      </div>
+      <div class="uploader-wrap">
+        <div class="label">身份证正面照片</div>
+        <div class="uploader-tips">
+          <img
+            class="tips-icon"
+            src="https://img.ubo.vip/mp/mine/auth/add-auth/tips.png"
+            alt=""
+          />
+          <span>
+            证件四角边缘空隙2厘米以上，手机横拍，照片清晰不模糊，无水印，无反光，无PS
+          </span>
+        </div>
+        <div class="content">
+          <Uploader max-count="1" :preview-size="[160, 100]" />
+          <img class="example-pic" src="./images/face.png" alt="" />
+        </div>
+      </div>
+      <div class="uploader-wrap">
+        <div class="label">身份证反面照片</div>
+        <div class="uploader-tips">
+          <img
+            class="tips-icon"
+            src="https://img.ubo.vip/mp/mine/auth/add-auth/tips.png"
+            alt=""
+          />
+          <span>
+            证件四角边缘空隙2厘米以上，手机横拍，照片清晰不模糊，无水印，无反光，无PS
+          </span>
+        </div>
+        <div class="content">
+          <Uploader max-count="1" :preview-size="[160, 100]" />
+          <img class="example-pic" src="./images/back.png" alt="" />
+        </div>
+      </div>
+      <div class="uploader-wrap" style="padding-bottom: 0.12rem">
+        <div class="label">人像照片</div>
+        <div class="uploader-tips">
+          <img
+            class="tips-icon"
+            src="https://img.ubo.vip/mp/mine/auth/add-auth/tips.png"
+            alt=""
+          />
+          <span>
+            无需手持身份证，胸部以上，露出双肩，人像面部比例不低于1/3，无水印，无反光，无PS
+          </span>
+        </div>
+        <div class="content">
+          <Uploader max-count="1" :preview-size="[160, 100]" />
+          <img class="example-pic" src="./images/head.png" alt="" />
+        </div>
+      </div>
+    </div>
   </div>
   <Popup v-model:show="regionPickerVisible" position="bottom" round>
     <RegionPicker
@@ -89,7 +151,7 @@
 </template>
 
 <script setup lang="ts">
-import { Toast, Popup } from "vant";
+import { Toast, Popup, Uploader } from "vant";
 import NavBar from "@/components/NavBar/index.vue";
 import RegionPicker from "@/components/RegionPicker.vue";
 import { onMounted, ref } from "vue";
@@ -173,6 +235,13 @@ const navToOrderQuery = () => router.push("/order_query");
         height .3rem
         content ""
         background #3976ff
+    .tips
+      margin-top .24rem
+      padding .24rem
+      color #999
+      font-size .26rem
+      border-radius .2rem
+      background #f3f3f3
     .info
       display flex
       align-items center
@@ -188,6 +257,28 @@ const navToOrderQuery = () => router.push("/order_query");
         font-size .28rem
         &.placeholder
           color #888
+    .uploader-wrap
+      margin-top .24rem
+      .label
+        color #333
+        font-size .28rem
+        font-weight bold
+      .uploader-tips
+        margin-top .1rem
+        color #999
+        font-size .24rem
+        .tips-icon
+          height .24rem
+          width .24rem
+          transform translateY(.03rem)
+      .content
+        display flex
+        justify-content space-between
+        margin-top .24rem
+        .example-pic
+          width 160px
+          height 100px
+          border 1px solid #f9f9f9
 @keyframes shake
   0%
     transform translateY(0.06rem)
