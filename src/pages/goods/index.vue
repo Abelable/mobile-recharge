@@ -82,10 +82,7 @@
       <div class="tag">上传身份证、人像照片</div>
       <div class="tips">
         <p style="font-weight: bold">特别说明</p>
-        <p>
-          <span>1. 根据有关部门要求，必须上传真实身份证照片。</span>
-          <span style="color: #fe3552">未上传照片，订单无效</span>
-        </p>
+        <p>1. 根据有关部门要求，必须上传真实身份证照片。未上传照片，订单无效</p>
         <p>2. 请填写真实身份信息，未满16周岁、一证五号、信息错误将无法发货</p>
       </div>
       <div class="uploader-wrap">
@@ -101,7 +98,7 @@
           </span>
         </div>
         <div class="content">
-          <Uploader max-count="1" :preview-size="[160, 100]" />
+          <Uploader max-count="1" :preview-size="['3.2rem', '2rem']" />
           <img class="example-pic" src="./images/face.png" alt="" />
         </div>
       </div>
@@ -118,7 +115,7 @@
           </span>
         </div>
         <div class="content">
-          <Uploader max-count="1" :preview-size="[160, 100]" />
+          <Uploader max-count="1" :preview-size="['3.2rem', '2rem']" />
           <img class="example-pic" src="./images/back.png" alt="" />
         </div>
       </div>
@@ -135,7 +132,7 @@
           </span>
         </div>
         <div class="content">
-          <Uploader max-count="1" :preview-size="[160, 100]" />
+          <Uploader max-count="1" :preview-size="['3.2rem', '2rem']" />
           <img class="example-pic" src="./images/head.png" alt="" />
         </div>
       </div>
@@ -238,10 +235,10 @@ const navToOrderQuery = () => router.push("/order_query");
     .tips
       margin-top .24rem
       padding .24rem
-      color #999
+      color #FE3552
       font-size .26rem
       border-radius .2rem
-      background #f3f3f3
+      background #FFE0E4
     .info
       display flex
       align-items center
@@ -266,18 +263,18 @@ const navToOrderQuery = () => router.push("/order_query");
       .uploader-tips
         margin-top .1rem
         color #999
-        font-size .24rem
+        font-size .22rem
         .tips-icon
-          height .24rem
-          width .24rem
+          height .22rem
+          width .22rem
           transform translateY(.03rem)
       .content
         display flex
         justify-content space-between
         margin-top .24rem
         .example-pic
-          width 160px
-          height 100px
+          width 3.2rem
+          height 2rem
           border 1px solid #f9f9f9
 @keyframes shake
   0%
