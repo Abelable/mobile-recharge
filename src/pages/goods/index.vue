@@ -67,6 +67,7 @@
         <div
           class="content"
           :class="{ placeholder: !regionArr }"
+          style="padding-left: 0.16rem"
           @click="regionPickerVisible = true"
         >
           {{
