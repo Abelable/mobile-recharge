@@ -98,7 +98,12 @@
           </span>
         </div>
         <div class="content">
-          <Uploader max-count="1" :preview-size="['3.4rem', '2.2rem']" />
+          <Uploader
+            v-model="fileList"
+            :after-read="afterRead"
+            max-count="1"
+            :preview-size="['3.4rem', '2.2rem']"
+          />
           <img class="example-pic" src="./images/face.png" alt="" />
         </div>
       </div>
@@ -162,18 +167,26 @@ let regionIdArr: number[] = [];
 const router = useRouter();
 const route = useRoute();
 const open = ref(false);
-const goodsInfo = ref<GoodsInfo>();
+const goodsId = ref<number>();
 const agentId = ref<number>();
+const goodsInfo = ref<GoodsInfo>();
+
 const regionArr = ref<string[] | undefined>(undefined);
 const regionPickerVisible = ref(false);
+const fileList = ref([]);
 
-onMounted(async () => {
+onMounted(() => {
   const { goods_id, agent_id } = route.query;
+  goodsId.value = Number(goods_id);
   agentId.value = Number(agent_id);
-  Toast.loading({ message: "加载中..." });
-  goodsInfo.value = await getGoodsInfo(goods_id as string);
-  Toast.clear();
+  setGoodsInfo();
 });
+
+const setGoodsInfo = async () => {
+  Toast.loading({ message: "加载中..." });
+  goodsInfo.value = await getGoodsInfo(goodsId.value as number);
+  Toast.clear();
+};
 
 const onRegionPickerComfirm = (
   regionList: string[],
@@ -182,6 +195,10 @@ const onRegionPickerComfirm = (
   regionArr.value = regionList;
   regionIdArr = regionIdList;
   regionPickerVisible.value = false;
+};
+const afterRead = (file: any) => {
+  console.log(file);
+  console.log("fileList", fileList.value);
 };
 const navToOrderQuery = () => router.push("/order_query");
 </script>
