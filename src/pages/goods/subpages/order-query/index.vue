@@ -27,8 +27,9 @@ const router = useRouter();
 
 const phone = ref("");
 const orderQuery = () => {
-  if (!phone.value) {
-    Toast("请输入联系手机号");
+  const phoneReg = /^[1][3,4,5,7,8][0-9]{9}$/;
+  if (!phoneReg.test(phone.value)) {
+    Toast("请输入正确手机号");
     return;
   }
   router.push({ path: "/order_detail", query: { phone: phone.value } });

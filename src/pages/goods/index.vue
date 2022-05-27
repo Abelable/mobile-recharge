@@ -250,8 +250,9 @@ const submit = () => {
     Toast("请输入身份证号");
     return;
   }
-  if (!phone.value) {
-    Toast("请输入联系电话");
+  const phoneReg = /^[1][3,4,5,7,8][0-9]{9}$/;
+  if (!phoneReg.test(phone.value)) {
+    Toast("请输入正确手机号");
     return;
   }
   if (!regionIdArr.length) {
