@@ -7,3 +7,8 @@ export interface reginInfo {
   id: number;
   name: string;
 }
+
+export interface OrderInfo {
+  id: number;
+  name: string;
+}

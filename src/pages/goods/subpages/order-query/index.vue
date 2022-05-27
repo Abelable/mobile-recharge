@@ -41,7 +41,7 @@ const orderQuery = () => {
   padding .88rem .24rem 0
   .illus
     display block
-    margin 1rem auto 0
+    margin 0.5rem auto 0
     width 4rem
     height 4rem
   .input
@@ -63,7 +63,7 @@ const orderQuery = () => {
     background #3976ff
     border-radius .1rem
   .tips
-    margin-top .5rem
+    margin-top 1rem
     background #f5f5f5
     padding .24rem
     color #999

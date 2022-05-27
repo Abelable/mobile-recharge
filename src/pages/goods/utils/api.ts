@@ -1,5 +1,5 @@
 import { http } from "@/utils/http";
-import type { GoodsInfo } from "@/types";
+import type { GoodsInfo, OrderInfo } from "@/types";
 
 export const getGoodsInfo = async (id: number): Promise<GoodsInfo> =>
   await http(`/api/v1/h5/goods/show/${id}`);
@@ -33,5 +33,12 @@ export const submitInfo = async (
       idcard_front_photo,
       idcard_back_photo,
       bareheaded_photo,
+    },
+  });
+
+export const getOrderInfo = async (phone: string): Promise<OrderInfo> =>
+  await http("/api/v1/h5/order/index", {
+    data: {
+      "filter[phone]": phone,
     },
   });
