@@ -1,5 +1,5 @@
 export interface GoodsInfo {
-  main_picture: string;
+  detail: string;
   name: string;
   product: { is_required_idcard: number; is_required_idphoto: number };
 }

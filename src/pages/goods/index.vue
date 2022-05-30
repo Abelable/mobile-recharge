@@ -10,7 +10,7 @@
   </NavBar>
   <div class="container">
     <div class="cover-wrap" :class="{ open }">
-      <img class="cover" :src="goodsInfo?.main_picture" alt="" />
+      <div v-html="goodsInfo?.detail" />
       <div class="toggle-bar" @click="open = !open">
         <img
           class="arrow"
@@ -302,13 +302,10 @@ const navToOrderQuery = () => router.push("/order_query");
   padding .88rem 0
   .cover-wrap
     position relative
-    font-size 0
     height 100vw
     overflow hidden
     &.open
       height: fit-content
-    .cover
-      width 100%
     .toggle-bar
       position absolute
       bottom 0
@@ -406,4 +403,13 @@ const navToOrderQuery = () => router.push("/order_query");
     transform translateY(-0.06rem)
   100%
     transform translateY(0.06rem)
+</style>
+<style lang="stylus">
+.cover-wrap
+  font-size 0
+  img
+    width 100%
+  p
+    color #333
+    font-size .28rem
 </style>
