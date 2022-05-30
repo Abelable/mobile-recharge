@@ -1,12 +1,13 @@
 import { http } from "@/utils/http";
 import type { GoodsInfo, OrderInfo } from "@/types";
+import { cleanObject } from "@/utils";
 
-export const getGoodsInfo = async (id: number): Promise<GoodsInfo> =>
+export const getGoodsInfo = async (id: string): Promise<GoodsInfo> =>
   await http(`/api/v1/h5/goods/show/${id}`);
 
 export const submitInfo = async (
-  goods_id: number,
-  agent_id: number,
+  goods_id: string,
+  agent_id: string,
   buyer: string,
   idcard: string,
   phone: string,
@@ -20,7 +21,7 @@ export const submitInfo = async (
 ) =>
   await http("/api/v1/h5/order/store", {
     method: "POST",
-    data: {
+    data: cleanObject({
       goods_id,
       agent_id,
       buyer,
@@ -33,7 +34,7 @@ export const submitInfo = async (
       idcard_front_photo,
       idcard_back_photo,
       bareheaded_photo,
-    },
+    }),
   });
 
 export const getOrderInfo = async (phone: string): Promise<OrderInfo[]> =>

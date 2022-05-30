@@ -183,8 +183,8 @@ const router = useRouter();
 const route = useRoute();
 
 let regionIdArr: number[] = [];
-let goodsId: number;
-let agentId: number;
+let goodsId: string;
+let agentId: string;
 let frontPic = "";
 let behindPic = "";
 let facePic = "";
@@ -222,8 +222,8 @@ watch(facePicList, async (fileList: UploaderFileListItem[]) => {
 
 onMounted(() => {
   const { goods_id, agent_id } = route.query;
-  goodsId = Number(goods_id);
-  agentId = Number(agent_id);
+  goodsId = goods_id as string;
+  agentId = (agent_id as string) || "";
   setGoodsInfo();
 });
 
