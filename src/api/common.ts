@@ -9,7 +9,9 @@ export const getRegion = async (id = 0): Promise<reginInfo[]> => {
   }));
 };
 
-export const uploadImg = async (file: Blob): Promise<{ url: string }> => {
+export const uploadImg = async (
+  file: Blob
+): Promise<{ relative_url: string }> => {
   const formData = new FormData();
   formData.append("image", file);
   return await http("/api/v1/h5/upload/image", {

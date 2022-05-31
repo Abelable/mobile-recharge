@@ -203,20 +203,20 @@ const facePicList = ref<UploaderFileListItem[]>([]);
 
 watch(frontPicList, async (fileList: UploaderFileListItem[]) => {
   if (fileList.length) {
-    const { url } = await uploadImg(fileList[0].file as Blob);
-    frontPic = url;
+    const { relative_url } = await uploadImg(fileList[0].file as Blob);
+    frontPic = relative_url;
   }
 });
 watch(behindPicList, async (fileList: UploaderFileListItem[]) => {
   if (fileList.length) {
-    const { url } = await uploadImg(fileList[0].file as Blob);
-    behindPic = url;
+    const { relative_url } = await uploadImg(fileList[0].file as Blob);
+    behindPic = relative_url;
   }
 });
 watch(facePicList, async (fileList: UploaderFileListItem[]) => {
   if (fileList.length) {
-    const { url } = await uploadImg(fileList[0].file as Blob);
-    facePic = url;
+    const { relative_url } = await uploadImg(fileList[0].file as Blob);
+    facePic = relative_url;
   }
 });
 
