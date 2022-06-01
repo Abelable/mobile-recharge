@@ -247,8 +247,15 @@ const submit = () => {
     Toast("请输入姓名");
     return;
   }
-  if (goodsInfo.value?.product.is_required_idcard && !idCode.value) {
-    Toast("请输入身份证号");
+  const _IDRe18 =
+    /^([1-6][1-9]|50)\d{4}(18|19|20)\d{2}((0[1-9])|10|11|12)(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/;
+  const _IDre15 =
+    /^([1-6][1-9]|50)\d{4}\d{2}((0[1-9])|10|11|12)(([0-2][1-9])|10|20|30|31)\d{3}$/;
+  if (
+    goodsInfo.value?.product.is_required_idcard &&
+    (!_IDRe18.test(idCode.value) || !_IDre15.test(idCode.value))
+  ) {
+    Toast("请输入正确身份证号");
     return;
   }
   const phoneReg = /^[1][3,4,5,7,8][0-9]{9}$/;
