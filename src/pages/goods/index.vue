@@ -253,7 +253,8 @@ const submit = () => {
     /^([1-6][1-9]|50)\d{4}\d{2}((0[1-9])|10|11|12)(([0-2][1-9])|10|20|30|31)\d{3}$/;
   if (
     goodsInfo.value?.product.is_required_idcard &&
-    (!_IDRe18.test(idCode.value) || !_IDre15.test(idCode.value))
+    !_IDRe18.test(idCode.value) &&
+    !_IDre15.test(idCode.value)
   ) {
     Toast("请输入正确身份证号");
     return;
