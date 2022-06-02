@@ -1,5 +1,4 @@
 import qs from "qs";
-import { Toast } from "vant";
 
 const apiUrl = process.env.VUE_APP_API_URL;
 
@@ -36,7 +35,7 @@ export const http = async (
   return window.fetch(`${apiUrl}${endpoint}`, config).then(async (response) => {
     const result = await response.json();
     if ([200, 201, 204].includes(result.code)) return result.data;
-    else Toast(result.message);
+    else return Promise.reject(result);
   });
 };
 

@@ -299,7 +299,11 @@ const submit = () => {
     frontPic,
     behindPic,
     facePic
-  ).then(() => router.push("/done"));
+  )
+    .then(() => router.push("/done"))
+    .catch((error: { message: string }) => {
+      Toast(error.message);
+    });
 };
 
 const navToOrderQuery = () => router.push("/order_query");
