@@ -3,7 +3,7 @@
   <div class="container">
     <Icon name="checked" color="#28d928" size="1.6rem" />
     <div class="title">订单提交成功</div>
-    <div class="tips">订单审核通过后，我们会尽快安排邮箱</div>
+    <div class="tips">订单审核通过后，我们会尽快安排邮寄</div>
     <div class="tips">查询物流请点击：</div>
     <div class="btn" @click="navToOrderQuery">订单查询</div>
   </div>
