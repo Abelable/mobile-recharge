@@ -20,7 +20,7 @@ import { getRegion } from "@/api/common";
 import type { reginInfo } from "@/types";
 
 const props = withDefaults(defineProps<{ regionArr: string[] }>(), {
-  regionArr: () => ["北京", "朝阳区", "三环以内"],
+  regionArr: () => ["北京", "北京市", "东城区"],
 });
 
 const emit = defineEmits(["confirm", "cancel"]);
