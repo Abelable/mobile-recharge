@@ -159,6 +159,7 @@
       </div>
     </div>
     <div class="submit-btn" @click="submit">提交信息</div>
+    <div class="icp">厦门久梦科技有限公司闽ICP备2022009532号-1</div>
   </div>
   <Popup v-model:show="regionPickerVisible" position="bottom" round>
     <RegionPicker
@@ -408,6 +409,11 @@ const navToOrderQuery = () => router.push("/order_query");
     font-weight bold
     background #3976ff
     border-radius .1rem
+  .icp
+    margin-top: .4rem
+    color: #999
+    font-size: .2rem
+    text-align: center
 @keyframes shake
   0%
     transform translateY(0.06rem)
