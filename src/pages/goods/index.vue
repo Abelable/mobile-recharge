@@ -159,7 +159,12 @@
       </div>
     </div>
     <div class="submit-btn" @click="submit">提交信息</div>
-    <div class="icp">厦门久梦科技有限公司闽ICP备2022009532号-1</div>
+    <div class="remark">
+      <p>厦门久梦科技有限公司</p>
+      <p>闽ICP备2022009532号-1</p>
+      <p>公司电话：15759575265</p>
+      <p>公司地址：厦门市湖里区湖里大道45号424室之14</p>
+    </div>
   </div>
   <Popup v-model:show="regionPickerVisible" position="bottom" round>
     <RegionPicker
@@ -409,7 +414,7 @@ const navToOrderQuery = () => router.push("/order_query");
     font-weight bold
     background #3976ff
     border-radius .1rem
-  .icp
+  .remark
     margin-top: .4rem
     color: #999
     font-size: .2rem
