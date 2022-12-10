@@ -1,13 +1,4 @@
 <template>
-  <NavBar :backIconVisible="false" :title="goodsInfo?.name || ''">
-    <template v-slot:custom-btn>
-      <img
-        style="width: 20px; height: 20px"
-        @click="navToOrderQuery"
-        src="./images/search.png"
-      />
-    </template>
-  </NavBar>
   <div class="container">
     <div class="cover-wrap" :class="{ open }">
       <div v-html="goodsInfo?.detail" />
@@ -177,8 +168,6 @@
 
 <script setup lang="ts">
 import { Toast, Popup, Uploader, UploaderFileListItem } from "vant";
-import NavBar from "@/components/NavBar/index.vue";
-import RegionPicker from "@/components/RegionPicker.vue";
 import { onMounted, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { getGoodsInfo, submitInfo } from "./utils/api";
